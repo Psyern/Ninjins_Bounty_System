@@ -1,0 +1,39 @@
+# DayZ Modding / Enforce Script
+
+# Binarized / packed outputs (adjust to your build pipeline)
+*.pbo
+*.bisign
+*.bikey
+
+# Game / server logs
+*.RPT
+*.log
+
+# Windows junk
+Thumbs.db
+Desktop.ini
+
+# IDE / editor
+.vscode/
+*.code-workspace
+
+# JetBrains
+.idea/
+
+# OS / temp
+*.tmp
+*.bak
+*.swp
+
+# Local workdrive / symlinks (common in DayZ workflows)
+P:/
+workdrive/
+
+# User-specific / local configs
+*.local
+.env
+
+# If you have a build output folder, ignore it
+build/
+dist/
+out/
