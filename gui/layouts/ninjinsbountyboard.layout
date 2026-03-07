@@ -1,0 +1,184 @@
+WindowWidgetClass NinjinsBountyBoardFrame {
+ visible 1
+ clipchildren 0
+ color 0.1 0.1 0.1 1
+ position 0 0
+ size 1 1
+ halign center_ref
+ valign center_ref
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ priority 999
+ style Colorable
+ {
+  PanelWidgetClass NinjinsBountyBoardPanel {
+   visible 1
+   color 0.2 0.2 0.2 0.95
+   position 0 0
+   size 1 1
+   halign center_ref
+   valign center_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style blank
+   {
+    ButtonWidgetClass BttnSkip {
+     visible 1
+     inheritalpha 0
+     color 0.3725 0.749 0.749 1
+     position 0.13 0.39
+     size 0.2 0.05
+     valign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     priority 10
+     style Editor
+     text "Skip my Bounty"
+     text_proportion 0.5
+     text_halign center
+     text_valign center
+     font "gui/fonts/metron"
+    }
+    ButtonWidgetClass BttnClaimRewards {
+     visible 1
+     inheritalpha 0
+     color 0.2 0.8 0.3 1
+     position 0.64 0.39
+     size 0.2 0.05
+     valign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     priority 10
+     style Editor
+     text "Claim Item Reward"
+     text_proportion 0.5
+     text_halign center
+     text_valign center
+     font "gui/fonts/metron"
+    }
+    ButtonWidgetClass BttnClaimMoney {
+     visible 1
+     inheritalpha 0
+     color 0.2 0.8 0.3 1
+     position 0.64 0.45
+     size 0.2 0.05
+     valign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     priority 10
+     style Editor
+     text "Claim Money"
+     text_proportion 0.5
+     text_halign center
+     text_valign center
+     font "gui/fonts/metron"
+    }
+    ButtonWidgetClass BttnPlaceBounty {
+     visible 1
+     inheritalpha 0
+     color 1 0 0 1
+     position 0.38 0.39
+     size 0.2 0.05
+     valign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     priority 10
+     style Editor
+     text "Place Bounty"
+     text_proportion 0.5
+     text_halign center
+     text_valign center
+     font "gui/fonts/metron"
+    }
+    ButtonWidgetClass BttnClose {
+     visible 1
+     inheritalpha 0
+     color 1 0.0863 0.0863 1
+     position 0.01 0.02
+     size 0.02 0.025
+     halign right_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     priority 10
+     style Editor
+     text "X"
+     text_proportion 0.5
+     text_halign center
+     text_valign center
+     font "gui/fonts/metron"
+    }
+    ImageWidgetClass ImageWidget0 {
+     ignorepointer 1
+     position 0 0
+     size 1 1
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     imageTexture "{CB5347312117559F}Ninjins_Bounty_System/gui/layouts/NinjinsBountyBoardImage.edds"
+     "clamp mode" clamp
+     "stretch mode" stretch_w_h
+    }
+    ButtonWidgetClass BttnCancel {
+     visible 0
+     color 0.9 0.15 0.15 1
+     size 0.04 0.04
+     halign right_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     fixaspect fixwidth
+     priority 10
+     style Default
+     text "X"
+     text_proportion 0.5
+     text_halign center
+     text_valign center
+     font "gui/fonts/metron"
+    }
+   }
+  }
+  TextListboxWidgetClass OnlinePlayersList {
+   color 0.3882 0.1961 0.0784 0.9765
+   position 260.625 243.226
+   size 361.29001 593.54797
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 10
+   style Editor
+   "highlight row" 1
+   font "gui/fonts/metronbook22"
+  }
+  TextWidgetClass ClaimAmount {
+   ignorepointer 1
+   position 0.07 0.42
+   size 0.081 0.067
+   halign right_ref
+   valign center_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style Bold
+   "size to text h" 0
+   "text valign" center
+  }
+ }
+}

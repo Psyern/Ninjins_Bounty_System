@@ -1,0 +1,3989 @@
+FrameWidgetClass rootFrame {
+ ignorepointer 0
+ keepsafezone 1
+ color 0.0392 0.0902 0.2549 0.8706
+ position 0 0
+ size 1 1
+ halign center_ref
+ valign center_ref
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ scaled 1
+ {
+  PanelWidgetClass MainPanel {
+   color 0.1176 0.1569 0.2196 0.9451
+   size 0.1708 1
+   halign right_ref
+   valign center_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   priority 100
+   style editor_selection
+   {
+    PanelWidgetClass TitleBar {
+     ignorepointer 0
+     color 0.1059 0.349 0.3725 1
+     position 0 0
+     size 1 0.05
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     style DayZDefaultPanel
+     {
+      TextWidgetClass TitleBarText {
+       visible 1
+       color 1 1 1 1
+       position 0 0
+       size 1 0.5
+       halign center_ref
+       valign center_ref
+       text "Bounty System Admin Menu"
+       font "gui/fonts/metronbook16"
+       "bold text" 1
+       "exact text" 0
+       "exact text size" 28
+       "text halign" center
+       "text valign" center
+      }
+     }
+    }
+    ButtonWidgetClass BtnApplyTestRuleBreakerBounty {
+     color 0.702 0.351 0 1
+     position 0.06217 761.94098
+     size 0.9 0.05
+     vexactpos 1
+     priority 1
+     style Editor
+     "no focus" 1
+     text "Place Rulebreaker Bounty"
+     font "gui/fonts/metronbook16"
+    }
+    ButtonWidgetClass BtnClearBountySelectedPlayer {
+     color 0 0.702 0.702 1
+     position 0.06217 821.10199
+     size 0.9 0.05
+     vexactpos 1
+     priority 1
+     style Editor
+     "no focus" 1
+     text "Clear Bounty on player"
+     font "gui/fonts/metronbook16"
+    }
+    ButtonWidgetClass BtnReloadConfigs {
+     color 0 0.702 0.702 1
+     position 0.05 72.8
+     size 0.9 0.05
+     vexactpos 1
+     priority 1
+     style Editor
+     "no focus" 1
+     text "Reload All Configs"
+     font "gui/fonts/metronbook16"
+    }
+    TextListboxWidgetClass PlayersList {
+     color 0.2 0.2 0.2 0.9
+     position 0.0585 134.8
+     size 0.9 0.51862
+     hexactpos 0
+     vexactpos 1
+     priority 1
+     style Editor
+     font "gui/fonts/metronbook22"
+    }
+    ButtonWidgetClass BtnClearPlayerCooldown {
+     color 0 0.702 0.702 1
+     position 0.06217 880.263
+     size 0.9 0.05
+     vexactpos 1
+     priority 1
+     style Editor
+     "no focus" 1
+     text "Clear Player Cooldown"
+     font "gui/fonts/metronbook16"
+    }
+    ButtonWidgetClass BtnAddBountySelectedPlayer {
+     color 0.702 0.351 0 1
+     position 0.06217 702.78003
+     size 0.9 0.05
+     vexactpos 1
+     priority 1
+     style Editor
+     "no focus" 1
+     text "Place Normal Bounty"
+     font "gui/fonts/metronbook16"
+    }
+    ButtonWidgetClass BtnAddRewardPoint {
+     color 0 0.702 0.702 1
+     position 0.06434 938.72205
+     size 0.9 0.05
+     vexactpos 1
+     priority 1
+     style Editor
+     "no focus" 1
+     text "Add Reward Point"
+     font "gui/fonts/metronbook16"
+    }
+    ButtonWidgetClass BtnRemoveRewardPoint {
+     color 0.702 0.351 0 1
+     position 0.06651 997.18701
+     size 0.9 0.05
+     vexactpos 1
+     priority 1
+     style Editor
+     "no focus" 1
+     text "Remove Reward Point"
+     font "gui/fonts/metronbook16"
+    }
+   }
+  }
+  PanelWidgetClass ConfigSettingPanel {
+   visible 1
+   color 0.1176 0.1569 0.2196 0.9451
+   position 0.01 0
+   size 0.8 0.8
+   valign center_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   priority 100
+   style editor_selection
+   {
+    PanelWidgetClass TitleBarAdmin {
+     visible 1
+     ignorepointer 0
+     color 0.1059 0.349 0.3725 1
+     position 0 0
+     size 1 0.05
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     style DayZDefaultPanel
+     {
+      TextWidgetClass AdminTItleText {
+       visible 1
+       color 1 1 1 1
+       position 0 0
+       size 1 0.5
+       halign center_ref
+       valign center_ref
+       text "Bounty System Admin Menu"
+       font "gui/fonts/metronbook16"
+       "bold text" 1
+       "exact text" 0
+       "exact text size" 28
+       "text halign" center
+       "text valign" center
+      }
+     }
+    }
+    PanelWidgetClass TabButtonsPanel {
+     visible 1
+     ignorepointer 0
+     color 0.1176 0.1569 0.2196 0.9451
+     position 0.01 0.06
+     size 0.98 0.04
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     priority 100
+     style DayZDefaultPanel
+     {
+      ButtonWidgetClass btnNormalSettings {
+       visible 1
+       color 0.1059 0.349 0.3725 1
+       position 0 0
+       size 0.2 1
+       style Editor
+       "no focus" 1
+       text "Normal Settings"
+       font "gui/fonts/metronbook16"
+      }
+      ButtonWidgetClass btnNotifications {
+       visible 1
+       color 0.1176 0.1569 0.2196 0.9451
+       position 0.21 0
+       size 0.2 1
+       style Editor
+       "no focus" 1
+       text "Notifications"
+       font "gui/fonts/metronbook16"
+      }
+      ButtonWidgetClass btnBlacklist {
+       visible 1
+       color 0.1176 0.1569 0.2196 0.9451
+       position 0.42 0
+       size 0.2 1
+       style Editor
+       "no focus" 1
+       text "Blacklist"
+       font "gui/fonts/metronbook16"
+      }
+     }
+    }
+    PanelWidgetClass GeneralRootPanel {
+     visible 1
+     color 0.1176 0.1569 0.2196 0.9412
+     position 0.01 0.02
+     size 0.98 0.81
+     valign center_ref
+     scaled 0
+     priority 1
+     style DayZDefaultPanel
+     {
+      ScrollWidgetClass scrollGeneral {
+       visible 1
+       color 0 0.702 0.702 1
+       position 0.01 0.01
+       size 0.98 0.97415
+       style blank
+       "Scrollbar V" 1
+       {
+        PanelWidgetClass generalSettingsPanel {
+         visible 1
+         color 0 0 0 0.6549
+         position 0 -0.88
+         size 1 2328.88013
+         vexactpos 1
+         vexactsize 1
+         style blank
+         {
+          PanelWidgetClass EnableBountySystemPanel {
+           color 0 0 0 0.651
+           position 0 5.16
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass EnableBountySystem {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Enable Bounty System"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass DisableSelfBountyPanel {
+           color 0 0 0 0.651
+           position 0.502 5.16
+           size 0.495 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass DisableSelfBounty {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Disable Self Bounty"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass TeleportOutOfOwnTerritoryPanel {
+           color 0 0 0 0.651
+           position 0 52.16
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass TeleportOutOfOwnTerritory {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Teleport Out Of Own Territory"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass PauseBountyInTerritoryPanel {
+           color 0 0 0 0.651
+           position 0.502 52.16
+           size 0.495 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass PauseBountyInTerritory {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Pause Bounty In Territory"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass TeleportOutOfSafeZonePanel {
+           color 0 0 0 0.651
+           position 0 99.16
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass TeleportOutOfSafeZone {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Teleport Out Of Safe Zone"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass EnableAutomatedBountyPlacementPanel {
+           color 0 0 0 0.651
+           position 0.502 99.16
+           size 0.495 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass EnableAutomatedBountyPlacement {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Enable Automated Bounty Placement"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BountyCooldownSecondsPanel {
+           color 0 0 0 0.651
+           position 0 149.57701
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BountyCooldownSecondsTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Bounty Cooldown (seconds, 0 =no cooldown)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass BountyCooldownSeconds {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass MaxBountiedPlayersPanel {
+           color 0 0 0 0.651
+           position 0 196.57701
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass MaxBountiedPlayersTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Max Bountied Players (-1=unlimited, 0 =disabled)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass MaxBountiedPlayers {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass MinOnlinePlayersRequiredPanel {
+           color 0 0 0 0.651
+           position 0 243.57701
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass MinOnlinePlayersRequiredTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Min Online Players Required (0 =no requirement)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass MinOnlinePlayersRequired {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass SkipBountyTokenRequiredPanel {
+           color 0 0 0 0.651
+           position 0 290.577
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass SkipBountyTokenRequiredTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Skip Bounty Token Required (0 =disabled)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass SkipBountyTokenRequired {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass PlaceBountyTokenRequiredPanel {
+           color 0 0 0 0.651
+           position 0 337.577
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlaceBountyTokenRequiredTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Place Bounty Token Required (0 =disabled)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass PlaceBountyTokenRequired {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass ResumeBountyDistanceFromTerritoryPanel {
+           color 0 0 0 0.651
+           position 0 384.577
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass ResumeBountyDistanceFromTerritoryTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Resume Bounty Distance From Territory (meters)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass ResumeBountyDistanceFromTerritory {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass PausedBountyResumeCheckIntervalPanel {
+           color 0 0 0 0.651
+           position 0 431.577
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PausedBountyResumeCheckIntervalTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Paused Bounty Resume Check Interval (seconds)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass PausedBountyResumeCheckInterval {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass TeleportOutOfSafeZoneDistancePanel {
+           color 0 0 0 0.651
+           position 0 478.577
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass TeleportOutOfSafeZoneDistanceTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Teleport Out Of Safe Zone Distance (meters)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass TeleportOutOfSafeZoneDistance {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass MinimumPlayerLifetimeSecondsPanel {
+           color 0 0 0 0.651
+           position 0 525.57703
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass MinimumPlayerLifetimeSecondsTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Minimum Player Lifetime (seconds, 0 =disabled)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass MinimumPlayerLifetimeSeconds {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass AutomatedBountyPlacementIntervalSecondsPanel {
+           color 0 0 0 0.651
+           position 0 619.57703
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass AutomatedBountyPlacementIntervalSecondsTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Automated Bounty Placement Interval (seconds)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass AutomatedBountyPlacementIntervalSeconds {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass {
+           ignorepointer 0
+           color 0.502 0 0 1
+           position 0 687.15997
+           size 1 40
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerSettingsTitle {
+             visible 1
+             color 1 1 1 1
+             position 0 0
+             size 1 1
+             text "Rule Breaker Settings"
+             font "gui/fonts/metronbook22"
+             "text offset" 5 0
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass EnableRuleBreakerHitThresholdPanel {
+           color 0 0 0 0.651
+           position 0 727.15997
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass EnableRuleBreakerHitThreshold {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Enable Rule Breaker Hit Threshold"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass EnablePvEToPvPRuleBreakerPanel {
+           color 0 0 0 0.651
+           position 0.502 727.15997
+           size 0.495 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass EnablePvEToPvPRuleBreaker {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Enable PvE To PvP Rule Breaker"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass ClearPendingRewardsOnRuleBreakerBountyPanel {
+           color 0 0 0 0.651
+           position 0 774.15997
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass ClearPendingRewardsOnRuleBreakerBounty {
+             position 0.0025 0
+             size 1 1
+             valign center_ref
+             text "Clear Pending Rewards On Rule Breaker Bounty"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass AllowPvEToPvEVictimKillPanel {
+           color 0 0 0 0.651
+           position 0 821.15997
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass AllowPvEToPvEVictimKill {
+             position 0.0025 0
+             size 1 1
+             valign center_ref
+             text "Allow PvE To PvE Victim Kill"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass Expansion_EnableHardlineReputationDecreasePanel {
+           color 0 0 0 0.651
+           position 0.502 774.15997
+           size 0.495 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass Expansion_EnableHardlineReputationDecrease {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Enable Hardline Reputation Decrease"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BountyRuleBreakerDurationSecondsPanel {
+           color 0 0 0 0.651
+           position 0 872.78003
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BountyRuleBreakerDurationSecondsTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Rule Breaker Duration (seconds)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass BountyRuleBreakerDurationSeconds {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerHitThresholdTimePanel {
+           color 0 0 0 0.651
+           position 0 919.78003
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerHitThresholdTimeTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Rule Breaker Hit Threshold Time (seconds)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass RuleBreakerHitThresholdTime {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerHitThresholdWarningHitsPanel {
+           color 0 0 0 0.651
+           position 0 966.78003
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerHitThresholdWarningHitsTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Rule Breaker Warning Hits (0 =no warning)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass RuleBreakerHitThresholdWarningHits {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerHitThresholdBountyHitsPanel {
+           color 0 0 0 0.651
+           position 0 1013.78003
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerHitThresholdBountyHitsTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Rule Breaker Bounty Hits (must be > warning hits)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass RuleBreakerHitThresholdBountyHits {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass PvEToPvPInstantRuleBreakerHitsPanel {
+           color 0 0 0 0.651
+           position 0 1060.78003
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PvEToPvPInstantRuleBreakerHitsTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "PvE To PvP Instant Rule Breaker Hits (0 =use threshold, 1=instant)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass PvEToPvPInstantRuleBreakerHits {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass Expansion_HardlineReputationDecreaseAmountPanel {
+           color 0 0 0 0.651
+           position 0 1107.77979
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass Expansion_HardlineReputationDecreaseAmountTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Hardline Reputation Decrease Amount (0 =disabled)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass Expansion_HardlineReputationDecreaseAmount {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass {
+           ignorepointer 0
+           color 0.1961 0.3569 0.3725 1
+           position 0 1165.16003
+           size 1 40
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlacedBountySettingsTitle {
+             visible 1
+             color 1 1 1 1
+             position 0 0
+             size 1 1
+             text "Placed Bounty Settings"
+             font "gui/fonts/metronbook22"
+             "text offset" 5 0
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass BountyDurationSecondsPanel {
+           color 0 0 0 0.651
+           position 0 1205.16003
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BountyDurationSecondsTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Bounty Duration (seconds)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass BountyDurationSeconds {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass {
+           ignorepointer 0
+           color 0.3137 0.5608 0.0706 0.6353
+           position 0 1313.15991
+           size 1 40
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RewardSettingsTitle {
+             visible 1
+             color 1 1 1 1
+             position 0 0
+             size 1 1
+             text "Reward Settings"
+             font "gui/fonts/metronbook22"
+             "text offset" 5 0
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass EnableSurvivalRewardPanel {
+           color 0 0 0 0.651
+           position 0 1353.16003
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass EnableSurvivalReward {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Enable Survival Reward"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass PvERuleBreakerGiveRewardsPanel {
+           color 0 0 0 0.651
+           position 0.502 1353.16003
+           size 0.495 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass PvERuleBreakerGiveRewards {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "PvE Rule Breaker Give Rewards"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass {
+           ignorepointer 0
+           color 0.8745 0.6745 0.0706 0.7647
+           position 0 1412.15991
+           size 1 40
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass MapSettingsTitle {
+             visible 1
+             color 1 1 1 1
+             position 0 0
+             size 1 1
+             text "Map Settings"
+             font "gui/fonts/metronbook22"
+             "text offset" 5 0
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass BountyEnableMapDrawingPanel {
+           color 0 0 0 0.651
+           position 0 1405.16003
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass BountyEnableMapDrawing {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Enable Map Drawing"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BountyCircleReduceRadiusOverTimePanel {
+           color 0 0 0 0.651
+           position 0.502 1405.16003
+           size 0.495 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass BountyCircleReduceRadiusOverTime {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Circle Reduce Radius Over Time"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BountyCircleIncreaseRadiusOverTimePanel {
+           color 0 0 0 0.651
+           position 0 1452.15991
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass BountyCircleIncreaseRadiusOverTime {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Circle Increase Radius Over Time"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BountyCircleRadiusPanel {
+           color 0 0 0 0.651
+           position 0 1505.7699
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BountyCircleRadiusTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Circle Radius (meters, max)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass BountyCircleRadius {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BountyCircleMinRadiusPanel {
+           color 0 0 0 0.651
+           position 0 1552.7699
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BountyCircleMinRadiusTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Circle Min Radius (meters)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass BountyCircleMinRadius {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BountyCircleColorPanel {
+           color 0 0 0 0.651
+           position 0 1599.7699
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BountyCircleColorTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Circle Color (ARGB integer)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass BountyCircleColor {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BountyCircleDrawingWidthPanel {
+           color 0 0 0 0.651
+           position 0 1646.7699
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BountyCircleDrawingWidthTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Circle Drawing Width (pixels)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass BountyCircleDrawingWidth {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BountyMapUpdateIntervalSecondsPanel {
+           color 0 0 0 0.651
+           position 0 1693.7699
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BountyMapUpdateIntervalSecondsTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Map Update Interval (seconds)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass BountyMapUpdateIntervalSeconds {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BountyMapRequestCooldownSecondsPanel {
+           color 0 0 0 0.651
+           position 0 1740.7699
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BountyMapRequestCooldownSecondsTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Map Request Cooldown (seconds)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass BountyMapRequestCooldownSeconds {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BountyMapSyncIntervalSecondsPanel {
+           color 0 0 0 0.651
+           position 0 1787.7699
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BountyMapSyncIntervalSecondsTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Map Sync Interval (seconds, with bounties)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass BountyMapSyncIntervalSeconds {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BountyMapSyncIntervalNoBountiesSecondsPanel {
+           color 0 0 0 0.651
+           position 0 1834.7699
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BountyMapSyncIntervalNoBountiesSecondsTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Map Sync Interval (seconds, no bounties)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass BountyMapSyncIntervalNoBountiesSeconds {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BountyCircleOffsetMinMultiplierPanel {
+           color 0 0 0 0.651
+           position 0 1881.7699
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BountyCircleOffsetMinMultiplierTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Circle Offset Min Multiplier (0.0-1.0)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass BountyCircleOffsetMinMultiplier {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BountyCircleOffsetMaxMultiplierPanel {
+           color 0 0 0 0.651
+           position 0 1928.7699
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BountyCircleOffsetMaxMultiplierTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Circle Offset Max Multiplier (0.0-1.0)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass BountyCircleOffsetMaxMultiplier {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass {
+           ignorepointer 0
+           color 0.5608 0.3725 0.749 1
+           position 0 1993.15991
+           size 1 40
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass UISettingsTitle {
+             visible 1
+             color 1 1 1 1
+             position 0 0
+             size 1 1
+             text "UI Settings"
+             font "gui/fonts/metronbook22"
+             "text offset" 5 0
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass CountdownWidgetPositionXPanel {
+           color 0 0 0 0.651
+           position 0 2033.15991
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass CountdownWidgetPositionXTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Countdown Widget Position X (pixels)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass CountdownWidgetPositionX {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass CountdownWidgetPositionYPanel {
+           color 0 0 0 0.651
+           position 0 2080.15991
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass CountdownWidgetPositionYTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Countdown Widget Position Y (pixels)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass CountdownWidgetPositionY {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass CountdownWidgetWidthPanel {
+           color 0 0 0 0.651
+           position 0 2127.15991
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass CountdownWidgetWidthTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Countdown Widget Width (0 =default, >0 =relative)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass CountdownWidgetWidth {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass CountdownWidgetHeightPanel {
+           color 0 0 0 0.651
+           position 0 2174.15991
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass CountdownWidgetHeightTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Countdown Widget Height (0 =default, >0 =relative)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass CountdownWidgetHeight {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass CountdownWidgetBackgroundColorPanel {
+           color 0 0 0 0.651
+           position 0 2221.15991
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass CountdownWidgetBackgroundColorTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Countdown Widget Background Color (ARGB int, 0 =default)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass CountdownWidgetBackgroundColor {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass CountdownWidgetTextColorPanel {
+           color 0 0 0 0.651
+           position 0 2268.15991
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass CountdownWidgetTextColorTitle {
+             position 0.0025 -0.0182
+             size 0.58753 1
+             text "Countdown Widget Text Color (ARGB int, 0 =default)"
+             font "gui/fonts/metronbook22"
+             "text valign" center
+            }
+            EditBoxWidgetClass CountdownWidgetTextColor {
+             position 0.8577 0.055
+             size 0.1323 0.85
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass NotificationsSettingsPanel {
+     visible 0
+     color 0.1176 0.1569 0.2196 0.9451
+     position 0.01 0.02
+     size 0.98 0.81
+     valign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     priority 100
+     style editor_selection
+     {
+      ScrollWidgetClass scrollNotifications {
+       visible 1
+       color 0 0.702 0.702 1
+       position 0.01 0.01
+       size 0.98 0.97415
+       style blank
+       "Scrollbar V" 1
+       {
+        PanelWidgetClass ScrollNotification {
+         visible 1
+         color 0 0 0 0.6549
+         position 0 -0.88
+         size 1 5500
+         vexactpos 1
+         vexactsize 1
+         style blank
+         {
+          PanelWidgetClass PlacedBountyNotificationsTitlePanel0 {
+           color 0.1059 0.349 0.3725 1
+           position 0 12
+           size 1 30
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlacedBountyNotificationsTitle0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.98 1
+             valign center_ref
+             text "Placed Bounty Notifications"
+             font "gui/fonts/metronbook22"
+             "bold text" 1
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountyHuntedEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 47
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass PlacedBountyHuntedEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Hunted - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountyHuntedTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 99
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlacedBountyHuntedTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass PlacedBountyHuntedTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountyHuntedMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 151
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlacedBountyHuntedMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass PlacedBountyHuntedMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountyHuntedIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 250
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlacedBountyHuntedIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass PlacedBountyHuntedIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountyExpiredEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 302
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass PlacedBountyExpiredEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Expired - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountyExpiredTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 354
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlacedBountyExpiredTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass PlacedBountyExpiredTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountyExpiredMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 406
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlacedBountyExpiredMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass PlacedBountyExpiredMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountyExpiredIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 505
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlacedBountyExpiredIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass PlacedBountyExpiredIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountySurvivalRewardEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 557
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass PlacedBountySurvivalRewardEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Survival Reward - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountySurvivalRewardTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 609
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlacedBountySurvivalRewardTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass PlacedBountySurvivalRewardTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountySurvivalRewardMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 661
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlacedBountySurvivalRewardMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass PlacedBountySurvivalRewardMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountySurvivalRewardIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 760
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlacedBountySurvivalRewardIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass PlacedBountySurvivalRewardIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountyKilledRewardEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 812
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass PlacedBountyKilledRewardEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Killed Reward - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountyKilledRewardTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 864
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlacedBountyKilledRewardTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass PlacedBountyKilledRewardTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountyKilledRewardMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 916
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlacedBountyKilledRewardMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass PlacedBountyKilledRewardMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass PlacedBountyKilledRewardIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 1015
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass PlacedBountyKilledRewardIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass PlacedBountyKilledRewardIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerNotificationsTitlePanel0 {
+           color 0.1059 0.349 0.3725 1
+           position 0 1067
+           size 1 30
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerNotificationsTitle0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.98 1
+             valign center_ref
+             text "Rule Breaker Notifications"
+             font "gui/fonts/metronbook22"
+             "bold text" 1
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerHuntedEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 1102
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass RuleBreakerHuntedEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Hunted - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerHuntedTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 1154
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerHuntedTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass RuleBreakerHuntedTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerHuntedMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 1206
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerHuntedMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass RuleBreakerHuntedMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerHuntedIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 1305
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerHuntedIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass RuleBreakerHuntedIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerHitWarningEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 1357
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass RuleBreakerHitWarningEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Hit Warning - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerHitWarningTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 1409
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerHitWarningTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass RuleBreakerHitWarningTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerHitWarningMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 1461
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerHitWarningMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass RuleBreakerHitWarningMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerHitWarningIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 1560
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerHitWarningIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass RuleBreakerHitWarningIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerExpiredEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 1612
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass RuleBreakerExpiredEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Expired - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerExpiredTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 1664
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerExpiredTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass RuleBreakerExpiredTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerExpiredMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 1716
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerExpiredMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass RuleBreakerExpiredMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerExpiredIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 1815
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerExpiredIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass RuleBreakerExpiredIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerSurvivalRewardEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 1867
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass RuleBreakerSurvivalRewardEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Survival Reward - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerSurvivalRewardTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 1919
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerSurvivalRewardTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass RuleBreakerSurvivalRewardTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerSurvivalRewardMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 1971
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerSurvivalRewardMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass RuleBreakerSurvivalRewardMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerSurvivalRewardIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 2070
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerSurvivalRewardIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass RuleBreakerSurvivalRewardIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerKilledRewardEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 2122
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass RuleBreakerKilledRewardEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Killed Reward - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerKilledRewardTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 2174
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerKilledRewardTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass RuleBreakerKilledRewardTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerKilledRewardMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 2226
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerKilledRewardMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass RuleBreakerKilledRewardMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass RuleBreakerKilledRewardIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 2325
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass RuleBreakerKilledRewardIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass RuleBreakerKilledRewardIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherNotificationsTitlePanel0 {
+           color 0.1059 0.349 0.3725 1
+           position 0 2377
+           size 1 30
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherNotificationsTitle0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.98 1
+             valign center_ref
+             text "Other Notifications"
+             font "gui/fonts/metronbook22"
+             "bold text" 1
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherInsufficientTokensEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 2412
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass OtherInsufficientTokensEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Insufficient Tokens - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass OtherInsufficientTokensTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 2464
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherInsufficientTokensTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherInsufficientTokensTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherInsufficientTokensMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 2516
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherInsufficientTokensMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass OtherInsufficientTokensMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherInsufficientTokensIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 2615
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherInsufficientTokensIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherInsufficientTokensIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherSkipBountyNoPlayersEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 2667
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass OtherSkipBountyNoPlayersEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Skip Bounty No Players - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass OtherSkipBountyNoPlayersTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 2719
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherSkipBountyNoPlayersTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherSkipBountyNoPlayersTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherSkipBountyNoPlayersMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 2771
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherSkipBountyNoPlayersMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass OtherSkipBountyNoPlayersMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherSkipBountyNoPlayersIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 2870
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherSkipBountyNoPlayersIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherSkipBountyNoPlayersIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherSkipBountySuccessEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 2922
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass OtherSkipBountySuccessEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Skip Bounty Success - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass OtherSkipBountySuccessTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 2974
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherSkipBountySuccessTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherSkipBountySuccessTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherSkipBountySuccessMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 3026
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherSkipBountySuccessMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass OtherSkipBountySuccessMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherSkipBountySuccessIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 3125
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherSkipBountySuccessIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherSkipBountySuccessIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherBountySkippedEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 3177
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass OtherBountySkippedEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Bounty Skipped - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass OtherBountySkippedTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 3229
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherBountySkippedTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherBountySkippedTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherBountySkippedMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 3281
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherBountySkippedMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass OtherBountySkippedMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherBountySkippedIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 3380
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherBountySkippedIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherBountySkippedIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherRewardHandsNotFreeEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 3432
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass OtherRewardHandsNotFreeEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Reward Hands Not Free - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass OtherRewardHandsNotFreeTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 3484
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherRewardHandsNotFreeTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherRewardHandsNotFreeTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherRewardHandsNotFreeMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 3536
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherRewardHandsNotFreeMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass OtherRewardHandsNotFreeMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherRewardHandsNotFreeIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 3635
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherRewardHandsNotFreeIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherRewardHandsNotFreeIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherPlayerOnCooldownEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 3687
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass OtherPlayerOnCooldownEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Player On Cooldown - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass OtherPlayerOnCooldownTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 3739
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherPlayerOnCooldownTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherPlayerOnCooldownTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherPlayerOnCooldownMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 3791
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherPlayerOnCooldownMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass OtherPlayerOnCooldownMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherPlayerOnCooldownIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 3890
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherPlayerOnCooldownIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherPlayerOnCooldownIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherPlayerInSafeZoneEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 3942
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass OtherPlayerInSafeZoneEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Player In SafeZone - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass OtherPlayerInSafeZoneTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 3994
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherPlayerInSafeZoneTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherPlayerInSafeZoneTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherPlayerInSafeZoneMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 4046
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherPlayerInSafeZoneMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass OtherPlayerInSafeZoneMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherPlayerInSafeZoneIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 4145
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherPlayerInSafeZoneIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherPlayerInSafeZoneIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherBountyPersistedEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 4197
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass OtherBountyPersistedEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Bounty Persisted - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass OtherBountyPersistedTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 4249
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherBountyPersistedTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherBountyPersistedTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherBountyPersistedMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 4301
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherBountyPersistedMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass OtherBountyPersistedMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherBountyPersistedIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 4400
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherBountyPersistedIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherBountyPersistedIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherTeleportedOutOfTerritoryEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 4452
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass OtherTeleportedOutOfTerritoryEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Teleported Out Of Territory - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass OtherTeleportedOutOfTerritoryTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 4504
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherTeleportedOutOfTerritoryTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherTeleportedOutOfTerritoryTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherTeleportedOutOfTerritoryMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 4556
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherTeleportedOutOfTerritoryMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass OtherTeleportedOutOfTerritoryMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherTeleportedOutOfTerritoryIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 4655
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherTeleportedOutOfTerritoryIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherTeleportedOutOfTerritoryIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherBountyPausedInTerritoryEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 4707
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass OtherBountyPausedInTerritoryEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Bounty Paused In Territory - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass OtherBountyPausedInTerritoryTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 4759
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherBountyPausedInTerritoryTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherBountyPausedInTerritoryTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherBountyPausedInTerritoryMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 4811
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherBountyPausedInTerritoryMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass OtherBountyPausedInTerritoryMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass OtherBountyPausedInTerritoryIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 4910
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass OtherBountyPausedInTerritoryIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass OtherBountyPausedInTerritoryIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass BroadcastsTitlePanel0 {
+           color 0.1059 0.349 0.3725 1
+           position 0 4962
+           size 1 30
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BroadcastsTitle0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.98 1
+             valign center_ref
+             text "Broadcasts"
+             font "gui/fonts/metronbook22"
+             "bold text" 1
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass BroadcastsPlacedBountyEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 4997
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass BroadcastsPlacedBountyEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Placed Bounty - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BroadcastsPlacedBountyTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 5049
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BroadcastsPlacedBountyTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass BroadcastsPlacedBountyTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass BroadcastsPlacedBountyMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 5101
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BroadcastsPlacedBountyMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass BroadcastsPlacedBountyMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass BroadcastsPlacedBountyIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 5200
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BroadcastsPlacedBountyIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass BroadcastsPlacedBountyIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass BroadcastsRuleBreakerEnabledPanel0 {
+           color 0 0 0 0.651
+           position 0 5252
+           size 0.5 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            CheckBoxWidgetClass BroadcastsRuleBreakerEnabled0 {
+             position 0.0025 0
+             size 0.9975 1
+             valign center_ref
+             text "Rule Breaker - Enabled"
+             font "gui/fonts/metronbook22"
+            }
+           }
+          }
+          PanelWidgetClass BroadcastsRuleBreakerTitlePanel0 {
+           color 0 0 0 0.651
+           position 0 5304
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BroadcastsRuleBreakerTitleLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Title:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass BroadcastsRuleBreakerTitle0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass BroadcastsRuleBreakerMessagePanel0 {
+           color 0 0 0 0.651
+           position 0 5356
+           size 1 94
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BroadcastsRuleBreakerMessageLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 0.3
+             text "Message:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            MultilineEditBoxWidgetClass BroadcastsRuleBreakerMessage0 {
+             position 0.22 0
+             size 0.77 0.9
+             style DayZNormal
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass BroadcastsRuleBreakerIconPathPanel0 {
+           color 0 0 0 0.651
+           position 0 5455
+           size 1 47
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BroadcastsRuleBreakerIconPathLabel0 {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.2 1
+             valign center_ref
+             text "Icon Path:"
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+            EditBoxWidgetClass BroadcastsRuleBreakerIconPath0 {
+             position 0.22 0
+             size 0.77 0.8
+             valign center_ref
+             style DefaultBorder
+             "exact text" 1
+             font "gui/fonts/metronbook22"
+             "text halign" left
+             "text valign" center
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass BlacklistSettingsPanel {
+     visible 0
+     color 0.1176 0.1569 0.2196 0.9451
+     position 0.01 0.02
+     size 0.98 0.81
+     valign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     priority 100
+     style editor_selection
+     {
+      ScrollWidgetClass scrollBlacklist {
+       visible 1
+       color 0 0.702 0.702 1
+       position 0.01 0.01
+       size 0.98 0.97415
+       style blank
+       "Scrollbar V" 1
+       {
+        PanelWidgetClass ScrollBlacklist {
+         visible 1
+         color 0 0 0 0.6549
+         position 0 -0.88
+         size 1 1000
+         vexactpos 1
+         vexactsize 1
+         style blank
+         {
+          PanelWidgetClass BlacklistTitlePanel {
+           color 0.1059 0.349 0.3725 1
+           position 0 12
+           size 1 30
+           vexactpos 1
+           vexactsize 1
+           style DayZDefaultPanel
+           {
+            TextWidgetClass BlacklistTitle {
+             visible 1
+             color 1 1 1 1
+             position 0.01 0
+             size 0.98 1
+             valign center_ref
+             text "Blacklist Management"
+             font "gui/fonts/metronbook22"
+             "bold text" 1
+             "text valign" center
+            }
+           }
+          }
+          PanelWidgetClass BlacklistPanelPlayers {
+           ignorepointer 1
+           color 0 0 0 0.651
+           position 0 47
+           size 1 0.77566
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           style DayZDefaultPanel
+           {
+            PanelWidgetClass OnlinePlayersTitlePanel {
+             color 0 0.4392 0.0784 1
+             position 0.02 14.3194
+             size 0.45 40
+             vexactpos 1
+             vexactsize 1
+             style DayZDefaultPanel
+             {
+              TextWidgetClass OnlinePlayersTitle {
+               position 0 0
+               size 1 1
+               text "Online Players"
+               font "gui/fonts/metronbook22"
+               "text halign" center
+               "text valign" center
+              }
+             }
+            }
+            TextListboxWidgetClass TextListboxWidgetOnlinePlayers {
+             color 0.1961 0.3569 0.3725 1
+             position 0.02 60
+             size 0.45 316
+             hexactpos 0
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             scaled 1
+             style Editor
+             font "gui/fonts/metronbook22"
+            }
+            ButtonWidgetClass AddToBlacklistBTN {
+             visible 1
+             color 0.1882 0.749 0.3294 1
+             position 0.2603 380
+             size 0.21003 31
+             vexactpos 1
+             vexactsize 1
+             scaled 1
+             style Editor
+             "no focus" 1
+             text "Add to Blacklist"
+             font "gui/fonts/metronbook16"
+            }
+            PanelWidgetClass BlacklistedPlayersTitlePanel {
+             color 0.1961 0.3569 0.3725 1
+             position 0.02 14.3194
+             size 0.45 40
+             halign right_ref
+             vexactpos 1
+             vexactsize 1
+             style DayZDefaultPanel
+             {
+              TextWidgetClass BlacklistedPlayersTitle {
+               position 0 0
+               size 1 1
+               text "Blacklisted Players"
+               font "gui/fonts/metronbook22"
+               "text halign" center
+               "text valign" center
+              }
+             }
+            }
+            TextListboxWidgetClass TextListboxWidgetBlacklistedPlayers {
+             color 0.1961 0.3569 0.3725 1
+             position 0.02 60
+             size 0.45 316
+             halign right_ref
+             hexactpos 0
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             scaled 1
+             style Editor
+             font "gui/fonts/metronbook22"
+            }
+            ButtonWidgetClass RemoveFromBlacklistBTN {
+             color 0.749 0.1882 0.1882 1
+             position 0.02 380
+             size 0.21003 31
+             halign right_ref
+             vexactpos 1
+             vexactsize 1
+             scaled 1
+             style Editor
+             "no focus" 1
+             text "Remove from Blacklist"
+             font "gui/fonts/metronbook16"
+            }
+            ButtonWidgetClass RefreshBlacklistPlayerListBTN {
+             visible 1
+             color 0.1882 0.3294 0.749 1
+             position 0.02 0
+             size 0.21003 0.026
+             valign center_ref
+             vexactpos 0
+             vexactsize 0
+             scaled 1
+             style Editor
+             "no focus" 1
+             text "Refresh List"
+             font "gui/fonts/metronbook16"
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+  ButtonWidgetClass BTNSaveAndReload {
+   visible 1
+   inheritalpha 1
+   color 0.102 1 0 1
+   position 0.19014 0.06626
+   size 0.16713 0.02896
+   halign right_ref
+   valign bottom_ref
+   vexactpos 0
+   style Editor
+   "no focus" 1
+   text "Save & Reload"
+   font "gui/fonts/MetronBook-Bold22"
+  }
+ }
+}

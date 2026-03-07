@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="true"?>
+<modded_inputs>
+    <inputs>
+        <actions>
+            <input name="UABountyAdminMenu" loc="Bounty Admin Menu" />
+        </actions>
+        <sorting name="NinjinsMods" loc="NinjinsMods">
+            <input name="UABountyAdminMenu" />
+        </sorting>
+    </inputs>
+    <preset>
+        <input name="UABountyAdminMenu">
+            <btn name="" />
+        </input>
+    </preset>
+</modded_inputs>

@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{CB5347312117559F}Ninjins_Bounty_System/gui/layouts/NinjinsBountyBoardImage.png"
+ Author "sean-pc"
+ ChangeDate -910150791
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "NinjinsBountyBoardImage.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}
