@@ -1028,3 +1028,118 @@ class BountyBlacklistConfig
         }
     }
 }
+const string Ninjins_Bounty_System_BOARD_CONFIG_FILE = Ninjins_Bounty_System_ROOT_FOLDER + "Config\\BountyBoardPlacements.json";
+ref BountyBoardPlacementConfig g_BountyBoardPlacementConfig;
+class BountyBoardPlacement
+{
+    ref array<float> Position;
+    ref array<float> Rotation;
+    void BountyBoardPlacement()
+    {
+        Position = new array<float>;
+        Position.Insert(0.0);
+        Position.Insert(0.0);
+        Position.Insert(0.0);
+        Rotation = new array<float>;
+        Rotation.Insert(0.0);
+        Rotation.Insert(0.0);
+        Rotation.Insert(0.0);
+    }
+}
+class BountyBoardPlacementConfig
+{
+    int VersionID;
+    ref array<ref BountyBoardPlacement> BoardPlacements;
+    void BountyBoardPlacementConfig()
+    {
+        VersionID = 1;
+        BoardPlacements = new array<ref BountyBoardPlacement>;
+        BoardPlacements.Insert(new BountyBoardPlacement());
+    }
+    void SaveConfig()
+    {
+        if (IsMissionClient())
+        {
+            return;
+        }
+        BountyConfig.CheckDirectories();
+        JsonFileLoader<BountyBoardPlacementConfig>.JsonSaveFile(Ninjins_Bounty_System_BOARD_CONFIG_FILE, this);
+    }
+    void ValidateConfig()
+    {
+        int i;
+        BountyBoardPlacement placement;
+        if (VersionID <= 0)
+        {
+            VersionID = 1;
+        }
+        if (!BoardPlacements)
+        {
+            BoardPlacements = new array<ref BountyBoardPlacement>;
+        }
+        for (i = 0; i < BoardPlacements.Count(); i++)
+        {
+            placement = BoardPlacements.Get(i);
+            if (!placement)
+            {
+                placement = new BountyBoardPlacement();
+                BoardPlacements.Set(i, placement);
+            }
+            while (placement.Position.Count() < 3)
+            {
+                placement.Position.Insert(0.0);
+            }
+            while (placement.Rotation.Count() < 3)
+            {
+                placement.Rotation.Insert(0.0);
+            }
+        }
+    }
+    static BountyBoardPlacementConfig LoadConfig()
+    {
+        BountyBoardPlacementConfig config;
+        if (IsMissionClient())
+        {
+            return null;
+        }
+        BountyConfig.CheckDirectories();
+        config = new BountyBoardPlacementConfig();
+        if (FileExist(Ninjins_Bounty_System_BOARD_CONFIG_FILE))
+        {
+            JsonFileLoader<BountyBoardPlacementConfig>.JsonLoadFile(Ninjins_Bounty_System_BOARD_CONFIG_FILE, config);
+            GetNinjins_Bounty_SystemLogger().LogInfo("BountyBoardPlacements.json loaded from file.");
+        }
+        else
+        {
+            GetNinjins_Bounty_SystemLogger().LogInfo("BountyBoardPlacements.json not found. Creating default board placement config.");
+        }
+        config.ValidateConfig();
+        config.SaveConfig();
+        LogConfig(config, false);
+        return config;
+    }
+    static void LogConfig(BountyBoardPlacementConfig config, bool isReload)
+    {
+        string prefix;
+        int i;
+        BountyBoardPlacement placement;
+        prefix = "[BountyBoardPlacementConfig]";
+        if (isReload)
+        {
+            prefix = "[Reload][BountyBoardPlacementConfig]";
+        }
+        if (!config)
+            return;
+        GetNinjins_Bounty_SystemLogger().LogInfo(prefix + " ========================================");
+        GetNinjins_Bounty_SystemLogger().LogInfo(prefix + " VersionID: " + config.VersionID.ToString());
+        GetNinjins_Bounty_SystemLogger().LogInfo(prefix + " BoardPlacements Count: " + config.BoardPlacements.Count().ToString());
+        for (i = 0; i < config.BoardPlacements.Count(); i++)
+        {
+            placement = config.BoardPlacements.Get(i);
+            if (!placement)
+                continue;
+            GetNinjins_Bounty_SystemLogger().LogInfo(prefix + "   Board[" + i.ToString() + "] Position: [" + placement.Position.Get(0).ToString() + ", " + placement.Position.Get(1).ToString() + ", " + placement.Position.Get(2).ToString() + "] Rotation: [" + placement.Rotation.Get(0).ToString() + ", " + placement.Rotation.Get(1).ToString() + ", " + placement.Rotation.Get(2).ToString() + "]");
+        }
+        GetNinjins_Bounty_SystemLogger().LogInfo(prefix + " ========================================");
+    }
+}

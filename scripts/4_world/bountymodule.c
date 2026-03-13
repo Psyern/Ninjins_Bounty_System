@@ -1,16 +1,25 @@
 [CF_RegisterModule(BountyModule)]
 class BountyModule : CF_ModuleWorld
 {
+    static BountyModule s_Instance;
     ref BountyManager m_BountyManager;
     ref BountyAdminConfig m_BountyAdminConfig;
     ref BountyBlacklistConfig m_BountyBlacklistConfig;
+    ref BountyBoardPlacementConfig m_BountyBoardPlacementConfig;
+    ref array<Object> m_ConfigSpawnedBountyBoards;
     override void OnInit()
     {
         super.OnInit();
+        s_Instance = this;
+        m_ConfigSpawnedBountyBoards = new array<Object>();
         EnableInvokeConnect();
         EnableUpdate();
         EnableMissionStart();
         GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Module initialized");
+    }
+    static BountyModule GetInstance()
+    {
+        return s_Instance;
     }
     override void OnMissionStart(Class sender, CF_EventArgs args)
     {
@@ -42,6 +51,8 @@ class BountyModule : CF_ModuleWorld
         {
             GetNinjins_Bounty_SystemLogger().LogError("Failed to load BountySuccessRewardConfig!");
         }
+        InitBountyBoardPlacementConfig();
+        SpawnConfiguredBountyBoards();
         m_BountyManager = BountyManager.GetInstance();
         GetRPCManager().AddRPC("Ninjins_Bounty_System", "RequestBountiedPlayers", this, SingleplayerExecutionType.Server);
         GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyAdminAction", this, SingleplayerExecutionType.Server);
@@ -71,6 +82,89 @@ class BountyModule : CF_ModuleWorld
         {
             GetNinjins_Bounty_SystemLogger().LogError("[ERROR] Failed to load BountyBlacklistConfig.");
         }
+    }
+    void InitBountyBoardPlacementConfig()
+    {
+        m_BountyBoardPlacementConfig = BountyBoardPlacementConfig.LoadConfig();
+        g_BountyBoardPlacementConfig = m_BountyBoardPlacementConfig;
+        if (!m_BountyBoardPlacementConfig)
+        {
+            GetNinjins_Bounty_SystemLogger().LogError("[ERROR] Failed to load BountyBoardPlacementConfig.");
+        }
+    }
+    vector BuildBoardVector(array<float> values)
+    {
+        string vectorString = "0 0 0";
+        if (values && values.Count() >= 3)
+        {
+            vectorString = values.Get(0).ToString() + " " + values.Get(1).ToString() + " " + values.Get(2).ToString();
+        }
+        return vectorString;
+    }
+    bool IsPlaceholderBoardPlacement(BountyBoardPlacement placement)
+    {
+        if (!placement || !placement.Position || placement.Position.Count() < 3)
+            return true;
+        return placement.Position.Get(0) == 0.0 && placement.Position.Get(1) == 0.0 && placement.Position.Get(2) == 0.0;
+    }
+    void ClearConfiguredBountyBoards()
+    {
+        int i;
+        Object boardObject;
+        if (!m_ConfigSpawnedBountyBoards)
+            return;
+        for (i = m_ConfigSpawnedBountyBoards.Count() - 1; i >= 0; i--)
+        {
+            boardObject = m_ConfigSpawnedBountyBoards.Get(i);
+            if (boardObject)
+            {
+                g_Game.ObjectDelete(boardObject);
+            }
+            m_ConfigSpawnedBountyBoards.Remove(i);
+        }
+    }
+    void SpawnConfiguredBountyBoards()
+    {
+        int i;
+        BountyBoardPlacement placement;
+        vector boardPosition;
+        vector boardRotation;
+        Object boardObject;
+        if (!IsMissionHost())
+            return;
+        if (!m_ConfigSpawnedBountyBoards)
+        {
+            m_ConfigSpawnedBountyBoards = new array<Object>();
+        }
+        ClearConfiguredBountyBoards();
+        if (!g_BountyBoardPlacementConfig || !g_BountyBoardPlacementConfig.BoardPlacements)
+        {
+            GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] No board placement config loaded - skipping configured board spawn.");
+            return;
+        }
+        for (i = 0; i < g_BountyBoardPlacementConfig.BoardPlacements.Count(); i++)
+        {
+            placement = g_BountyBoardPlacementConfig.BoardPlacements.Get(i);
+            if (!placement)
+                continue;
+            if (IsPlaceholderBoardPlacement(placement))
+            {
+                GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Skipping placeholder board placement entry at index " + i.ToString());
+                continue;
+            }
+            boardPosition = BuildBoardVector(placement.Position);
+            boardRotation = BuildBoardVector(placement.Rotation);
+            boardObject = GetGame().CreateObjectEx("Ninjins_Bounty_Board_Static", boardPosition, ECE_PLACE_ON_SURFACE);
+            if (!boardObject)
+            {
+                GetNinjins_Bounty_SystemLogger().LogError("[BountyModule] Failed to spawn configured bounty board at index " + i.ToString());
+                continue;
+            }
+            boardObject.SetOrientation(boardRotation);
+            m_ConfigSpawnedBountyBoards.Insert(boardObject);
+            GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Spawned configured bounty board #" + i.ToString() + " at " + boardPosition.ToString() + " with rotation " + boardRotation.ToString());
+        }
+        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Configured bounty board spawn complete. Spawned: " + m_ConfigSpawnedBountyBoards.Count().ToString());
     }
     string BuildPlayerListEntry(string displayName, string playerId)
     {
