@@ -415,7 +415,7 @@ class BountyManager
         }
         return null;
     }
-    static bool ApplyBountyToPlayer(PlayerBase targetPlayer, PlayerBase sourcePlayer = null, float durationSeconds = 0.0, string reason = "", BountyType bountyType = BountyType.PLACED)
+    static bool ApplyBountyToPlayer(PlayerBase targetPlayer, PlayerBase sourcePlayer = null, float durationSeconds = 0.0, string reason = "", BountyType bountyType = BountyType.PLACED, bool ignoreMaxBountiedLimit = false)
     {
         PlayerIdentity targetIdentity;
         string targetName;
@@ -519,7 +519,7 @@ class BountyManager
                 targetPlayer.SetSynchDirty();
             }
         }
-        targetPlayer.SetBountyWithType(durationSeconds, bountyType, false, clearedRewardCount);
+        targetPlayer.SetBountyWithType(durationSeconds, bountyType, false, clearedRewardCount, ignoreMaxBountiedLimit);
         string sourceName = "System";
         if (sourcePlayer && sourcePlayer.GetIdentity())
         {

@@ -265,7 +265,7 @@ modded class MissionGameplay
 			if (!player.IsBountyAdmin())
 			{
 				GetNinjins_Bounty_SystemLogger().LogInfo("[ControlBountyInputs] Player is not admin. GUID: " + player.GetIdentity().GetId());
-				NotificationSystem.Create(new StringLocaliser("Access Denied"), new StringLocaliser("You do not have permission to access the bounty admin menu."), "Ninjins_Bounty_System/gui/icons/error.edds", ARGB(255, 255, 0, 0), 5.0, player.GetIdentity());
+				NotificationSystem.Create(new StringLocaliser("Access Denied"), new StringLocaliser("You do not have permission to access the bounty admin menu."), "Ninjins_Bounty_System/gui/icons/bountyerror.edds", ARGB(255, 255, 0, 0), 5.0, player.GetIdentity());
 				return;
 			}
 			GetNinjins_Bounty_SystemLogger().LogInfo("[ControlBountyInputs] Player is admin. GUID: " + player.GetIdentity().GetId() + ". Opening menu.");

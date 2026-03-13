@@ -72,6 +72,137 @@ class BountyModule : CF_ModuleWorld
             GetNinjins_Bounty_SystemLogger().LogError("[ERROR] Failed to load BountyBlacklistConfig.");
         }
     }
+    string BuildPlayerListEntry(string displayName, string playerId)
+    {
+        return displayName + "||" + playerId;
+    }
+    PlayerBase FindOnlinePlayerByIdentifier(string identifier)
+    {
+        array<Man> players = new array<Man>();
+        g_Game.GetPlayers(players);
+        int i;
+        Man man;
+        PlayerBase playerBase;
+        PlayerIdentity identity;
+        for (i = 0; i < players.Count(); i++)
+        {
+            man = players.Get(i);
+            if (!man || !man.IsAlive())
+                continue;
+            playerBase = PlayerBase.Cast(man);
+            if (!playerBase)
+                continue;
+            identity = playerBase.GetIdentity();
+            if (!identity)
+                continue;
+            if (identity.GetId() == identifier || identity.GetName() == identifier)
+                return playerBase;
+        }
+        return null;
+    }
+    int GetPlayerTokenCount(PlayerBase player, out array<ItemBase> foundTokens)
+    {
+        array<string> tokenClassNames;
+        GameInventory inventory;
+        array<EntityAI> allInventoryItems;
+        ItemBase item;
+        string itemClassName;
+        int i;
+        int j;
+        int totalTokenQuantity;
+        bool alreadyAdded;
+        float itemQuantity;
+        foundTokens = new array<ItemBase>;
+        if (!player)
+            return 0;
+        totalTokenQuantity = 0;
+        if (g_BountyConfig && g_BountyConfig.Core && g_BountyConfig.Core.BountyTokenClassNames)
+        {
+            tokenClassNames = g_BountyConfig.Core.BountyTokenClassNames;
+        }
+        else
+        {
+            tokenClassNames = new array<string>;
+            tokenClassNames.Insert("Ninjins_Bounty_Token_Gold");
+            tokenClassNames.Insert("Ninjins_Bounty_Token_Red");
+            tokenClassNames.Insert("Ninjins_Bounty_Token_Silver");
+        }
+        inventory = player.GetInventory();
+        if (!inventory)
+            return 0;
+        allInventoryItems = new array<EntityAI>;
+        inventory.EnumerateInventory(InventoryTraversalType.PREORDER, allInventoryItems);
+        for (i = 0; i < allInventoryItems.Count(); i++)
+        {
+            item = ItemBase.Cast(allInventoryItems.Get(i));
+            if (!item)
+                continue;
+            itemClassName = item.GetType();
+            for (j = 0; j < tokenClassNames.Count(); j++)
+            {
+                if (itemClassName == tokenClassNames.Get(j))
+                {
+                    alreadyAdded = false;
+                    for (int existingIndex = 0; existingIndex < foundTokens.Count(); existingIndex++)
+                    {
+                        if (foundTokens.Get(existingIndex) == item)
+                        {
+                            alreadyAdded = true;
+                            break;
+                        }
+                    }
+                    if (!alreadyAdded)
+                    {
+                        foundTokens.Insert(item);
+                        itemQuantity = item.GetQuantity();
+                        if (itemQuantity < 1.0)
+                            itemQuantity = 1.0;
+                        totalTokenQuantity = totalTokenQuantity + Math.Round(itemQuantity);
+                    }
+                    break;
+                }
+            }
+        }
+        return totalTokenQuantity;
+    }
+    bool ConsumePlayerTokens(PlayerBase player, int tokensRequired, out int tokensRemoved)
+    {
+        array<ItemBase> foundTokens;
+        ItemBase item;
+        int j;
+        float itemQuantity;
+        int stackQuantity;
+        int neededFromStack;
+        tokensRemoved = 0;
+        if (tokensRequired <= 0)
+            return true;
+        if (GetPlayerTokenCount(player, foundTokens) < tokensRequired)
+            return false;
+        for (j = 0; j < foundTokens.Count() && tokensRemoved < tokensRequired; j++)
+        {
+            item = foundTokens.Get(j);
+            if (!item)
+                continue;
+            itemQuantity = item.GetQuantity();
+            if (itemQuantity < 1.0)
+                itemQuantity = 1.0;
+            stackQuantity = Math.Round(itemQuantity);
+            neededFromStack = tokensRequired - tokensRemoved;
+            if (neededFromStack > stackQuantity)
+                neededFromStack = stackQuantity;
+            if (neededFromStack >= stackQuantity)
+            {
+                g_Game.ObjectDelete(item);
+                tokensRemoved = tokensRemoved + stackQuantity;
+            }
+            else
+            {
+                item.AddQuantity(-neededFromStack);
+                tokensRemoved = tokensRemoved + neededFromStack;
+            }
+        }
+        return tokensRemoved >= tokensRequired;
+    }
     override void OnInvokeConnect(Class sender, CF_EventArgs args)
     {
         super.OnInvokeConnect(sender, args);
@@ -345,26 +476,7 @@ class BountyModule : CF_ModuleWorld
             targetPlayerName.Replace("ApplyTestRuleBreakerBounty:", "");
             if (targetPlayerName != "")
             {
-                players = new array<Man>();
-                g_Game.GetPlayers(players);
-                targetPlayer = null;
-                for (i = 0; i < players.Count(); i++)
-                {
-                    man = players.Get(i);
-                    if (man && man.IsAlive())
-                    {
-                        playerBase = PlayerBase.Cast(man);
-                        if (playerBase)
-                        {
-                            identity = playerBase.GetIdentity();
-                            if (identity && identity.GetName() == targetPlayerName)
-                            {
-                                targetPlayer = playerBase;
-                                break;
-                            }
-                        }
-                    }
-                }
+                targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
                 if (targetPlayer)
                 {
                     success = BountyManager.ApplyBountyToPlayer(targetPlayer, player, 0.0, "Admin test rule breaker bounty", BountyType.RULE_BREAKER);
@@ -393,26 +505,7 @@ class BountyModule : CF_ModuleWorld
             targetPlayerName.Replace("AddBountySelectedPlayer:", "");
             if (targetPlayerName != "")
             {
-                players = new array<Man>();
-                g_Game.GetPlayers(players);
-                targetPlayer = null;
-                for (i = 0; i < players.Count(); i++)
-                {
-                    man = players.Get(i);
-                    if (man && man.IsAlive())
-                    {
-                        playerBase = PlayerBase.Cast(man);
-                        if (playerBase)
-                        {
-                            identity = playerBase.GetIdentity();
-                            if (identity && identity.GetName() == targetPlayerName)
-                            {
-                                targetPlayer = playerBase;
-                                break;
-                            }
-                        }
-                    }
-                }
+                targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
                 if (targetPlayer)
                 {
                     success = BountyManager.ApplyBountyToPlayer(targetPlayer, player, 0.0, "Admin placed bounty", BountyType.PLACED);
@@ -449,26 +542,7 @@ class BountyModule : CF_ModuleWorld
             targetPlayerName.Replace("ClearBountySelectedPlayer:", "");
             if (targetPlayerName != "")
             {
-                players = new array<Man>();
-                g_Game.GetPlayers(players);
-                targetPlayer = null;
-                for (i = 0; i < players.Count(); i++)
-                {
-                    man = players.Get(i);
-                    if (man && man.IsAlive())
-                    {
-                        playerBase = PlayerBase.Cast(man);
-                        if (playerBase)
-                        {
-                            identity = playerBase.GetIdentity();
-                            if (identity && identity.GetName() == targetPlayerName)
-                            {
-                                targetPlayer = playerBase;
-                                break;
-                            }
-                        }
-                    }
-                }
+                targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
                 if (targetPlayer)
                 {
                     success = BountyManager.ClearBountyFromPlayer(targetPlayer, player, "Admin cleared selected player");
@@ -502,26 +576,7 @@ class BountyModule : CF_ModuleWorld
             targetPlayerName.Replace("ClearAllCooldowns:", "");
             if (targetPlayerName != "")
             {
-                players = new array<Man>();
-                g_Game.GetPlayers(players);
-                targetPlayer = null;
-                for (i = 0; i < players.Count(); i++)
-                {
-                    man = players.Get(i);
-                    if (man && man.IsAlive())
-                    {
-                        playerBase = PlayerBase.Cast(man);
-                        if (playerBase)
-                        {
-                            identity = playerBase.GetIdentity();
-                            if (identity && identity.GetName() == targetPlayerName)
-                            {
-                                targetPlayer = playerBase;
-                                break;
-                            }
-                        }
-                    }
-                }
+                targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
                 if (targetPlayer)
                 {
                     if (targetPlayer.IsBountyOnCooldown())
@@ -577,26 +632,7 @@ class BountyModule : CF_ModuleWorld
             targetPlayerName.Replace("ClearPlayerCooldown:", "");
             if (targetPlayerName != "")
             {
-                players = new array<Man>();
-                g_Game.GetPlayers(players);
-                targetPlayer = null;
-                for (i = 0; i < players.Count(); i++)
-                {
-                    man = players.Get(i);
-                    if (man && man.IsAlive())
-                    {
-                        playerBase = PlayerBase.Cast(man);
-                        if (playerBase)
-                        {
-                            identity = playerBase.GetIdentity();
-                            if (identity && identity.GetName() == targetPlayerName)
-                            {
-                                targetPlayer = playerBase;
-                                break;
-                            }
-                        }
-                    }
-                }
+                targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
                 if (targetPlayer)
                 {
                     if (targetPlayer.IsBountyOnCooldown())
@@ -621,48 +657,15 @@ class BountyModule : CF_ModuleWorld
             targetPlayerName.Replace("AddRewardPoint:", "");
             if (targetPlayerName != "")
             {
-                actualPlayerName = targetPlayerName;
-                cdIndex = targetPlayerName.IndexOf(" CD:");
-                if (cdIndex >= 0)
-                {
-                    actualPlayerName = targetPlayerName.Substring(0, cdIndex);
-                }
-                else
-                {
-                    noCooldownIndex = targetPlayerName.IndexOf(" (No Cooldown)");
-                    if (noCooldownIndex >= 0)
-                    {
-                        actualPlayerName = targetPlayerName.Substring(0, noCooldownIndex);
-                    }
-                }
-                players = new array<Man>();
-                g_Game.GetPlayers(players);
-                targetPlayer = null;
-                for (i = 0; i < players.Count(); i++)
-                {
-                    man = players.Get(i);
-                    if (man && man.IsAlive())
-                    {
-                        playerBase = PlayerBase.Cast(man);
-                        if (playerBase)
-                        {
-                            identity = playerBase.GetIdentity();
-                            if (identity && identity.GetName() == actualPlayerName)
-                            {
-                                targetPlayer = playerBase;
-                                break;
-                            }
-                        }
-                    }
-                }
+                targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
                 if (targetPlayer)
                 {
                     targetPlayer.AddPendingSuccessReward(1);
-                    GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Added reward point to " + actualPlayerName + " by admin " + sender.GetName() + " (total pending: " + targetPlayer.GetTotalPendingRewardCount().ToString() + ")");
+                    GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Added reward point to " + targetPlayer.GetIdentity().GetName() + " by admin " + sender.GetName() + " (total pending: " + targetPlayer.GetTotalPendingRewardCount().ToString() + ")");
                 }
                 else
                 {
-                    GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] Player " + actualPlayerName + " not found or not online");
+                    GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
                 }
             }
             else
@@ -676,55 +679,22 @@ class BountyModule : CF_ModuleWorld
             targetPlayerName.Replace("RemoveRewardPoint:", "");
             if (targetPlayerName != "")
             {
-                actualPlayerName = targetPlayerName;
-                cdIndex = targetPlayerName.IndexOf(" CD:");
-                if (cdIndex >= 0)
-                {
-                    actualPlayerName = targetPlayerName.Substring(0, cdIndex);
-                }
-                else
-                {
-                    noCooldownIndex = targetPlayerName.IndexOf(" (No Cooldown)");
-                    if (noCooldownIndex >= 0)
-                    {
-                        actualPlayerName = targetPlayerName.Substring(0, noCooldownIndex);
-                    }
-                }
-                players = new array<Man>();
-                g_Game.GetPlayers(players);
-                targetPlayer = null;
-                for (i = 0; i < players.Count(); i++)
-                {
-                    man = players.Get(i);
-                    if (man && man.IsAlive())
-                    {
-                        playerBase = PlayerBase.Cast(man);
-                        if (playerBase)
-                        {
-                            identity = playerBase.GetIdentity();
-                            if (identity && identity.GetName() == actualPlayerName)
-                            {
-                                targetPlayer = playerBase;
-                                break;
-                            }
-                        }
-                    }
-                }
+                targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
                 if (targetPlayer)
                 {
                     if (targetPlayer.HasPendingRewards())
                     {
                         targetPlayer.RemovePendingSuccessReward(1);
-                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Removed success reward point from " + actualPlayerName + " by admin " + sender.GetName() + " (remaining: " + targetPlayer.GetTotalPendingRewardCount().ToString() + ")");
+                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Removed success reward point from " + targetPlayer.GetIdentity().GetName() + " by admin " + sender.GetName() + " (remaining: " + targetPlayer.GetTotalPendingRewardCount().ToString() + ")");
                     }
                     else
                     {
-                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Player " + actualPlayerName + " has no pending rewards to remove");
+                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Player " + targetPlayer.GetIdentity().GetName() + " has no pending rewards to remove");
                     }
                 }
                 else
                 {
-                    GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] Player " + actualPlayerName + " not found or not online");
+                    GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
                 }
             }
             else
@@ -736,42 +706,9 @@ class BountyModule : CF_ModuleWorld
         {
             targetPlayerName = action;
             targetPlayerName.Replace("AddToBlacklist:", "");
-            actualPlayerName = targetPlayerName;
-            cdIndex = targetPlayerName.IndexOf(" CD:");
-            if (cdIndex >= 0)
+            if (targetPlayerName != "")
             {
-                actualPlayerName = targetPlayerName.Substring(0, cdIndex);
-            }
-            else
-            {
-                noCooldownIndex = targetPlayerName.IndexOf(" (No Cooldown)");
-                if (noCooldownIndex >= 0)
-                {
-                    actualPlayerName = targetPlayerName.Substring(0, noCooldownIndex);
-                }
-            }
-            if (actualPlayerName != "")
-            {
-                players = new array<Man>();
-                g_Game.GetPlayers(players);
-                targetPlayer = null;
-                for (i = 0; i < players.Count(); i++)
-                {
-                    man = players.Get(i);
-                    if (man && man.IsAlive())
-                    {
-                        playerBase = PlayerBase.Cast(man);
-                        if (playerBase)
-                        {
-                            identity = playerBase.GetIdentity();
-                            if (identity && identity.GetName() == actualPlayerName)
-                            {
-                                targetPlayer = playerBase;
-                                break;
-                            }
-                        }
-                    }
-                }
+                targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
                 if (targetPlayer && targetPlayer.GetIdentity())
                 {
                     playerGUID = targetPlayer.GetIdentity().GetId();
@@ -1169,6 +1106,7 @@ class BountyModule : CF_ModuleWorld
         }
         bool success;
         string targetPlayerName = "";
+        string targetPlayerIdentifier = "";
         PlayerBase targetPlayer = null;
         int i;
         Man man;
@@ -1270,103 +1208,13 @@ class BountyModule : CF_ModuleWorld
             }
             if (tokensRequired > 0)
             {
-                foundTokens = new array<ItemBase>;
-                item = null;
-                j = 0;
-                k = 0;
-                alreadyAdded = false;
-                if (g_BountyConfig && g_BountyConfig.Core && g_BountyConfig.Core.BountyTokenClassNames)
-                {
-                    tokenClassNames = g_BountyConfig.Core.BountyTokenClassNames;
-                }
-                else
-                {
-                    tokenClassNames = new array<string>;
-                    tokenClassNames.Insert("Ninjins_Bounty_Token_Gold");
-                    tokenClassNames.Insert("Ninjins_Bounty_Token_Red");
-                    tokenClassNames.Insert("Ninjins_Bounty_Token_Silver");
-                }
-                inventory = player.GetInventory();
-                if (inventory)
-                {
-                    allInventoryItems = new array<EntityAI>;
-                    inventory.EnumerateInventory(InventoryTraversalType.PREORDER, allInventoryItems);
-                    for (j = 0; j < allInventoryItems.Count(); j++)
-                    {
-                        item = ItemBase.Cast(allInventoryItems.Get(j));
-                        if (item)
-                        {
-                            itemClassName = item.GetType();
-                            for (k = 0; k < tokenClassNames.Count(); k++)
-                            {
-                                if (itemClassName == tokenClassNames.Get(k))
-                                {
-                                    alreadyAdded = false;
-                                    for (m = 0; m < foundTokens.Count(); m++)
-                                    {
-                                        if (foundTokens.Get(m) == item)
-                                        {
-                                            alreadyAdded = true;
-                                            break;
-                                        }
-                                    }
-                                    if (!alreadyAdded)
-                                    {
-                                        foundTokens.Insert(item);
-                                        itemQuantity = item.GetQuantity();
-                                        if (itemQuantity < 1.0)
-                                        {
-                                            itemQuantity = 1.0; 
-                                        }
-                                        totalTokenQuantity = totalTokenQuantity + Math.Round(itemQuantity);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
+                totalTokenQuantity = GetPlayerTokenCount(player, foundTokens);
                 if (totalTokenQuantity < tokensRequired)
                 {
                     GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to skip bounty but doesn't have enough tokens. Required: " + tokensRequired.ToString() + ", Found: " + totalTokenQuantity.ToString());
                     BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_INSUFFICIENT_TOKENS, sender, "", "", 0.0, 0, 0, 0, tokensRequired, totalTokenQuantity);
                     return;
                 }
-                tokensRemoved = 0;
-                for (j = 0; j < foundTokens.Count() && tokensRemoved < tokensRequired; j++)
-                {
-                    item = foundTokens.Get(j);
-                    if (item)
-                    {
-                        itemQuantity = item.GetQuantity();
-                        if (itemQuantity < 1.0)
-                        {
-                            itemQuantity = 1.0; 
-                        }
-                        stackQuantity = Math.Round(itemQuantity);
-                        neededFromStack = tokensRequired - tokensRemoved;
-                        if (neededFromStack > stackQuantity)
-                        {
-                            neededFromStack = stackQuantity; 
-                        }
-                        if (neededFromStack >= stackQuantity)
-                        {
-                            g_Game.ObjectDelete(item);
-                            tokensRemoved = tokensRemoved + stackQuantity;
-                        }
-                        else
-                        {
-                            item.AddQuantity(-neededFromStack);
-                            tokensRemoved = tokensRemoved + neededFromStack;
-                        }
-                    }
-                }
-                if (tokensRemoved < tokensRequired)
-                {
-                    GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Failed to remove all required tokens. Required: " + tokensRequired.ToString() + ", Removed: " + tokensRemoved.ToString());
-                    return;
-                }
-                GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Removed " + tokensRemoved.ToString() + " tokens from player " + sender.GetName());
             }
             randomIndex = Math.RandomInt(0, availablePlayers.Count());
             targetPlayer = availablePlayers.Get(randomIndex);
@@ -1377,10 +1225,22 @@ class BountyModule : CF_ModuleWorld
             }
             targetPlayerName = targetPlayer.GetIdentity().GetName();
             BountyManager.ClearBountyFromPlayer(player, player, "Skipped - transferred to " + targetPlayerName, true);
-            BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_BOUNTY_SKIPPED, sender);
-            success = BountyManager.ApplyBountyToPlayer(targetPlayer, player, newDuration, "Transferred from " + skippingPlayerName + " (skipped)", bountyType);
+            success = BountyManager.ApplyBountyToPlayer(targetPlayer, player, newDuration, "Transferred from " + skippingPlayerName + " (skipped)", bountyType, true);
             if (success)
             {
+                if (tokensRequired > 0)
+                {
+                    tokensRemoved = ConsumePlayerTokens(player, tokensRequired, totalTokenQuantity);
+                    if (tokensRemoved < tokensRequired)
+                    {
+                        GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Failed to remove all required skip tokens after transfer. Required: " + tokensRequired.ToString() + ", Removed: " + tokensRemoved.ToString());
+                        BountyManager.ClearBountyFromPlayer(targetPlayer, player, "Skip token rollback", true);
+                        BountyManager.ApplyBountyToPlayer(player, player, newDuration, "Skip token rollback", bountyType, true);
+                        return;
+                    }
+                    GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Removed " + tokensRemoved.ToString() + " tokens from player " + sender.GetName());
+                }
+                BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_BOUNTY_SKIPPED, sender);
                 GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Transferred bounty from " + skippingPlayerName + " to " + targetPlayerName + " (skip action). New Duration: " + newDuration.ToString() + "s, BountyType: " + bountyType.ToString());
                 BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_SKIP_SUCCESS, sender, targetPlayerName);
             }
@@ -1399,137 +1259,22 @@ class BountyModule : CF_ModuleWorld
             }
             if (tokensRequired > 0)
             {
-                foundTokens = new array<ItemBase>;
-                item = null;
-                j = 0;
-                k = 0;
-                alreadyAdded = false;
-                if (g_BountyConfig && g_BountyConfig.Core && g_BountyConfig.Core.BountyTokenClassNames)
-                {
-                    tokenClassNames = g_BountyConfig.Core.BountyTokenClassNames;
-                }
-                else
-                {
-                    tokenClassNames = new array<string>;
-                    tokenClassNames.Insert("Ninjins_Bounty_Token_Gold");
-                    tokenClassNames.Insert("Ninjins_Bounty_Token_Red");
-                    tokenClassNames.Insert("Ninjins_Bounty_Token_Silver");
-                }
-                inventory = player.GetInventory();
-                if (inventory)
-                {
-                    allInventoryItems = new array<EntityAI>;
-                    inventory.EnumerateInventory(InventoryTraversalType.PREORDER, allInventoryItems);
-                    totalTokenQuantity = 0;
-                    for (j = 0; j < allInventoryItems.Count(); j++)
-                    {
-                        item = ItemBase.Cast(allInventoryItems.Get(j));
-                        if (item)
-                        {
-                            itemClassName = item.GetType();
-                            for (k = 0; k < tokenClassNames.Count(); k++)
-                            {
-                                if (itemClassName == tokenClassNames.Get(k))
-                                {
-                                    alreadyAdded = false;
-                                    for (m = 0; m < foundTokens.Count(); m++)
-                                    {
-                                        if (foundTokens.Get(m) == item)
-                                        {
-                                            alreadyAdded = true;
-                                            break;
-                                        }
-                                    }
-                                    if (!alreadyAdded)
-                                    {
-                                        foundTokens.Insert(item);
-                                        itemQuantity = item.GetQuantity();
-                                        if (itemQuantity < 1.0)
-                                        {
-                                            itemQuantity = 1.0; 
-                                        }
-                                        totalTokenQuantity = totalTokenQuantity + Math.Round(itemQuantity);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
+                totalTokenQuantity = GetPlayerTokenCount(player, foundTokens);
                 if (totalTokenQuantity < tokensRequired)
                 {
                     GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to place bounty but doesn't have enough tokens. Required: " + tokensRequired.ToString() + ", Found: " + totalTokenQuantity.ToString());
                     BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_INSUFFICIENT_TOKENS, sender, "", "", 0.0, 0, 0, 0, tokensRequired, totalTokenQuantity);
                     return;
                 }
-                tokensRemoved = 0;
-                for (j = 0; j < foundTokens.Count() && tokensRemoved < tokensRequired; j++)
-                {
-                    item = foundTokens.Get(j);
-                    if (item)
-                    {
-                        itemQuantity = item.GetQuantity();
-                        if (itemQuantity < 1.0)
-                        {
-                            itemQuantity = 1.0; 
-                        }
-                        stackQuantity = Math.Round(itemQuantity);
-                        neededFromStack = tokensRequired - tokensRemoved;
-                        if (neededFromStack > stackQuantity)
-                        {
-                            neededFromStack = stackQuantity; 
-                        }
-                        if (neededFromStack >= stackQuantity)
-                        {
-                            g_Game.ObjectDelete(item);
-                            tokensRemoved = tokensRemoved + stackQuantity;
-                        }
-                        else
-                        {
-                            item.AddQuantity(-neededFromStack);
-                            tokensRemoved = tokensRemoved + neededFromStack;
-                        }
-                    }
-                }
-                if (tokensRemoved < tokensRequired)
-                {
-                    GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Failed to remove all required tokens. Required: " + tokensRequired.ToString() + ", Removed: " + tokensRemoved.ToString());
-                    return;
-                }
-                GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Removed " + tokensRemoved.ToString() + " tokens from player " + sender.GetName() + " for placing bounty");
             }
-            targetPlayerName = action;
-            targetPlayerName.Replace("PlaceBountyOnPlayer:", "");
-            actualPlayerName = targetPlayerName;
-            cdIndex = targetPlayerName.IndexOf(" CD:");
-            if (cdIndex >= 0)
+            targetPlayerIdentifier = action;
+            targetPlayerIdentifier.Replace("PlaceBountyOnPlayer:", "");
+            if (targetPlayerIdentifier != "")
             {
-                actualPlayerName = targetPlayerName.Substring(0, cdIndex);
-            }
-            if (actualPlayerName != "")
-            {
-                players = new array<Man>();
-                g_Game.GetPlayers(players);
-                targetPlayer = null;
-                for (i = 0; i < players.Count(); i++)
-                {
-                    man = players.Get(i);
-                    if (man && man.IsAlive())
-                    {
-                        playerBase = PlayerBase.Cast(man);
-                        if (playerBase)
-                        {
-                            identity = playerBase.GetIdentity();
-                            if (identity && identity.GetName() == actualPlayerName)
-                            {
-                                targetPlayer = playerBase;
-                                break;
-                            }
-                        }
-                    }
-                }
+                targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerIdentifier);
                 if (targetPlayer)
                 {
+                    actualPlayerName = targetPlayer.GetIdentity().GetName();
                     if (targetPlayer.IsBountyOnCooldown())
                     {
                         float cooldownRemaining = targetPlayer.GetBountyCooldownRemaining();
@@ -1541,6 +1286,17 @@ class BountyModule : CF_ModuleWorld
                     success = BountyManager.ApplyBountyToPlayer(targetPlayer, player, 0.0, "Bounty placed by " + sender.GetName() + " via bounty board", BountyType.PLACED);
                     if (success)
                     {
+                        if (tokensRequired > 0)
+                        {
+                            tokensRemoved = ConsumePlayerTokens(player, tokensRequired, totalTokenQuantity);
+                            if (tokensRemoved < tokensRequired)
+                            {
+                                GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Failed to remove all required placement tokens after applying bounty. Required: " + tokensRequired.ToString() + ", Removed: " + tokensRemoved.ToString());
+                                BountyManager.ClearBountyFromPlayer(targetPlayer, player, "Placement token rollback", true);
+                                return;
+                            }
+                            GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Removed " + tokensRemoved.ToString() + " tokens from player " + sender.GetName() + " for placing bounty");
+                        }
                         GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Placed bounty on " + actualPlayerName + " by " + sender.GetName());
                     }
                     else
@@ -1676,6 +1432,7 @@ class BountyModule : CF_ModuleWorld
         PlayerIdentity identity;
         string playerName;
         string displayName;
+        string playerId;
         float cooldownRemaining;
         int cooldownSeconds;
         string formattedCooldown;
@@ -1706,6 +1463,7 @@ class BountyModule : CF_ModuleWorld
             if (!identity)
                 continue;
             playerName = identity.GetName();
+            playerId = identity.GetId();
             if (playerName == "")
                 continue;
             if (excludeSelf && playerName == requestingPlayerName)
@@ -1721,7 +1479,7 @@ class BountyModule : CF_ModuleWorld
                 formattedCooldown = FormatCooldownTime(cooldownSeconds);
                 displayName = playerName + " CD:" + formattedCooldown;
             }
-            playerList.Insert(displayName);
+            playerList.Insert(BuildPlayerListEntry(displayName, playerId));
         }
         result = new Param1<array<string>>(playerList);
         GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyReceiveOnlinePlayers", result, true, sender);
@@ -1738,6 +1496,7 @@ class BountyModule : CF_ModuleWorld
         PlayerIdentity identity;
         string playerName;
         string displayName;
+        string playerId;
         float cooldownRemaining;
         int cooldownSeconds;
         string formattedCooldown;
@@ -1769,6 +1528,7 @@ class BountyModule : CF_ModuleWorld
             if (!identity)
                 continue;
             playerName = identity.GetName();
+            playerId = identity.GetId();
             if (playerName == "")
                 continue;
             displayName = playerName;
@@ -1783,7 +1543,7 @@ class BountyModule : CF_ModuleWorld
             {
                 displayName = playerName + " (No Cooldown)";
             }
-            playerList.Insert(displayName);
+            playerList.Insert(BuildPlayerListEntry(displayName, playerId));
         }
         result = new Param1<array<string>>(playerList);
         GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminReceivePlayers", result, true, sender);

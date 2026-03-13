@@ -12,6 +12,7 @@ class BountyAdminMenu extends UIScriptedMenu
     private ButtonWidget m_BtnRemoveRewardPoint;
     private TextListboxWidget m_PlayersList;
     private ref BountyConfig m_CachedConfig;
+    private ref array<string> m_PlayerIdentifiers;
     private ButtonWidget m_btnNormalSettings;
     private ButtonWidget m_btnNotifications;
     private ButtonWidget m_btnBlacklist;
@@ -20,6 +21,7 @@ class BountyAdminMenu extends UIScriptedMenu
     private Widget m_BlacklistRootPanel;
     private TextListboxWidget m_OnlinePlayersList;
     private TextListboxWidget m_BlacklistedPlayersList;
+    private ref array<string> m_OnlinePlayerIdentifiers;
     private ButtonWidget m_AddToBlacklistBtn;
     private ButtonWidget m_RemoveFromBlacklistBtn;
     private ButtonWidget m_RefreshBlacklistPlayerListBtn;
@@ -158,6 +160,22 @@ class BountyAdminMenu extends UIScriptedMenu
     private EditBoxWidget m_BroadcastsRuleBreakerIconPath;
     void BountyAdminMenu()
     {
+        m_PlayerIdentifiers = new array<string>();
+        m_OnlinePlayerIdentifiers = new array<string>();
+    }
+    private string GetPlayerEntryDisplayName(string entry)
+    {
+        int separatorIndex = entry.IndexOf("||");
+        if (separatorIndex < 0)
+            return entry;
+        return entry.Substring(0, separatorIndex);
+    }
+    private string GetPlayerEntryIdentifier(string entry)
+    {
+        int separatorIndex = entry.IndexOf("||");
+        if (separatorIndex < 0 || separatorIndex >= entry.Length() - 2)
+            return entry;
+        return entry.Substring(separatorIndex + 2, entry.Length() - (separatorIndex + 2));
     }
     override Widget Init()
     {
@@ -666,16 +684,18 @@ class BountyAdminMenu extends UIScriptedMenu
             return;
         }
         m_PlayersList.ClearItems();
+        m_PlayerIdentifiers.Clear();
         if (!players)
         {
             GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] Received null players array from server!");
             return;
         }
-        foreach (string playerName : players)
+        foreach (string playerEntry : players)
         {
-            if (playerName != "")
+            if (playerEntry != "")
             {
-                m_PlayersList.AddItem(playerName, null, 0);
+                m_PlayerIdentifiers.Insert(GetPlayerEntryIdentifier(playerEntry));
+                m_PlayersList.AddItem(GetPlayerEntryDisplayName(playerEntry), null, 0);
             }
         }
         GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] Updated players list: " + players.Count().ToString() + " players");
@@ -716,9 +736,7 @@ class BountyAdminMenu extends UIScriptedMenu
         }
         int selectedRow;
         string selectedPlayerName;
-        string actualPlayerName;
-        int cdIndex;
-        int noCooldownIndex;
+        string selectedPlayerIdentifier;
         int row;
         string entry;
         PlayerBase player;
@@ -732,25 +750,13 @@ class BountyAdminMenu extends UIScriptedMenu
                 selectedRow = m_PlayersList.GetSelectedRow();
                 if (selectedRow >= 0)
                 {
+                    if (selectedRow < m_PlayerIdentifiers.Count())
+                        selectedPlayerIdentifier = m_PlayerIdentifiers.Get(selectedRow);
                     m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
-                    if (selectedPlayerName != "")
+                    if (selectedPlayerIdentifier != "")
                     {
-                        actualPlayerName = selectedPlayerName;
-                        cdIndex = selectedPlayerName.IndexOf(" CD:");
-                        if (cdIndex >= 0)
-                        {
-                            actualPlayerName = selectedPlayerName.Substring(0, cdIndex);
-                        }
-                        else
-                        {
-                            noCooldownIndex = selectedPlayerName.IndexOf(" (No Cooldown)");
-                            if (noCooldownIndex >= 0)
-                            {
-                                actualPlayerName = selectedPlayerName.Substring(0, noCooldownIndex);
-                            }
-                        }
-                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("ApplyTestRuleBreakerBounty:" + actualPlayerName), true, player.GetIdentity());
-                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] ApplyTestRuleBreakerBounty button clicked for player: " + actualPlayerName);
+                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("ApplyTestRuleBreakerBounty:" + selectedPlayerIdentifier), true, player.GetIdentity());
+                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] ApplyTestRuleBreakerBounty button clicked for player: " + selectedPlayerName);
                     }
                     else
                     {
@@ -771,25 +777,13 @@ class BountyAdminMenu extends UIScriptedMenu
                 selectedRow = m_PlayersList.GetSelectedRow();
                 if (selectedRow >= 0)
                 {
+                    if (selectedRow < m_PlayerIdentifiers.Count())
+                        selectedPlayerIdentifier = m_PlayerIdentifiers.Get(selectedRow);
                     m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
-                    if (selectedPlayerName != "")
+                    if (selectedPlayerIdentifier != "")
                     {
-                        actualPlayerName = selectedPlayerName;
-                        cdIndex = selectedPlayerName.IndexOf(" CD:");
-                        if (cdIndex >= 0)
-                        {
-                            actualPlayerName = selectedPlayerName.Substring(0, cdIndex);
-                        }
-                        else
-                        {
-                            noCooldownIndex = selectedPlayerName.IndexOf(" (No Cooldown)");
-                            if (noCooldownIndex >= 0)
-                            {
-                                actualPlayerName = selectedPlayerName.Substring(0, noCooldownIndex);
-                            }
-                        }
-                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("AddBountySelectedPlayer:" + actualPlayerName), true, player.GetIdentity());
-                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] AddBountySelectedPlayer button clicked for player: " + actualPlayerName);
+                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("AddBountySelectedPlayer:" + selectedPlayerIdentifier), true, player.GetIdentity());
+                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] AddBountySelectedPlayer button clicked for player: " + selectedPlayerName);
                     }
                     else
                     {
@@ -816,25 +810,13 @@ class BountyAdminMenu extends UIScriptedMenu
                 selectedRow = m_PlayersList.GetSelectedRow();
                 if (selectedRow >= 0)
                 {
+                    if (selectedRow < m_PlayerIdentifiers.Count())
+                        selectedPlayerIdentifier = m_PlayerIdentifiers.Get(selectedRow);
                     m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
-                    if (selectedPlayerName != "")
+                    if (selectedPlayerIdentifier != "")
                     {
-                        actualPlayerName = selectedPlayerName;
-                        cdIndex = selectedPlayerName.IndexOf(" CD:");
-                        if (cdIndex >= 0)
-                        {
-                            actualPlayerName = selectedPlayerName.Substring(0, cdIndex);
-                        }
-                        else
-                        {
-                            noCooldownIndex = selectedPlayerName.IndexOf(" (No Cooldown)");
-                            if (noCooldownIndex >= 0)
-                            {
-                                actualPlayerName = selectedPlayerName.Substring(0, noCooldownIndex);
-                            }
-                        }
-                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("ClearBountySelectedPlayer:" + actualPlayerName), true, player.GetIdentity());
-                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] ClearBountySelectedPlayer button clicked for player: " + actualPlayerName);
+                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("ClearBountySelectedPlayer:" + selectedPlayerIdentifier), true, player.GetIdentity());
+                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] ClearBountySelectedPlayer button clicked for player: " + selectedPlayerName);
                     }
                     else
                     {
@@ -861,25 +843,13 @@ class BountyAdminMenu extends UIScriptedMenu
                 selectedRow = m_PlayersList.GetSelectedRow();
                 if (selectedRow >= 0)
                 {
+                    if (selectedRow < m_PlayerIdentifiers.Count())
+                        selectedPlayerIdentifier = m_PlayerIdentifiers.Get(selectedRow);
                     m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
-                    if (selectedPlayerName != "")
+                    if (selectedPlayerIdentifier != "")
                     {
-                        actualPlayerName = selectedPlayerName;
-                        cdIndex = selectedPlayerName.IndexOf(" CD:");
-                        if (cdIndex >= 0)
-                        {
-                            actualPlayerName = selectedPlayerName.Substring(0, cdIndex);
-                        }
-                        else
-                        {
-                            noCooldownIndex = selectedPlayerName.IndexOf(" (No Cooldown)");
-                            if (noCooldownIndex >= 0)
-                            {
-                                actualPlayerName = selectedPlayerName.Substring(0, noCooldownIndex);
-                            }
-                        }
-                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("ClearAllCooldowns:" + actualPlayerName), true, player.GetIdentity());
-                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] ClearAllCooldowns button clicked for player: " + actualPlayerName);
+                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("ClearAllCooldowns:" + selectedPlayerIdentifier), true, player.GetIdentity());
+                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] ClearAllCooldowns button clicked for player: " + selectedPlayerName);
                     }
                     else
                     {
@@ -900,25 +870,13 @@ class BountyAdminMenu extends UIScriptedMenu
                 selectedRow = m_PlayersList.GetSelectedRow();
                 if (selectedRow >= 0)
                 {
+                    if (selectedRow < m_PlayerIdentifiers.Count())
+                        selectedPlayerIdentifier = m_PlayerIdentifiers.Get(selectedRow);
                     m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
-                    if (selectedPlayerName != "")
+                    if (selectedPlayerIdentifier != "")
                     {
-                        actualPlayerName = selectedPlayerName;
-                        cdIndex = selectedPlayerName.IndexOf(" CD:");
-                        if (cdIndex >= 0)
-                        {
-                            actualPlayerName = selectedPlayerName.Substring(0, cdIndex);
-                        }
-                        else
-                        {
-                            noCooldownIndex = selectedPlayerName.IndexOf(" (No Cooldown)");
-                            if (noCooldownIndex >= 0)
-                            {
-                                actualPlayerName = selectedPlayerName.Substring(0, noCooldownIndex);
-                            }
-                        }
-                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("ClearPlayerCooldown:" + actualPlayerName), true, player.GetIdentity());
-                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] ClearPlayerCooldown button clicked for player: " + actualPlayerName);
+                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("ClearPlayerCooldown:" + selectedPlayerIdentifier), true, player.GetIdentity());
+                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] ClearPlayerCooldown button clicked for player: " + selectedPlayerName);
                     }
                     else
                     {
@@ -953,25 +911,13 @@ class BountyAdminMenu extends UIScriptedMenu
                 selectedRow = m_PlayersList.GetSelectedRow();
                 if (selectedRow >= 0)
                 {
+                    if (selectedRow < m_PlayerIdentifiers.Count())
+                        selectedPlayerIdentifier = m_PlayerIdentifiers.Get(selectedRow);
                     m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
-                    if (selectedPlayerName != "")
+                    if (selectedPlayerIdentifier != "")
                     {
-                        actualPlayerName = selectedPlayerName;
-                        cdIndex = selectedPlayerName.IndexOf(" CD:");
-                        if (cdIndex >= 0)
-                        {
-                            actualPlayerName = selectedPlayerName.Substring(0, cdIndex);
-                        }
-                        else
-                        {
-                            noCooldownIndex = selectedPlayerName.IndexOf(" (No Cooldown)");
-                            if (noCooldownIndex >= 0)
-                            {
-                                actualPlayerName = selectedPlayerName.Substring(0, noCooldownIndex);
-                            }
-                        }
-                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("AddRewardPoint:" + actualPlayerName), true, player.GetIdentity());
-                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] AddRewardPoint button clicked for player: " + actualPlayerName);
+                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("AddRewardPoint:" + selectedPlayerIdentifier), true, player.GetIdentity());
+                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] AddRewardPoint button clicked for player: " + selectedPlayerName);
                     }
                     else
                     {
@@ -992,25 +938,13 @@ class BountyAdminMenu extends UIScriptedMenu
                 selectedRow = m_PlayersList.GetSelectedRow();
                 if (selectedRow >= 0)
                 {
+                    if (selectedRow < m_PlayerIdentifiers.Count())
+                        selectedPlayerIdentifier = m_PlayerIdentifiers.Get(selectedRow);
                     m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
-                    if (selectedPlayerName != "")
+                    if (selectedPlayerIdentifier != "")
                     {
-                        actualPlayerName = selectedPlayerName;
-                        cdIndex = selectedPlayerName.IndexOf(" CD:");
-                        if (cdIndex >= 0)
-                        {
-                            actualPlayerName = selectedPlayerName.Substring(0, cdIndex);
-                        }
-                        else
-                        {
-                            noCooldownIndex = selectedPlayerName.IndexOf(" (No Cooldown)");
-                            if (noCooldownIndex >= 0)
-                            {
-                                actualPlayerName = selectedPlayerName.Substring(0, noCooldownIndex);
-                            }
-                        }
-                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("RemoveRewardPoint:" + actualPlayerName), true, player.GetIdentity());
-                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] RemoveRewardPoint button clicked for player: " + actualPlayerName);
+                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("RemoveRewardPoint:" + selectedPlayerIdentifier), true, player.GetIdentity());
+                        GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] RemoveRewardPoint button clicked for player: " + selectedPlayerName);
                     }
                     else
                     {
@@ -1031,10 +965,13 @@ class BountyAdminMenu extends UIScriptedMenu
                 row = m_OnlinePlayersList.GetSelectedRow();
                 if (row >= 0)
                 {
+                    selectedPlayerIdentifier = "";
+                    if (row < m_OnlinePlayerIdentifiers.Count())
+                        selectedPlayerIdentifier = m_OnlinePlayerIdentifiers.Get(row);
                     m_OnlinePlayersList.GetItemText(row, 0, entry);
-                    if (entry != "")
+                    if (selectedPlayerIdentifier != "")
                     {
-                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("AddToBlacklist:" + entry), true, player.GetIdentity());
+                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("AddToBlacklist:" + selectedPlayerIdentifier), true, player.GetIdentity());
                         GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] AddToBlacklist button clicked for player: " + entry);
                     }
                 }
@@ -1082,16 +1019,18 @@ class BountyAdminMenu extends UIScriptedMenu
             return;
         }
         m_OnlinePlayersList.ClearItems();
+        m_OnlinePlayerIdentifiers.Clear();
         if (!players)
         {
             GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] Received null players array from server!");
             return;
         }
-        foreach (string playerName : players)
+        foreach (string playerEntry : players)
         {
-            if (playerName != "")
+            if (playerEntry != "")
             {
-                m_OnlinePlayersList.AddItem(playerName, null, 0);
+                m_OnlinePlayerIdentifiers.Insert(GetPlayerEntryIdentifier(playerEntry));
+                m_OnlinePlayersList.AddItem(GetPlayerEntryDisplayName(playerEntry), null, 0);
             }
         }
         GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] Updated online players list: " + players.Count().ToString() + " players");
