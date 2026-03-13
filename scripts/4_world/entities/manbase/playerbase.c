@@ -223,7 +223,7 @@ modded class PlayerBase
             bountyType = BountyType.RULE_BREAKER;
         SetBountyWithType(durationSeconds, bountyType, skipNotifications);
     }
-    void SetBountyWithType(float durationSeconds, BountyType bountyType = BountyType.PLACED, bool skipNotifications = false, int clearedRewardCount = 0)
+    void SetBountyWithType(float durationSeconds, BountyType bountyType = BountyType.PLACED, bool skipNotifications = false, int clearedRewardCount = 0, bool ignoreMaxBountiedLimit = false)
     {
         bool alreadyHasBounty;
         BountyManager bountyManager;
@@ -260,7 +260,7 @@ modded class PlayerBase
             GetNinjins_Bounty_SystemLogger().LogInfo("[Bounty] Cannot set bounty - bounties are disabled (MaxBountiedPlayers = 0)");
             return;
         }
-        else if (g_BountyConfig.Core && g_BountyConfig.Core.MaxBountiedPlayers > 0 && bountyType != BountyType.RULE_BREAKER)
+        else if (g_BountyConfig.Core && g_BountyConfig.Core.MaxBountiedPlayers > 0 && bountyType != BountyType.RULE_BREAKER && !ignoreMaxBountiedLimit)
         {
             bountyManager = BountyManager.GetInstance();
             currentBountiedCount = bountyManager.GetBountiedPlayerCount();

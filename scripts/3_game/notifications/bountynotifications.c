@@ -397,11 +397,21 @@ class BountyNotifications
             }
             case BOUNTY_NOTIFICATION_REWARD_CONTAINER_SPAWN_FAILURE:
             {
+                title = "Reward Spawn Failed";
+                message = "Your reward container could not be spawned. Your pending reward was kept so you can try again.";
+                iconPath = "Ninjins_Bounty_System/gui/icons/bountyerror.edds";
+                color = ARGB(255, 255, 0, 0);
+                duration = 8.0;
                 NotificationSystem.Create(new StringLocaliser(title), new StringLocaliser(message), iconPath, color, duration, identity);
                 break;
             }
             case BOUNTY_NOTIFICATION_SURVIVAL_REWARD_CONTAINER_SPAWN_FAILURE:
             {
+                title = "Reward Spawn Failed";
+                message = "Your survival reward container could not be spawned. Your pending reward was kept so you can try again.";
+                iconPath = "Ninjins_Bounty_System/gui/icons/bountyerror.edds";
+                color = ARGB(255, 255, 0, 0);
+                duration = 8.0;
                 NotificationSystem.Create(new StringLocaliser(title), new StringLocaliser(message), iconPath, color, duration, identity);
                 break;
             }
@@ -410,6 +420,11 @@ class BountyNotifications
                 isEnabled = (g_BountyConfig && g_BountyConfig.Core && g_BountyConfig.Core.EnableCommandAccessDeniedNotification);
                 if (!isEnabled)
                     return;
+                title = "Access Denied";
+                message = "You do not have permission to use this bounty system command.";
+                iconPath = "Ninjins_Bounty_System/gui/icons/bountyerror.edds";
+                color = ARGB(255, 255, 0, 0);
+                duration = 5.0;
                 NotificationSystem.Create(new StringLocaliser(title), new StringLocaliser(message), iconPath, color, duration, identity);
                 break;
             }

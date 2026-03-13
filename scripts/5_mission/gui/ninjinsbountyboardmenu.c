@@ -8,8 +8,24 @@ class NinjinsBountyBoardMenu extends UIScriptedMenu
     private ButtonWidget m_BttnClose;
     private TextListboxWidget m_BountyOnlinePlayersList;
     private TextWidget m_ClaimAmount;
+    private ref array<string> m_OnlinePlayerIdentifiers;
     void NinjinsBountyBoardMenu()
     {
+        m_OnlinePlayerIdentifiers = new array<string>();
+    }
+    private string GetPlayerEntryDisplayName(string entry)
+    {
+        int separatorIndex = entry.IndexOf("||");
+        if (separatorIndex < 0)
+            return entry;
+        return entry.Substring(0, separatorIndex);
+    }
+    private string GetPlayerEntryIdentifier(string entry)
+    {
+        int separatorIndex = entry.IndexOf("||");
+        if (separatorIndex < 0 || separatorIndex >= entry.Length() - 2)
+            return entry;
+        return entry.Substring(separatorIndex + 2, entry.Length() - (separatorIndex + 2));
     }
     override Widget Init()
     {
@@ -97,6 +113,7 @@ class NinjinsBountyBoardMenu extends UIScriptedMenu
         PlayerBase player;
         int selectedRow;
         string selectedPlayerName;
+        string selectedPlayerIdentifier;
         super.OnClick(w, x, y, button);
         player = PlayerBase.Cast(g_Game.GetPlayer());
         if (!player || !player.GetIdentity())
@@ -131,10 +148,14 @@ class NinjinsBountyBoardMenu extends UIScriptedMenu
                 selectedRow = m_BountyOnlinePlayersList.GetSelectedRow();
                 if (selectedRow >= 0)
                 {
-                    m_BountyOnlinePlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
-                    if (selectedPlayerName != "")
+                    if (selectedRow < m_OnlinePlayerIdentifiers.Count())
                     {
-                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BoardBountyAction", new Param1<string>("PlaceBountyOnPlayer:" + selectedPlayerName), true, player.GetIdentity());
+                        selectedPlayerIdentifier = m_OnlinePlayerIdentifiers.Get(selectedRow);
+                    }
+                    m_BountyOnlinePlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
+                    if (selectedPlayerIdentifier != "")
+                    {
+                        GetRPCManager().SendRPC("Ninjins_Bounty_System", "BoardBountyAction", new Param1<string>("PlaceBountyOnPlayer:" + selectedPlayerIdentifier), true, player.GetIdentity());
                         GetNinjins_Bounty_SystemLogger().LogInfo("[NinjinsBountyBoardMenu] Place Bounty button clicked for player: " + selectedPlayerName);
                     }
                     else
@@ -170,16 +191,18 @@ class NinjinsBountyBoardMenu extends UIScriptedMenu
             return;
         }
         m_BountyOnlinePlayersList.ClearItems();
+        m_OnlinePlayerIdentifiers.Clear();
         if (!players)
         {
             GetNinjins_Bounty_SystemLogger().LogWarning("[NinjinsBountyBoardMenu] Received null players array from server!");
             return;
         }
-        foreach (string playerName : players)
+        foreach (string playerEntry : players)
         {
-            if (playerName != "")
+            if (playerEntry != "")
             {
-                m_BountyOnlinePlayersList.AddItem(playerName, null, 0);
+                m_OnlinePlayerIdentifiers.Insert(GetPlayerEntryIdentifier(playerEntry));
+                m_BountyOnlinePlayersList.AddItem(GetPlayerEntryDisplayName(playerEntry), null, 0);
             }
         }
         GetNinjins_Bounty_SystemLogger().LogInfo("[NinjinsBountyBoardMenu] Updated online players list: " + players.Count().ToString() + " players");
