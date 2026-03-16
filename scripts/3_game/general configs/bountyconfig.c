@@ -1085,6 +1085,14 @@ class BountyBoardPlacementConfig
                 placement = new BountyBoardPlacement();
                 BoardPlacements.Set(i, placement);
             }
+            if (!placement.Position)
+            {
+                placement.Position = new array<float>;
+            }
+            if (!placement.Rotation)
+            {
+                placement.Rotation = new array<float>;
+            }
             while (placement.Position.Count() < 3)
             {
                 placement.Position.Insert(0.0);
@@ -1137,6 +1145,10 @@ class BountyBoardPlacementConfig
         {
             placement = config.BoardPlacements.Get(i);
             if (!placement)
+                continue;
+            if (!placement.Position || placement.Position.Count() < 3)
+                continue;
+            if (!placement.Rotation || placement.Rotation.Count() < 3)
                 continue;
             GetNinjins_Bounty_SystemLogger().LogInfo(prefix + "   Board[" + i.ToString() + "] Position: [" + placement.Position.Get(0).ToString() + ", " + placement.Position.Get(1).ToString() + ", " + placement.Position.Get(2).ToString() + "] Rotation: [" + placement.Rotation.Get(0).ToString() + ", " + placement.Rotation.Get(1).ToString() + ", " + placement.Rotation.Get(2).ToString() + "]");
         }

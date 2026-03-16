@@ -99,7 +99,7 @@ class BountyModule : CF_ModuleWorld
         {
             vectorString = values.Get(0).ToString() + " " + values.Get(1).ToString() + " " + values.Get(2).ToString();
         }
-        return vectorString;
+            return vectorString.ToVector();
     }
     bool IsPlaceholderBoardPlacement(BountyBoardPlacement placement)
     {
