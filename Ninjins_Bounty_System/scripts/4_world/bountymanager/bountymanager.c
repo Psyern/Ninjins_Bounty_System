@@ -694,6 +694,34 @@ class BountyManager
             GetNinjins_Bounty_SystemLogger().LogError("[Reload] Blacklist.json file not found!");
             allSuccess = false;
         }
+        BountyConfig.CheckDirectories();
+        if (FileExist(Ninjins_Bounty_System_BOARD_CONFIG_FILE))
+        {
+            BountyBoardPlacementConfig newBoardConfig = new BountyBoardPlacementConfig();
+            JsonFileLoader<BountyBoardPlacementConfig>.JsonLoadFile(Ninjins_Bounty_System_BOARD_CONFIG_FILE, newBoardConfig);
+            if (newBoardConfig)
+            {
+                newBoardConfig.ValidateConfig();
+                g_BountyBoardPlacementConfig = newBoardConfig;
+                BountyBoardPlacementConfig.LogConfig(g_BountyBoardPlacementConfig, true);
+                BountyModule bountyModule = BountyModule.GetInstance();
+                if (bountyModule)
+                {
+                    bountyModule.SpawnConfiguredBountyBoards();
+                }
+                GetNinjins_Bounty_SystemLogger().LogInfo("[Reload] BountyBoardPlacements.json reloaded from disk. BoardPlacements: " + g_BountyBoardPlacementConfig.BoardPlacements.Count().ToString());
+            }
+            else
+            {
+                GetNinjins_Bounty_SystemLogger().LogError("[Reload] Failed to reload BountyBoardPlacements.json from disk!");
+                allSuccess = false;
+            }
+        }
+        else
+        {
+            GetNinjins_Bounty_SystemLogger().LogError("[Reload] BountyBoardPlacements.json file not found!");
+            allSuccess = false;
+        }
         if (requestingPlayer)
         {
             PlayerIdentity identity = requestingPlayer.GetIdentity();
