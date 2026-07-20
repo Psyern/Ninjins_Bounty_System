@@ -23,6 +23,8 @@ class ActionOpenBountyMenu : ActionInteractBase {
 		PlayerBase player = PlayerBase.Cast(action_data.m_Player);
 		if (!player || !player.GetIdentity())
 			return;
+		if (!g_Game || !g_Game.GetCallQueue(CALL_CATEGORY_SYSTEM) || !g_Game.GetMission())
+			return;
 		g_Game.GetCallQueue(CALL_CATEGORY_SYSTEM).CallLaterByName(g_Game.GetMission(), "OpenBountyBoardMenuDirect", 0, false);
 	}
 }

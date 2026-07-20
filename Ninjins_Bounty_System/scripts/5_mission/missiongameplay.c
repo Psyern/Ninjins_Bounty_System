@@ -5,13 +5,13 @@ modded class MissionGameplay
 	ref NinjinsBountyBoardMenu m_BountyBoardMenu;
 	private Widget m_RootWidgetBountyCountdown;
 	private RichTextWidget m_BountyCountdownTimer;
-	private float m_LastCountdownUpdateTime = 0.0;
+	private float m_BountyLastCountdownUpdateTime = 0.0;
 	private const float BOUNTY_COUNTDOWN_UPDATE_INTERVAL = 1.0; 
-	private float m_LastReceivedDuration = 0.0; 
-	private float m_LastReceivedTime = 0.0; 
-	private float m_LastSyncWarningTime = 0.0;
+	private float m_BountyLastReceivedDuration = 0.0; 
+	private float m_BountyLastReceivedTime = 0.0; 
+	private float m_BountyLastSyncWarningTime = 0.0;
 	private bool m_BountyPaused = false; 
-	private const float SYNC_WARNING_INTERVAL = 5.0; 
+	private const float BOUNTY_SYNC_WARNING_INTERVAL = 5.0; 
 	void MissionGameplay()
 	{
 		GetNinjins_Bounty_SystemLogger().LogInfo("Ninjins_Bounty_System mod has started!");
@@ -43,7 +43,7 @@ modded class MissionGameplay
 	}
 	private void LoadBountyCountdownLayout()
 	{
-		m_RootWidgetBountyCountdown = GetGame().GetWorkspace().CreateWidgets("Ninjins_Bounty_System/gui/layouts/BountyCountdownTimer.layout");
+		m_RootWidgetBountyCountdown = g_Game.GetWorkspace().CreateWidgets("Ninjins_Bounty_System/gui/layouts/BountyCountdownTimer.layout");
 		if (m_RootWidgetBountyCountdown)
 		{
 			InitializeBountyCountdownWidgets();
@@ -85,7 +85,8 @@ modded class MissionGameplay
 		countdownWidget.SetPos(posX, posY);
 		if (width > 0.0 || height > 0.0)
 		{
-			float currentWidth, currentHeight;
+			float currentWidth;
+			float currentHeight;
 			countdownWidget.GetSize(currentWidth, currentHeight);
 			if (width > 0.0)
 				currentWidth = width;
@@ -144,16 +145,16 @@ modded class MissionGameplay
 		hasBounty = player.HasBounty();
 		currentTimeSeconds = g_Game.GetTime() / 1000.0; 
 		remainingDuration = 0.0;
-		if (hasBounty && m_LastReceivedTime > 0.0)
+		if (hasBounty && m_BountyLastReceivedTime > 0.0)
 		{
 			if (!m_BountyPaused)
 			{
-				elapsedSinceLastRPC = currentTimeSeconds - m_LastReceivedTime;
-				remainingDuration = m_LastReceivedDuration - elapsedSinceLastRPC;
+				elapsedSinceLastRPC = currentTimeSeconds - m_BountyLastReceivedTime;
+				remainingDuration = m_BountyLastReceivedDuration - elapsedSinceLastRPC;
 			}
 			else
 			{
-				remainingDuration = m_LastReceivedDuration;
+				remainingDuration = m_BountyLastReceivedDuration;
 			}
 			if (remainingDuration < 0.0)
 			{
@@ -164,7 +165,7 @@ modded class MissionGameplay
 		{
 			remainingDuration = player.netSync_BountyRemainingDuration;
 		}
-		shouldUpdate = (currentTimeSeconds - m_LastCountdownUpdateTime >= BOUNTY_COUNTDOWN_UPDATE_INTERVAL);
+		shouldUpdate = (currentTimeSeconds - m_BountyLastCountdownUpdateTime >= BOUNTY_COUNTDOWN_UPDATE_INTERVAL);
 		if (hasBounty && remainingDuration > 0.0)
 		{
 			if (!m_RootWidgetBountyCountdown.IsVisible())
@@ -174,7 +175,7 @@ modded class MissionGameplay
 			}
 			if (shouldUpdate)
 			{
-				m_LastCountdownUpdateTime = currentTimeSeconds;
+				m_BountyLastCountdownUpdateTime = currentTimeSeconds;
 				totalSeconds = Math.Floor(remainingDuration);
 				hours = Math.Floor(totalSeconds / 3600.0);
 				minutes = Math.Floor((totalSeconds - (hours * 3600)) / 60.0);
@@ -208,9 +209,9 @@ modded class MissionGameplay
 		}
 		else if (hasBounty && remainingDuration <= 0.0)
 		{
-			if (currentTimeSeconds - m_LastSyncWarningTime >= SYNC_WARNING_INTERVAL)
+			if (currentTimeSeconds - m_BountyLastSyncWarningTime >= BOUNTY_SYNC_WARNING_INTERVAL)
 			{
-				m_LastSyncWarningTime = currentTimeSeconds;
+				m_BountyLastSyncWarningTime = currentTimeSeconds;
 				GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] Player has bounty but remainingDuration is " + remainingDuration.ToString() + "s - waiting for RPC sync...");
 			}
 		}
@@ -436,8 +437,8 @@ modded class MissionGameplay
 			return;
 		}
 		currentTimeSeconds = g_Game.GetTime() / 1000.0;
-		m_LastReceivedDuration = data.param1;
-		m_LastReceivedTime = currentTimeSeconds;
+		m_BountyLastReceivedDuration = data.param1;
+		m_BountyLastReceivedTime = currentTimeSeconds;
 		player = PlayerBase.Cast(g_Game.GetPlayer());
 		if (player)
 		{
@@ -478,7 +479,7 @@ modded class MissionGameplay
 		if (!m_BountyPaused)
 		{
 			currentTimeSeconds = g_Game.GetTime() / 1000.0;
-			m_LastReceivedTime = currentTimeSeconds;
+			m_BountyLastReceivedTime = currentTimeSeconds;
 			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Bounty countdown resumed - resyncing timer");
 		}
 		else

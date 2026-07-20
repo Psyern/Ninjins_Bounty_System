@@ -1,5 +1,7 @@
 modded class MissionServer
 {
+	private float m_BountyDamageTrackerCleanupTimer = 0.0;
+
 	void ~MissionServer() {}
 	override void OnUpdate(float timeslice)
 	{
@@ -18,11 +20,10 @@ modded class MissionServer
 				}
 			}
 		}		
-		static float damageTrackerCleanupTimer = 0.0;
-		damageTrackerCleanupTimer += timeslice;
-		if (damageTrackerCleanupTimer >= 5.0)
+		m_BountyDamageTrackerCleanupTimer += timeslice;
+		if (m_BountyDamageTrackerCleanupTimer >= 5.0)
 		{
-			damageTrackerCleanupTimer = 0.0;
+			m_BountyDamageTrackerCleanupTimer = 0.0;
 			BountyHitTracker hitTracker = BountyHitTracker.GetInstance();
 			if (hitTracker)
 			{
