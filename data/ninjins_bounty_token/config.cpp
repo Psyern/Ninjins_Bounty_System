@@ -15,7 +15,7 @@ class CfgVehicles
 	{
 		scope = 2;
 		displayName = "Ninjins Silver Bounty Token";
-		descriptionShort="A Token to activate a bouty on a player.";
+		descriptionShort="A Token to activate a bounty on a player.";
 		model = "Ninjins_Bounty_System\data\Ninjins_Bounty_Token\Ninjins_Bounty_Token.p3d";
 		itemSize[] = {2,2};
 		weight = 1000;
@@ -48,7 +48,7 @@ class CfgVehicles
 	{
 		scope = 2;
 		displayName = "Ninjins Gold Bounty Token";
-		descriptionShort="A Token to activate a bouty on a player.";
+		descriptionShort="A Token to activate a bounty on a player.";
 		hiddenSelections[] = {"zbytek"};
 		hiddenSelectionsTextures[] = 
 		{
@@ -61,7 +61,7 @@ class CfgVehicles
 	{
 		scope = 2;
 		displayName = "Ninjins Red Bounty Token";
-		descriptionShort="A Token to activate a bouty on a player.";
+		descriptionShort="A Token to activate a bounty on a player.";
 		hiddenSelections[] = {"zbytek"};
 		hiddenSelectionsTextures[] = 
 		{

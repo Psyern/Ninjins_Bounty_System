@@ -49,110 +49,110 @@ const string BOUNTY_TYPE_STRING_PLACED = "PLACED";
 const string BOUNTY_TYPE_STRING_RULE_BREAKER = "RULE_BREAKER";
 enum BountyType
 {
-    PLACED,         
-    RULE_BREAKER    
+	PLACED,         
+	RULE_BREAKER    
 }
 enum BountyEndReason
 {
-    EXPIRED,        
-    KILLED,         
-    SUICIDE,        
-    CLEARED,        
-    LOGOUT          
+	EXPIRED,        
+	KILLED,         
+	SUICIDE,        
+	CLEARED,        
+	LOGOUT          
 }
 enum BountyRPC
 {           
-    UPDATE_BOUNTY_STATE = 33115511,
-    SYNC_BOUNTIED_PLAYERS,
-    SYNC_ADMIN_STATUS,
-    UPDATE_BOUNTY_COUNTDOWN
+	UPDATE_BOUNTY_STATE = 33115511,
+	SYNC_BOUNTIED_PLAYERS,
+	SYNC_ADMIN_STATUS,
+	UPDATE_BOUNTY_COUNTDOWN
 }
 class BountyUISettingsData
 {
-    float PositionX;
-    float PositionY;
-    float Width;
-    float Height;
-    int BackgroundColor;
-    int TextColor;
-    void BountyUISettingsData(float posX = 0.0, float posY = 0.0, float width = 0.0, float height = 0.0, int bgColor = 0, int textColor = 0)
-    {
-        PositionX = posX;
-        PositionY = posY;
-        Width = width;
-        Height = height;
-        BackgroundColor = bgColor;
-        TextColor = textColor;
-    }
+	float PositionX;
+	float PositionY;
+	float Width;
+	float Height;
+	int BackgroundColor;
+	int TextColor;
+	void BountyUISettingsData(float posX = 0.0, float posY = 0.0, float width = 0.0, float height = 0.0, int bgColor = 0, int textColor = 0)
+	{
+		PositionX = posX;
+		PositionY = posY;
+		Width = width;
+		Height = height;
+		BackgroundColor = bgColor;
+		TextColor = textColor;
+	}
 }
 class BountyPlayerData
 {
-    string PlayerID;
-    string PlayerName;
-    vector Position;
-    float TimeRemaining;
-    float CircleRadius;
-    int CircleColor;
-    bool ReduceRadiusOverTime;
-    bool IncreaseRadiusOverTime;
-    float CircleMinRadius;
-    float BountyDurationSeconds;
-    float CircleOffsetMinMultiplier;
-    float CircleOffsetMaxMultiplier;
-    float CachedOffsetMultiplier; 
-    float CachedOffsetAngle; 
-    vector CircleCenter; 
-    void BountyPlayerData()
-    {
-        PlayerID = "";
-        PlayerName = "";
-        Position = "0 0 0";
-        TimeRemaining = 0.0;
-        CircleRadius = 100.0;
-        CircleColor = ARGB(255, 255, 0, 0);
-        ReduceRadiusOverTime = false;
-        IncreaseRadiusOverTime = false;
-        CircleMinRadius = 10.0;
-        BountyDurationSeconds = 60.0;
-        CircleOffsetMinMultiplier = 0.0;
-        CircleOffsetMaxMultiplier = 0.0;
-        CachedOffsetMultiplier = 0.0;
-        CachedOffsetAngle = 0.0;
-        CircleCenter = "0 0 0";
-    }
+	string PlayerID;
+	string PlayerName;
+	vector Position;
+	float TimeRemaining;
+	float CircleRadius;
+	int CircleColor;
+	bool ReduceRadiusOverTime;
+	bool IncreaseRadiusOverTime;
+	float CircleMinRadius;
+	float BountyDurationSeconds;
+	float CircleOffsetMinMultiplier;
+	float CircleOffsetMaxMultiplier;
+	float CachedOffsetMultiplier; 
+	float CachedOffsetAngle; 
+	vector CircleCenter; 
+	void BountyPlayerData()
+	{
+		PlayerID = "";
+		PlayerName = "";
+		Position = "0 0 0";
+		TimeRemaining = 0.0;
+		CircleRadius = 100.0;
+		CircleColor = ARGB(255, 255, 0, 0);
+		ReduceRadiusOverTime = false;
+		IncreaseRadiusOverTime = false;
+		CircleMinRadius = 10.0;
+		BountyDurationSeconds = 60.0;
+		CircleOffsetMinMultiplier = 0.0;
+		CircleOffsetMaxMultiplier = 0.0;
+		CachedOffsetMultiplier = 0.0;
+		CachedOffsetAngle = 0.0;
+		CircleCenter = "0 0 0";
+	}
 }
 class BountyMapBridge
 {
-    private static ref array<ref BountyPlayerData> s_BountiedPlayersData;
-    static void SetBountiedPlayers(array<ref BountyPlayerData> players)
-    {
-        if (!IsMissionClient())
-            return;
-        if (!s_BountiedPlayersData)
-        {
-            s_BountiedPlayersData = new array<ref BountyPlayerData>();
-        }
-        s_BountiedPlayersData.Clear();
-        if (players)
-        {
-            int i;
-            BountyPlayerData playerData;
-            for (i = 0; i < players.Count(); i++)
-            {
-                playerData = players.Get(i);
-                if (playerData)
-                {
-                    s_BountiedPlayersData.Insert(playerData);
-                }
-            }
-        }
-    }
-    static array<ref BountyPlayerData> GetBountiedPlayers()
-    {
-        if (!s_BountiedPlayersData)
-        {
-            s_BountiedPlayersData = new array<ref BountyPlayerData>();
-        }
-        return s_BountiedPlayersData;
-    }
+	private static ref array<ref BountyPlayerData> s_BountiedPlayersData;
+	static void SetBountiedPlayers(array<ref BountyPlayerData> players)
+	{
+		if (!IsMissionClient())
+			return;
+		if (!s_BountiedPlayersData)
+		{
+			s_BountiedPlayersData = new array<ref BountyPlayerData>();
+		}
+		s_BountiedPlayersData.Clear();
+		if (players)
+		{
+			int i;
+			BountyPlayerData playerData;
+			for (i = 0; i < players.Count(); i++)
+			{
+				playerData = players.Get(i);
+				if (playerData)
+				{
+					s_BountiedPlayersData.Insert(playerData);
+				}
+			}
+		}
+	}
+	static array<ref BountyPlayerData> GetBountiedPlayers()
+	{
+		if (!s_BountiedPlayersData)
+		{
+			s_BountiedPlayersData = new array<ref BountyPlayerData>();
+		}
+		return s_BountiedPlayersData;
+	}
 }
