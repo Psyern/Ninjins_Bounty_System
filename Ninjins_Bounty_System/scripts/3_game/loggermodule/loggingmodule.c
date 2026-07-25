@@ -1,14 +1,14 @@
-static Ninjins_Bounty_SystemLoggingModule GetNinjins_Bounty_SystemLogger()
+static obfc_Ninjins_Bounty_SystemLoggingModule obfm_GetNinjins_Bounty_SystemLogger()
 {
-	return Ninjins_Bounty_SystemLoggingModule.Cast(CF_ModuleCoreManager.Get(Ninjins_Bounty_SystemLoggingModule));
+	return obfc_Ninjins_Bounty_SystemLoggingModule.Cast(CF_ModuleCoreManager.Get(obfc_Ninjins_Bounty_SystemLoggingModule));
 }
-[CF_RegisterModule(Ninjins_Bounty_SystemLoggingModule)]
-class Ninjins_Bounty_SystemLoggingModule : CF_ModuleGame
+[CF_RegisterModule(obfc_Ninjins_Bounty_SystemLoggingModule)]
+class obfc_Ninjins_Bounty_SystemLoggingModule : CF_ModuleGame
 {
 	private int networkSync_LogLevel;
-	ref Ninjins_Bounty_SystemLoggingSettings settings;
-	FileHandle fileHandle;
-	float dtime = 0;
+	ref obfc_Ninjins_Bounty_SystemLoggingSettings obfv_settings;
+	FileHandle obfv_fileHandle;
+	float obfv_dtime = 0;
 	override void OnInit()
 	{
 		super.OnInit();
@@ -18,12 +18,12 @@ class Ninjins_Bounty_SystemLoggingModule : CF_ModuleGame
 	override void OnMissionStart(Class sender, CF_EventArgs args)
 	{
 		super.OnMissionStart(sender, args);
-		fileHandle = CreateNewLogFile();
+		obfv_fileHandle = obfm_CreateNewLogFile();
 		if(IsMissionHost())
 		{
-			settings = Ninjins_Bounty_SystemLoggingSettings.Load();
-			networkSync_LogLevel = settings.logLevel;
-			SynchLogLevel();       
+			obfv_settings = obfc_Ninjins_Bounty_SystemLoggingSettings.obfm_Load();
+			networkSync_LogLevel = obfv_settings.logLevel;
+			obfm_SynchLogLevel();       
 		}
 		else
 		{
@@ -39,7 +39,7 @@ class Ninjins_Bounty_SystemLoggingModule : CF_ModuleGame
 			return;
 		 networkSync_LogLevel = data.param1;
 	}
-	void SynchLogLevel()
+	void obfm_SynchLogLevel()
 	{
 		GetRPCManager().SendRPC(ClassName(), "GetLogLevelResponse",  new Param1<int>(networkSync_LogLevel), true, NULL);
 	}
@@ -51,29 +51,29 @@ class Ninjins_Bounty_SystemLoggingModule : CF_ModuleGame
 			return;
 		if(!IsMissionHost())
 			return;
-		if(!settings)
+		if(!obfv_settings)
 			return;
-		dtime += update.DeltaTime;
-		if(dtime >= settings.refreshRateInSeconds)
+		obfv_dtime += update.DeltaTime;
+		if(obfv_dtime >= obfv_settings.refreshRateInSeconds)
 		{
-			dtime = 0;
-			settings = Ninjins_Bounty_SystemLoggingSettings.Load();
-			networkSync_LogLevel = settings.logLevel;
-			SynchLogLevel();
+			obfv_dtime = 0;
+			obfv_settings = obfc_Ninjins_Bounty_SystemLoggingSettings.obfm_Load();
+			networkSync_LogLevel = obfv_settings.logLevel;
+			obfm_SynchLogLevel();
 		}
 	}
-	void MakeDirectoryIfNotExists()
+	void obfm_MakeDirectoryIfNotExists()
 	{
-		if(!FileExist(Ninjins_Bounty_System_ROOT_FOLDER))
-			MakeDirectory(Ninjins_Bounty_System_ROOT_FOLDER);
-		if(!FileExist(Ninjins_Bounty_System_LOG_FOLDER))
-			MakeDirectory(Ninjins_Bounty_System_LOG_FOLDER);
-		if(!FileExist(Ninjins_Bounty_System_LOGGER_CONFIG_DIR))
-			MakeDirectory(Ninjins_Bounty_System_LOGGER_CONFIG_DIR);
-		if(!FileExist(Ninjins_Bounty_System_LOGGER_LOG_DIR))
-			MakeDirectory(Ninjins_Bounty_System_LOGGER_LOG_DIR);
+		if(!FileExist(obfv_Ninjins_Bounty_System_ROOT_FOLDER))
+			MakeDirectory(obfv_Ninjins_Bounty_System_ROOT_FOLDER);
+		if(!FileExist(obfv_Ninjins_Bounty_System_LOG_FOLDER))
+			MakeDirectory(obfv_Ninjins_Bounty_System_LOG_FOLDER);
+		if(!FileExist(obfv_Ninjins_Bounty_System_LOGGER_CONFIG_DIR))
+			MakeDirectory(obfv_Ninjins_Bounty_System_LOGGER_CONFIG_DIR);
+		if(!FileExist(obfv_Ninjins_Bounty_System_LOGGER_LOG_DIR))
+			MakeDirectory(obfv_Ninjins_Bounty_System_LOGGER_LOG_DIR);
 	}
-	string GenerateShortDateString()
+	string obfm_GenerateShortDateString()
 	{
 		int year;
 		int month;
@@ -81,7 +81,7 @@ class Ninjins_Bounty_SystemLoggingModule : CF_ModuleGame
 		GetYearMonthDay(year, month, day);
 		return "" + year + "_" + month + "_" + day;
 	}
-	string GenerateShortTimeString()
+	string obfm_GenerateShortTimeString()
 	{
 		int hour;
 		int minute;
@@ -89,48 +89,48 @@ class Ninjins_Bounty_SystemLoggingModule : CF_ModuleGame
 		GetHourMinuteSecond(hour, minute, second);
 		return "" + hour + "_" + minute + "_" + second;
 	}
-	string GenerateFullTimestamp()
+	string obfm_GenerateFullTimestamp()
 	{
-		string dateStr = GenerateShortDateString();
-		string timeStr = GenerateShortTimeString();
+		string dateStr = obfm_GenerateShortDateString();
+		string timeStr = obfm_GenerateShortTimeString();
 		return dateStr + "-" + timeStr;
 	}
-	FileHandle CreateNewLogFile()
+	FileHandle obfm_CreateNewLogFile()
 	{
-		MakeDirectoryIfNotExists();
-		string filePath = string.Format(Ninjins_Bounty_System_LOGGER_LOG_FILE, GenerateFullTimestamp());
-		fileHandle = OpenFile(filePath, FileMode.WRITE);
-		if(fileHandle != 0)
+		obfm_MakeDirectoryIfNotExists();
+		string filePath = string.Format(obfv_Ninjins_Bounty_System_LOGGER_LOG_FILE, obfm_GenerateFullTimestamp());
+		obfv_fileHandle = OpenFile(filePath, FileMode.WRITE);
+		if(obfv_fileHandle != 0)
 		{
-			FPrintln(fileHandle, "Creation Time: " + GenerateFullTimestamp());
-			return fileHandle;
+			FPrintln(obfv_fileHandle, "Creation Time: " + obfm_GenerateFullTimestamp());
+			return obfv_fileHandle;
 		}
 		return null;
 	}
-	void Log(string content, Ninjins_Bounty_SystemLogLevel logLevel)
+	void obfm_Log(string content, Ninjins_Bounty_SystemLogLevel logLevel)
 	{
 		if(logLevel < networkSync_LogLevel)
 			return;
-		string timestamp = GenerateShortTimeString();
-		FPrintln(fileHandle, timestamp + " | " + GetLogLevelString(logLevel) + " | " + content);
+		string timestamp = obfm_GenerateShortTimeString();
+		FPrintln(obfv_fileHandle, timestamp + " | " + obfm_GetLogLevelString(logLevel) + " | " + content);
 	}
-	void LogInfo(string content)
+	void obfm_LogInfo(string content)
 	{
-		Log(content, Ninjins_Bounty_SystemLogLevel.Info);
+		obfm_Log(content, Ninjins_Bounty_SystemLogLevel.Info);
 	}
-	void LogWarning(string content)
+	void obfm_LogWarning(string content)
 	{
-		Log(content, Ninjins_Bounty_SystemLogLevel.Warn);
+		obfm_Log(content, Ninjins_Bounty_SystemLogLevel.Warn);
 	}
-	void LogError(string content)
+	void obfm_LogError(string content)
 	{
-		Log(content, Ninjins_Bounty_SystemLogLevel.Error);
+		obfm_Log(content, Ninjins_Bounty_SystemLogLevel.Error);
 	}
-	void LogDebug(string content)
+	void obfm_LogDebug(string content)
 	{
-		Log(content, Ninjins_Bounty_SystemLogLevel.Debug);
+		obfm_Log(content, Ninjins_Bounty_SystemLogLevel.Debug);
 	}
-	string GetLogLevelString(Ninjins_Bounty_SystemLogLevel logLevel)
+	string obfm_GetLogLevelString(Ninjins_Bounty_SystemLogLevel logLevel)
 	{
 		switch(logLevel)
 		{

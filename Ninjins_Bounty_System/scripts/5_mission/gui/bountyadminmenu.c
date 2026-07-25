@@ -1,176 +1,176 @@
-class BountyAdminMenu extends UIScriptedMenu
+class obfc_BountyAdminMenu extends UIScriptedMenu
 {
-	private ButtonWidget m_BtnApplyTestRuleBreakerBounty;
-	private ButtonWidget m_BtnAddBountySelectedPlayer;
-	private ButtonWidget m_BtnClearBounty;
-	private ButtonWidget m_BtnClearBountySelectedPlayer;
-	private ButtonWidget m_BtnReloadConfigs;
-	private ButtonWidget m_BtnClearAllCooldowns;
-	private ButtonWidget m_BtnClearPlayerCooldown;
-	private ButtonWidget m_BtnSaveAndReload;
-	private ButtonWidget m_BtnAddRewardPoint;
-	private ButtonWidget m_BtnRemoveRewardPoint;
-	private TextListboxWidget m_PlayersList;
-	private ref BountyConfig m_CachedConfig;
-	private ref array<string> m_PlayerIdentifiers;
-	private ButtonWidget m_btnNormalSettings;
-	private ButtonWidget m_btnNotifications;
-	private ButtonWidget m_btnBlacklist;
-	private Widget m_GeneralRootPanel;
-	private Widget m_NotificationsRootPanel;
-	private Widget m_BlacklistRootPanel;
-	private TextListboxWidget m_OnlinePlayersList;
-	private TextListboxWidget m_BlacklistedPlayersList;
-	private ref array<string> m_OnlinePlayerIdentifiers;
-	private ButtonWidget m_AddToBlacklistBtn;
-	private ButtonWidget m_RemoveFromBlacklistBtn;
-	private ButtonWidget m_RefreshBlacklistPlayerListBtn;
-	private CheckBoxWidget m_EnableBountySystem;
-	private CheckBoxWidget m_DisableSelfBounty;
-	private CheckBoxWidget m_TeleportOutOfOwnTerritory;
-	private CheckBoxWidget m_PauseBountyInTerritory;
-	private CheckBoxWidget m_TeleportOutOfSafeZone;
-	private CheckBoxWidget m_EnableAutomatedBountyPlacement;
-	private EditBoxWidget m_BountyCooldownSeconds;
-	private EditBoxWidget m_MaxBountiedPlayers;
-	private EditBoxWidget m_MinOnlinePlayersRequired;
-	private EditBoxWidget m_SkipBountyTokenRequired;
-	private EditBoxWidget m_PlaceBountyTokenRequired;
-	private EditBoxWidget m_ResumeBountyDistanceFromTerritory;
-	private EditBoxWidget m_PausedBountyResumeCheckInterval;
-	private EditBoxWidget m_TeleportOutOfSafeZoneDistance;
-	private EditBoxWidget m_MinimumPlayerLifetimeSeconds;
-	private EditBoxWidget m_AutomatedBountyPlacementIntervalSeconds;
-	private CheckBoxWidget m_EnableRuleBreakerHitThreshold;
-	private CheckBoxWidget m_EnablePvEToPvPRuleBreaker;
-	private CheckBoxWidget m_ClearPendingRewardsOnRuleBreakerBounty;
-	private CheckBoxWidget m_AllowPvEToPvEVictimKill;
-	private EditBoxWidget m_BountyRuleBreakerDurationSeconds;
-	private EditBoxWidget m_RuleBreakerHitThresholdTime;
-	private EditBoxWidget m_RuleBreakerHitThresholdWarningHits;
-	private EditBoxWidget m_RuleBreakerHitThresholdBountyHits;
-	private EditBoxWidget m_PvEToPvPInstantRuleBreakerHits;
-	private CheckBoxWidget m_Expansion_EnableHardlineReputationDecrease;
-	private EditBoxWidget m_Expansion_HardlineReputationDecreaseAmount;
-	private EditBoxWidget m_BountyDurationSeconds;
-	private CheckBoxWidget m_EnableSurvivalReward;
-	private CheckBoxWidget m_PvERuleBreakerGiveRewards;
-	private CheckBoxWidget m_BountyEnableMapDrawing;
-	private CheckBoxWidget m_BountyCircleReduceRadiusOverTime;
-	private CheckBoxWidget m_BountyCircleIncreaseRadiusOverTime;
-	private EditBoxWidget m_BountyCircleRadius;
-	private EditBoxWidget m_BountyCircleMinRadius;
-	private EditBoxWidget m_BountyCircleColor;
-	private EditBoxWidget m_BountyCircleDrawingWidth;
-	private EditBoxWidget m_BountyMapUpdateIntervalSeconds;
-	private EditBoxWidget m_BountyMapRequestCooldownSeconds;
-	private EditBoxWidget m_BountyMapSyncIntervalSeconds;
-	private EditBoxWidget m_BountyMapSyncIntervalNoBountiesSeconds;
-	private EditBoxWidget m_BountyCircleOffsetMinMultiplier;
-	private EditBoxWidget m_BountyCircleOffsetMaxMultiplier;
-	private EditBoxWidget m_CountdownWidgetPositionX;
-	private EditBoxWidget m_CountdownWidgetPositionY;
-	private EditBoxWidget m_CountdownWidgetWidth;
-	private EditBoxWidget m_CountdownWidgetHeight;
-	private EditBoxWidget m_CountdownWidgetBackgroundColor;
-	private EditBoxWidget m_CountdownWidgetTextColor;
-	private CheckBoxWidget m_PlacedBountyHuntedEnabled;
-	private EditBoxWidget m_PlacedBountyHuntedTitle;
-	private MultilineEditBoxWidget m_PlacedBountyHuntedMessage;
-	private EditBoxWidget m_PlacedBountyHuntedIconPath;
-	private CheckBoxWidget m_PlacedBountyExpiredEnabled;
-	private EditBoxWidget m_PlacedBountyExpiredTitle;
-	private MultilineEditBoxWidget m_PlacedBountyExpiredMessage;
-	private EditBoxWidget m_PlacedBountyExpiredIconPath;
-	private CheckBoxWidget m_PlacedBountySurvivalRewardEnabled;
-	private EditBoxWidget m_PlacedBountySurvivalRewardTitle;
-	private MultilineEditBoxWidget m_PlacedBountySurvivalRewardMessage;
-	private EditBoxWidget m_PlacedBountySurvivalRewardIconPath;
-	private CheckBoxWidget m_PlacedBountyKilledRewardEnabled;
-	private EditBoxWidget m_PlacedBountyKilledRewardTitle;
-	private MultilineEditBoxWidget m_PlacedBountyKilledRewardMessage;
-	private EditBoxWidget m_PlacedBountyKilledRewardIconPath;
-	private CheckBoxWidget m_RuleBreakerHuntedEnabled;
-	private EditBoxWidget m_RuleBreakerHuntedTitle;
-	private MultilineEditBoxWidget m_RuleBreakerHuntedMessage;
-	private EditBoxWidget m_RuleBreakerHuntedIconPath;
-	private CheckBoxWidget m_RuleBreakerHitWarningEnabled;
-	private EditBoxWidget m_RuleBreakerHitWarningTitle;
-	private MultilineEditBoxWidget m_RuleBreakerHitWarningMessage;
-	private EditBoxWidget m_RuleBreakerHitWarningIconPath;
-	private CheckBoxWidget m_RuleBreakerExpiredEnabled;
-	private EditBoxWidget m_RuleBreakerExpiredTitle;
-	private MultilineEditBoxWidget m_RuleBreakerExpiredMessage;
-	private EditBoxWidget m_RuleBreakerExpiredIconPath;
-	private CheckBoxWidget m_RuleBreakerSurvivalRewardEnabled;
-	private EditBoxWidget m_RuleBreakerSurvivalRewardTitle;
-	private MultilineEditBoxWidget m_RuleBreakerSurvivalRewardMessage;
-	private EditBoxWidget m_RuleBreakerSurvivalRewardIconPath;
-	private CheckBoxWidget m_RuleBreakerKilledRewardEnabled;
-	private EditBoxWidget m_RuleBreakerKilledRewardTitle;
-	private MultilineEditBoxWidget m_RuleBreakerKilledRewardMessage;
-	private EditBoxWidget m_RuleBreakerKilledRewardIconPath;
-	private CheckBoxWidget m_OtherInsufficientTokensEnabled;
-	private EditBoxWidget m_OtherInsufficientTokensTitle;
-	private MultilineEditBoxWidget m_OtherInsufficientTokensMessage;
-	private EditBoxWidget m_OtherInsufficientTokensIconPath;
-	private CheckBoxWidget m_OtherSkipBountyNoPlayersEnabled;
-	private EditBoxWidget m_OtherSkipBountyNoPlayersTitle;
-	private MultilineEditBoxWidget m_OtherSkipBountyNoPlayersMessage;
-	private EditBoxWidget m_OtherSkipBountyNoPlayersIconPath;
-	private CheckBoxWidget m_OtherSkipBountySuccessEnabled;
-	private EditBoxWidget m_OtherSkipBountySuccessTitle;
-	private MultilineEditBoxWidget m_OtherSkipBountySuccessMessage;
-	private EditBoxWidget m_OtherSkipBountySuccessIconPath;
-	private CheckBoxWidget m_OtherBountySkippedEnabled;
-	private EditBoxWidget m_OtherBountySkippedTitle;
-	private MultilineEditBoxWidget m_OtherBountySkippedMessage;
-	private EditBoxWidget m_OtherBountySkippedIconPath;
-	private CheckBoxWidget m_OtherRewardHandsNotFreeEnabled;
-	private EditBoxWidget m_OtherRewardHandsNotFreeTitle;
-	private MultilineEditBoxWidget m_OtherRewardHandsNotFreeMessage;
-	private EditBoxWidget m_OtherRewardHandsNotFreeIconPath;
-	private CheckBoxWidget m_OtherPlayerOnCooldownEnabled;
-	private EditBoxWidget m_OtherPlayerOnCooldownTitle;
-	private MultilineEditBoxWidget m_OtherPlayerOnCooldownMessage;
-	private EditBoxWidget m_OtherPlayerOnCooldownIconPath;
-	private CheckBoxWidget m_OtherPlayerInSafeZoneEnabled;
-	private EditBoxWidget m_OtherPlayerInSafeZoneTitle;
-	private MultilineEditBoxWidget m_OtherPlayerInSafeZoneMessage;
-	private EditBoxWidget m_OtherPlayerInSafeZoneIconPath;
-	private CheckBoxWidget m_OtherBountyPersistedEnabled;
-	private EditBoxWidget m_OtherBountyPersistedTitle;
-	private MultilineEditBoxWidget m_OtherBountyPersistedMessage;
-	private EditBoxWidget m_OtherBountyPersistedIconPath;
-	private CheckBoxWidget m_OtherTeleportedOutOfTerritoryEnabled;
-	private EditBoxWidget m_OtherTeleportedOutOfTerritoryTitle;
-	private MultilineEditBoxWidget m_OtherTeleportedOutOfTerritoryMessage;
-	private EditBoxWidget m_OtherTeleportedOutOfTerritoryIconPath;
-	private CheckBoxWidget m_OtherBountyPausedInTerritoryEnabled;
-	private EditBoxWidget m_OtherBountyPausedInTerritoryTitle;
-	private MultilineEditBoxWidget m_OtherBountyPausedInTerritoryMessage;
-	private EditBoxWidget m_OtherBountyPausedInTerritoryIconPath;
-	private CheckBoxWidget m_BroadcastsPlacedBountyEnabled;
-	private EditBoxWidget m_BroadcastsPlacedBountyTitle;
-	private MultilineEditBoxWidget m_BroadcastsPlacedBountyMessage;
-	private EditBoxWidget m_BroadcastsPlacedBountyIconPath;
-	private CheckBoxWidget m_BroadcastsRuleBreakerEnabled;
-	private EditBoxWidget m_BroadcastsRuleBreakerTitle;
-	private MultilineEditBoxWidget m_BroadcastsRuleBreakerMessage;
-	private EditBoxWidget m_BroadcastsRuleBreakerIconPath;
-	void BountyAdminMenu()
+	private ButtonWidget obfv_m_BtnApplyTestRuleBreakerBounty;
+	private ButtonWidget obfv_m_BtnAddBountySelectedPlayer;
+	private ButtonWidget obfv_m_BtnClearBounty;
+	private ButtonWidget obfv_m_BtnClearBountySelectedPlayer;
+	private ButtonWidget obfv_m_BtnReloadConfigs;
+	private ButtonWidget obfv_m_BtnClearAllCooldowns;
+	private ButtonWidget obfv_m_BtnClearPlayerCooldown;
+	private ButtonWidget obfv_m_BtnSaveAndReload;
+	private ButtonWidget obfv_m_BtnAddRewardPoint;
+	private ButtonWidget obfv_m_BtnRemoveRewardPoint;
+	private TextListboxWidget obfv_m_PlayersList;
+	private ref obfc_BountyConfig obfv_m_CachedConfig;
+	private ref array<string> obfv_m_PlayerIdentifiers;
+	private ButtonWidget obfv_m_btnNormalSettings;
+	private ButtonWidget obfv_m_btnNotifications;
+	private ButtonWidget obfv_m_btnBlacklist;
+	private Widget obfv_m_GeneralRootPanel;
+	private Widget obfv_m_NotificationsRootPanel;
+	private Widget obfv_m_BlacklistRootPanel;
+	private TextListboxWidget obfv_m_OnlinePlayersList;
+	private TextListboxWidget obfv_m_BlacklistedPlayersList;
+	private ref array<string> obfv_m_OnlinePlayerIdentifiers;
+	private ButtonWidget obfv_m_AddToBlacklistBtn;
+	private ButtonWidget obfv_m_RemoveFromBlacklistBtn;
+	private ButtonWidget obfv_m_RefreshBlacklistPlayerListBtn;
+	private CheckBoxWidget obfv_m_EnableBountySystem;
+	private CheckBoxWidget obfv_m_DisableSelfBounty;
+	private CheckBoxWidget obfv_m_TeleportOutOfOwnTerritory;
+	private CheckBoxWidget obfv_m_PauseBountyInTerritory;
+	private CheckBoxWidget obfv_m_TeleportOutOfSafeZone;
+	private CheckBoxWidget obfv_m_EnableAutomatedBountyPlacement;
+	private EditBoxWidget obfv_m_BountyCooldownSeconds;
+	private EditBoxWidget obfv_m_MaxBountiedPlayers;
+	private EditBoxWidget obfv_m_MinOnlinePlayersRequired;
+	private EditBoxWidget obfv_m_SkipBountyTokenRequired;
+	private EditBoxWidget obfv_m_PlaceBountyTokenRequired;
+	private EditBoxWidget obfv_m_ResumeBountyDistanceFromTerritory;
+	private EditBoxWidget obfv_m_PausedBountyResumeCheckInterval;
+	private EditBoxWidget obfv_m_TeleportOutOfSafeZoneDistance;
+	private EditBoxWidget obfv_m_MinimumPlayerLifetimeSeconds;
+	private EditBoxWidget obfv_m_AutomatedBountyPlacementIntervalSeconds;
+	private CheckBoxWidget obfv_m_EnableRuleBreakerHitThreshold;
+	private CheckBoxWidget obfv_m_EnablePvEToPvPRuleBreaker;
+	private CheckBoxWidget obfv_m_ClearPendingRewardsOnRuleBreakerBounty;
+	private CheckBoxWidget obfv_m_AllowPvEToPvEVictimKill;
+	private EditBoxWidget obfv_m_BountyRuleBreakerDurationSeconds;
+	private EditBoxWidget obfv_m_RuleBreakerHitThresholdTime;
+	private EditBoxWidget obfv_m_RuleBreakerHitThresholdWarningHits;
+	private EditBoxWidget obfv_m_RuleBreakerHitThresholdBountyHits;
+	private EditBoxWidget obfv_m_PvEToPvPInstantRuleBreakerHits;
+	private CheckBoxWidget obfv_m_Expansion_EnableHardlineReputationDecrease;
+	private EditBoxWidget obfv_m_Expansion_HardlineReputationDecreaseAmount;
+	private EditBoxWidget obfv_m_BountyDurationSeconds;
+	private CheckBoxWidget obfv_m_EnableSurvivalReward;
+	private CheckBoxWidget obfv_m_PvERuleBreakerGiveRewards;
+	private CheckBoxWidget obfv_m_BountyEnableMapDrawing;
+	private CheckBoxWidget obfv_m_BountyCircleReduceRadiusOverTime;
+	private CheckBoxWidget obfv_m_BountyCircleIncreaseRadiusOverTime;
+	private EditBoxWidget obfv_m_BountyCircleRadius;
+	private EditBoxWidget obfv_m_BountyCircleMinRadius;
+	private EditBoxWidget obfv_m_BountyCircleColor;
+	private EditBoxWidget obfv_m_BountyCircleDrawingWidth;
+	private EditBoxWidget obfv_m_BountyMapUpdateIntervalSeconds;
+	private EditBoxWidget obfv_m_BountyMapRequestCooldownSeconds;
+	private EditBoxWidget obfv_m_BountyMapSyncIntervalSeconds;
+	private EditBoxWidget obfv_m_BountyMapSyncIntervalNoBountiesSeconds;
+	private EditBoxWidget obfv_m_BountyCircleOffsetMinMultiplier;
+	private EditBoxWidget obfv_m_BountyCircleOffsetMaxMultiplier;
+	private EditBoxWidget obfv_m_CountdownWidgetPositionX;
+	private EditBoxWidget obfv_m_CountdownWidgetPositionY;
+	private EditBoxWidget obfv_m_CountdownWidgetWidth;
+	private EditBoxWidget obfv_m_CountdownWidgetHeight;
+	private EditBoxWidget obfv_m_CountdownWidgetBackgroundColor;
+	private EditBoxWidget obfv_m_CountdownWidgetTextColor;
+	private CheckBoxWidget obfv_m_PlacedBountyHuntedEnabled;
+	private EditBoxWidget obfv_m_PlacedBountyHuntedTitle;
+	private MultilineEditBoxWidget obfv_m_PlacedBountyHuntedMessage;
+	private EditBoxWidget obfv_m_PlacedBountyHuntedIconPath;
+	private CheckBoxWidget obfv_m_PlacedBountyExpiredEnabled;
+	private EditBoxWidget obfv_m_PlacedBountyExpiredTitle;
+	private MultilineEditBoxWidget obfv_m_PlacedBountyExpiredMessage;
+	private EditBoxWidget obfv_m_PlacedBountyExpiredIconPath;
+	private CheckBoxWidget obfv_m_PlacedBountySurvivalRewardEnabled;
+	private EditBoxWidget obfv_m_PlacedBountySurvivalRewardTitle;
+	private MultilineEditBoxWidget obfv_m_PlacedBountySurvivalRewardMessage;
+	private EditBoxWidget obfv_m_PlacedBountySurvivalRewardIconPath;
+	private CheckBoxWidget obfv_m_PlacedBountyKilledRewardEnabled;
+	private EditBoxWidget obfv_m_PlacedBountyKilledRewardTitle;
+	private MultilineEditBoxWidget obfv_m_PlacedBountyKilledRewardMessage;
+	private EditBoxWidget obfv_m_PlacedBountyKilledRewardIconPath;
+	private CheckBoxWidget obfv_m_RuleBreakerHuntedEnabled;
+	private EditBoxWidget obfv_m_RuleBreakerHuntedTitle;
+	private MultilineEditBoxWidget obfv_m_RuleBreakerHuntedMessage;
+	private EditBoxWidget obfv_m_RuleBreakerHuntedIconPath;
+	private CheckBoxWidget obfv_m_RuleBreakerHitWarningEnabled;
+	private EditBoxWidget obfv_m_RuleBreakerHitWarningTitle;
+	private MultilineEditBoxWidget obfv_m_RuleBreakerHitWarningMessage;
+	private EditBoxWidget obfv_m_RuleBreakerHitWarningIconPath;
+	private CheckBoxWidget obfv_m_RuleBreakerExpiredEnabled;
+	private EditBoxWidget obfv_m_RuleBreakerExpiredTitle;
+	private MultilineEditBoxWidget obfv_m_RuleBreakerExpiredMessage;
+	private EditBoxWidget obfv_m_RuleBreakerExpiredIconPath;
+	private CheckBoxWidget obfv_m_RuleBreakerSurvivalRewardEnabled;
+	private EditBoxWidget obfv_m_RuleBreakerSurvivalRewardTitle;
+	private MultilineEditBoxWidget obfv_m_RuleBreakerSurvivalRewardMessage;
+	private EditBoxWidget obfv_m_RuleBreakerSurvivalRewardIconPath;
+	private CheckBoxWidget obfv_m_RuleBreakerKilledRewardEnabled;
+	private EditBoxWidget obfv_m_RuleBreakerKilledRewardTitle;
+	private MultilineEditBoxWidget obfv_m_RuleBreakerKilledRewardMessage;
+	private EditBoxWidget obfv_m_RuleBreakerKilledRewardIconPath;
+	private CheckBoxWidget obfv_m_OtherInsufficientTokensEnabled;
+	private EditBoxWidget obfv_m_OtherInsufficientTokensTitle;
+	private MultilineEditBoxWidget obfv_m_OtherInsufficientTokensMessage;
+	private EditBoxWidget obfv_m_OtherInsufficientTokensIconPath;
+	private CheckBoxWidget obfv_m_OtherSkipBountyNoPlayersEnabled;
+	private EditBoxWidget obfv_m_OtherSkipBountyNoPlayersTitle;
+	private MultilineEditBoxWidget obfv_m_OtherSkipBountyNoPlayersMessage;
+	private EditBoxWidget obfv_m_OtherSkipBountyNoPlayersIconPath;
+	private CheckBoxWidget obfv_m_OtherSkipBountySuccessEnabled;
+	private EditBoxWidget obfv_m_OtherSkipBountySuccessTitle;
+	private MultilineEditBoxWidget obfv_m_OtherSkipBountySuccessMessage;
+	private EditBoxWidget obfv_m_OtherSkipBountySuccessIconPath;
+	private CheckBoxWidget obfv_m_OtherBountySkippedEnabled;
+	private EditBoxWidget obfv_m_OtherBountySkippedTitle;
+	private MultilineEditBoxWidget obfv_m_OtherBountySkippedMessage;
+	private EditBoxWidget obfv_m_OtherBountySkippedIconPath;
+	private CheckBoxWidget obfv_m_OtherRewardHandsNotFreeEnabled;
+	private EditBoxWidget obfv_m_OtherRewardHandsNotFreeTitle;
+	private MultilineEditBoxWidget obfv_m_OtherRewardHandsNotFreeMessage;
+	private EditBoxWidget obfv_m_OtherRewardHandsNotFreeIconPath;
+	private CheckBoxWidget obfv_m_OtherPlayerOnCooldownEnabled;
+	private EditBoxWidget obfv_m_OtherPlayerOnCooldownTitle;
+	private MultilineEditBoxWidget obfv_m_OtherPlayerOnCooldownMessage;
+	private EditBoxWidget obfv_m_OtherPlayerOnCooldownIconPath;
+	private CheckBoxWidget obfv_m_OtherPlayerInSafeZoneEnabled;
+	private EditBoxWidget obfv_m_OtherPlayerInSafeZoneTitle;
+	private MultilineEditBoxWidget obfv_m_OtherPlayerInSafeZoneMessage;
+	private EditBoxWidget obfv_m_OtherPlayerInSafeZoneIconPath;
+	private CheckBoxWidget obfv_m_OtherBountyPersistedEnabled;
+	private EditBoxWidget obfv_m_OtherBountyPersistedTitle;
+	private MultilineEditBoxWidget obfv_m_OtherBountyPersistedMessage;
+	private EditBoxWidget obfv_m_OtherBountyPersistedIconPath;
+	private CheckBoxWidget obfv_m_OtherTeleportedOutOfTerritoryEnabled;
+	private EditBoxWidget obfv_m_OtherTeleportedOutOfTerritoryTitle;
+	private MultilineEditBoxWidget obfv_m_OtherTeleportedOutOfTerritoryMessage;
+	private EditBoxWidget obfv_m_OtherTeleportedOutOfTerritoryIconPath;
+	private CheckBoxWidget obfv_m_OtherBountyPausedInTerritoryEnabled;
+	private EditBoxWidget obfv_m_OtherBountyPausedInTerritoryTitle;
+	private MultilineEditBoxWidget obfv_m_OtherBountyPausedInTerritoryMessage;
+	private EditBoxWidget obfv_m_OtherBountyPausedInTerritoryIconPath;
+	private CheckBoxWidget obfv_m_BroadcastsPlacedBountyEnabled;
+	private EditBoxWidget obfv_m_BroadcastsPlacedBountyTitle;
+	private MultilineEditBoxWidget obfv_m_BroadcastsPlacedBountyMessage;
+	private EditBoxWidget obfv_m_BroadcastsPlacedBountyIconPath;
+	private CheckBoxWidget obfv_m_BroadcastsRuleBreakerEnabled;
+	private EditBoxWidget obfv_m_BroadcastsRuleBreakerTitle;
+	private MultilineEditBoxWidget obfv_m_BroadcastsRuleBreakerMessage;
+	private EditBoxWidget obfv_m_BroadcastsRuleBreakerIconPath;
+	void obfc_BountyAdminMenu()
 	{
-		m_PlayerIdentifiers = new array<string>();
-		m_OnlinePlayerIdentifiers = new array<string>();
+		obfv_m_PlayerIdentifiers = new array<string>();
+		obfv_m_OnlinePlayerIdentifiers = new array<string>();
 	}
-	private string GetPlayerEntryDisplayName(string entry)
+	private string obfm_GetPlayerEntryDisplayName(string entry)
 	{
 		int separatorIndex = entry.IndexOf("||");
 		if (separatorIndex < 0)
 			return entry;
 		return entry.Substring(0, separatorIndex);
 	}
-	private string GetPlayerEntryIdentifier(string entry)
+	private string obfm_GetPlayerEntryIdentifier(string entry)
 	{
 		int separatorIndex = entry.IndexOf("||");
 		if (separatorIndex < 0 || separatorIndex >= entry.Length() - 2)
@@ -182,201 +182,201 @@ class BountyAdminMenu extends UIScriptedMenu
 		layoutRoot = g_Game.GetWorkspace().CreateWidgets("Ninjins_Bounty_System/gui/layouts/BountyAdminMenu.layout");
 		if (!layoutRoot)
 			return NULL;
-		m_BtnApplyTestRuleBreakerBounty = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnApplyTestRuleBreakerBounty"));
-		m_BtnAddBountySelectedPlayer = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnAddBountySelectedPlayer"));
-		m_BtnClearBounty = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnClearBounty"));
-		m_BtnClearBountySelectedPlayer = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnClearBountySelectedPlayer"));
-		m_BtnReloadConfigs = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnReloadConfigs"));
-		m_BtnClearAllCooldowns = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnClearAllCooldowns"));
-		m_BtnClearPlayerCooldown = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnClearPlayerCooldown"));
-		m_BtnSaveAndReload = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BTNSaveAndReload"));
-		m_BtnAddRewardPoint = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnAddRewardPoint"));
-		m_BtnRemoveRewardPoint = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnRemoveRewardPoint"));
-		m_PlayersList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("PlayersList"));
-		m_btnNormalSettings = ButtonWidget.Cast(layoutRoot.FindAnyWidget("btnNormalSettings"));
-		m_btnNotifications = ButtonWidget.Cast(layoutRoot.FindAnyWidget("btnNotifications"));
-		m_btnBlacklist = ButtonWidget.Cast(layoutRoot.FindAnyWidget("btnBlacklist"));
-		m_GeneralRootPanel = layoutRoot.FindAnyWidget("GeneralRootPanel");
-		m_NotificationsRootPanel = layoutRoot.FindAnyWidget("NotificationsSettingsPanel");
-		m_BlacklistRootPanel = layoutRoot.FindAnyWidget("BlacklistSettingsPanel");
-		m_OnlinePlayersList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("TextListboxWidgetOnlinePlayers"));
-		m_BlacklistedPlayersList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("TextListboxWidgetBlacklistedPlayers"));
-		m_AddToBlacklistBtn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("AddToBlacklistBTN"));
-		m_RemoveFromBlacklistBtn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("RemoveFromBlacklistBTN"));
-		m_RefreshBlacklistPlayerListBtn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("RefreshBlacklistPlayerListBTN"));
-		m_EnableBountySystem = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("EnableBountySystem"));
-		m_DisableSelfBounty = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("DisableSelfBounty"));
-		m_TeleportOutOfOwnTerritory = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("TeleportOutOfOwnTerritory"));
-		m_PauseBountyInTerritory = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("PauseBountyInTerritory"));
-		m_TeleportOutOfSafeZone = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("TeleportOutOfSafeZone"));
-		m_EnableAutomatedBountyPlacement = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("EnableAutomatedBountyPlacement"));
-		m_BountyCooldownSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCooldownSeconds"));
-		m_MaxBountiedPlayers = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("MaxBountiedPlayers"));
-		m_MinOnlinePlayersRequired = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("MinOnlinePlayersRequired"));
-		m_SkipBountyTokenRequired = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("SkipBountyTokenRequired"));
-		m_PlaceBountyTokenRequired = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlaceBountyTokenRequired"));
-		m_ResumeBountyDistanceFromTerritory = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("ResumeBountyDistanceFromTerritory"));
-		m_PausedBountyResumeCheckInterval = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PausedBountyResumeCheckInterval"));
-		m_TeleportOutOfSafeZoneDistance = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("TeleportOutOfSafeZoneDistance"));
-		m_MinimumPlayerLifetimeSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("MinimumPlayerLifetimeSeconds"));
-		m_AutomatedBountyPlacementIntervalSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("AutomatedBountyPlacementIntervalSeconds"));
-		m_EnableRuleBreakerHitThreshold = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("EnableRuleBreakerHitThreshold"));
-		m_EnablePvEToPvPRuleBreaker = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("EnablePvEToPvPRuleBreaker"));
-		m_ClearPendingRewardsOnRuleBreakerBounty = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("ClearPendingRewardsOnRuleBreakerBounty"));
-		m_AllowPvEToPvEVictimKill = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("AllowPvEToPvEVictimKill"));
-		m_BountyRuleBreakerDurationSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyRuleBreakerDurationSeconds"));
-		m_RuleBreakerHitThresholdTime = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHitThresholdTime"));
-		m_RuleBreakerHitThresholdWarningHits = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHitThresholdWarningHits"));
-		m_RuleBreakerHitThresholdBountyHits = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHitThresholdBountyHits"));
-		m_PvEToPvPInstantRuleBreakerHits = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PvEToPvPInstantRuleBreakerHits"));
-		m_Expansion_EnableHardlineReputationDecrease = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("Expansion_EnableHardlineReputationDecrease"));
-		m_Expansion_HardlineReputationDecreaseAmount = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("Expansion_HardlineReputationDecreaseAmount"));
-		m_BountyDurationSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyDurationSeconds"));
-		m_EnableSurvivalReward = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("EnableSurvivalReward"));
-		m_PvERuleBreakerGiveRewards = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("PvERuleBreakerGiveRewards"));
-		m_BountyEnableMapDrawing = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyEnableMapDrawing"));
-		m_BountyCircleReduceRadiusOverTime = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleReduceRadiusOverTime"));
-		m_BountyCircleIncreaseRadiusOverTime = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleIncreaseRadiusOverTime"));
-		m_BountyCircleRadius = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleRadius"));
-		m_BountyCircleMinRadius = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleMinRadius"));
-		m_BountyCircleColor = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleColor"));
-		m_BountyCircleDrawingWidth = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleDrawingWidth"));
-		m_BountyMapUpdateIntervalSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyMapUpdateIntervalSeconds"));
-		m_BountyMapRequestCooldownSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyMapRequestCooldownSeconds"));
-		m_BountyMapSyncIntervalSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyMapSyncIntervalSeconds"));
-		m_BountyMapSyncIntervalNoBountiesSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyMapSyncIntervalNoBountiesSeconds"));
-		m_BountyCircleOffsetMinMultiplier = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleOffsetMinMultiplier"));
-		m_BountyCircleOffsetMaxMultiplier = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleOffsetMaxMultiplier"));
-		m_CountdownWidgetPositionX = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("CountdownWidgetPositionX"));
-		m_CountdownWidgetPositionY = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("CountdownWidgetPositionY"));
-		m_CountdownWidgetWidth = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("CountdownWidgetWidth"));
-		m_CountdownWidgetHeight = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("CountdownWidgetHeight"));
-		m_CountdownWidgetBackgroundColor = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("CountdownWidgetBackgroundColor"));
-		m_CountdownWidgetTextColor = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("CountdownWidgetTextColor"));
-		m_PlacedBountyHuntedEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyHuntedEnabled0"));
-		m_PlacedBountyHuntedTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyHuntedTitle0"));
-		m_PlacedBountyHuntedMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyHuntedMessage0"));
-		m_PlacedBountyHuntedIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyHuntedIconPath0"));
-		m_PlacedBountyExpiredEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyExpiredEnabled0"));
-		m_PlacedBountyExpiredTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyExpiredTitle0"));
-		m_PlacedBountyExpiredMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyExpiredMessage0"));
-		m_PlacedBountyExpiredIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyExpiredIconPath0"));
-		m_PlacedBountySurvivalRewardEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountySurvivalRewardEnabled0"));
-		m_PlacedBountySurvivalRewardTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountySurvivalRewardTitle0"));
-		m_PlacedBountySurvivalRewardMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountySurvivalRewardMessage0"));
-		m_PlacedBountySurvivalRewardIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountySurvivalRewardIconPath0"));
-		m_PlacedBountyKilledRewardEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyKilledRewardEnabled0"));
-		m_PlacedBountyKilledRewardTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyKilledRewardTitle0"));
-		m_PlacedBountyKilledRewardMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyKilledRewardMessage0"));
-		m_PlacedBountyKilledRewardIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyKilledRewardIconPath0"));
-		m_RuleBreakerHuntedEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHuntedEnabled0"));
-		m_RuleBreakerHuntedTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHuntedTitle0"));
-		m_RuleBreakerHuntedMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHuntedMessage0"));
-		m_RuleBreakerHuntedIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHuntedIconPath0"));
-		m_RuleBreakerHitWarningEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHitWarningEnabled0"));
-		m_RuleBreakerHitWarningTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHitWarningTitle0"));
-		m_RuleBreakerHitWarningMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHitWarningMessage0"));
-		m_RuleBreakerHitWarningIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHitWarningIconPath0"));
-		m_RuleBreakerExpiredEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerExpiredEnabled0"));
-		m_RuleBreakerExpiredTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerExpiredTitle0"));
-		m_RuleBreakerExpiredMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerExpiredMessage0"));
-		m_RuleBreakerExpiredIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerExpiredIconPath0"));
-		m_RuleBreakerSurvivalRewardEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerSurvivalRewardEnabled0"));
-		m_RuleBreakerSurvivalRewardTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerSurvivalRewardTitle0"));
-		m_RuleBreakerSurvivalRewardMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerSurvivalRewardMessage0"));
-		m_RuleBreakerSurvivalRewardIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerSurvivalRewardIconPath0"));
-		m_RuleBreakerKilledRewardEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerKilledRewardEnabled0"));
-		m_RuleBreakerKilledRewardTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerKilledRewardTitle0"));
-		m_RuleBreakerKilledRewardMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerKilledRewardMessage0"));
-		m_RuleBreakerKilledRewardIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerKilledRewardIconPath0"));
-		m_OtherInsufficientTokensEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherInsufficientTokensEnabled0"));
-		m_OtherInsufficientTokensTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherInsufficientTokensTitle0"));
-		m_OtherInsufficientTokensMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherInsufficientTokensMessage0"));
-		m_OtherInsufficientTokensIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherInsufficientTokensIconPath0"));
-		m_OtherSkipBountyNoPlayersEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountyNoPlayersEnabled0"));
-		m_OtherSkipBountyNoPlayersTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountyNoPlayersTitle0"));
-		m_OtherSkipBountyNoPlayersMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountyNoPlayersMessage0"));
-		m_OtherSkipBountyNoPlayersIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountyNoPlayersIconPath0"));
-		m_OtherSkipBountySuccessEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountySuccessEnabled0"));
-		m_OtherSkipBountySuccessTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountySuccessTitle0"));
-		m_OtherSkipBountySuccessMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountySuccessMessage0"));
-		m_OtherSkipBountySuccessIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountySuccessIconPath0"));
-		m_OtherBountySkippedEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountySkippedEnabled0"));
-		m_OtherBountySkippedTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountySkippedTitle0"));
-		m_OtherBountySkippedMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountySkippedMessage0"));
-		m_OtherBountySkippedIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountySkippedIconPath0"));
-		m_OtherRewardHandsNotFreeEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherRewardHandsNotFreeEnabled0"));
-		m_OtherRewardHandsNotFreeTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherRewardHandsNotFreeTitle0"));
-		m_OtherRewardHandsNotFreeMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherRewardHandsNotFreeMessage0"));
-		m_OtherRewardHandsNotFreeIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherRewardHandsNotFreeIconPath0"));
-		m_OtherPlayerOnCooldownEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerOnCooldownEnabled0"));
-		m_OtherPlayerOnCooldownTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerOnCooldownTitle0"));
-		m_OtherPlayerOnCooldownMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerOnCooldownMessage0"));
-		m_OtherPlayerOnCooldownIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerOnCooldownIconPath0"));
-		m_OtherPlayerInSafeZoneEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerInSafeZoneEnabled0"));
-		m_OtherPlayerInSafeZoneTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerInSafeZoneTitle0"));
-		m_OtherPlayerInSafeZoneMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerInSafeZoneMessage0"));
-		m_OtherPlayerInSafeZoneIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerInSafeZoneIconPath0"));
-		m_OtherBountyPersistedEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPersistedEnabled0"));
-		m_OtherBountyPersistedTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPersistedTitle0"));
-		m_OtherBountyPersistedMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPersistedMessage0"));
-		m_OtherBountyPersistedIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPersistedIconPath0"));
-		m_OtherTeleportedOutOfTerritoryEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherTeleportedOutOfTerritoryEnabled0"));
-		m_OtherTeleportedOutOfTerritoryTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherTeleportedOutOfTerritoryTitle0"));
-		m_OtherTeleportedOutOfTerritoryMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherTeleportedOutOfTerritoryMessage0"));
-		m_OtherTeleportedOutOfTerritoryIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherTeleportedOutOfTerritoryIconPath0"));
-		m_OtherBountyPausedInTerritoryEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPausedInTerritoryEnabled0"));
-		m_OtherBountyPausedInTerritoryTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPausedInTerritoryTitle0"));
-		m_OtherBountyPausedInTerritoryMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPausedInTerritoryMessage0"));
-		m_OtherBountyPausedInTerritoryIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPausedInTerritoryIconPath0"));
-		m_BroadcastsPlacedBountyEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsPlacedBountyEnabled0"));
-		m_BroadcastsPlacedBountyTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsPlacedBountyTitle0"));
-		m_BroadcastsPlacedBountyMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsPlacedBountyMessage0"));
-		m_BroadcastsPlacedBountyIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsPlacedBountyIconPath0"));
-		m_BroadcastsRuleBreakerEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsRuleBreakerEnabled0"));
-		m_BroadcastsRuleBreakerTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsRuleBreakerTitle0"));
-		m_BroadcastsRuleBreakerMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsRuleBreakerMessage0"));
-		m_BroadcastsRuleBreakerIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsRuleBreakerIconPath0"));
-		if (!m_PlayersList)
+		obfv_m_BtnApplyTestRuleBreakerBounty = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnApplyTestRuleBreakerBounty"));
+		obfv_m_BtnAddBountySelectedPlayer = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnAddBountySelectedPlayer"));
+		obfv_m_BtnClearBounty = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnClearBounty"));
+		obfv_m_BtnClearBountySelectedPlayer = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnClearBountySelectedPlayer"));
+		obfv_m_BtnReloadConfigs = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnReloadConfigs"));
+		obfv_m_BtnClearAllCooldowns = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnClearAllCooldowns"));
+		obfv_m_BtnClearPlayerCooldown = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnClearPlayerCooldown"));
+		obfv_m_BtnSaveAndReload = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BTNSaveAndReload"));
+		obfv_m_BtnAddRewardPoint = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnAddRewardPoint"));
+		obfv_m_BtnRemoveRewardPoint = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnRemoveRewardPoint"));
+		obfv_m_PlayersList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("PlayersList"));
+		obfv_m_btnNormalSettings = ButtonWidget.Cast(layoutRoot.FindAnyWidget("btnNormalSettings"));
+		obfv_m_btnNotifications = ButtonWidget.Cast(layoutRoot.FindAnyWidget("btnNotifications"));
+		obfv_m_btnBlacklist = ButtonWidget.Cast(layoutRoot.FindAnyWidget("btnBlacklist"));
+		obfv_m_GeneralRootPanel = layoutRoot.FindAnyWidget("GeneralRootPanel");
+		obfv_m_NotificationsRootPanel = layoutRoot.FindAnyWidget("NotificationsSettingsPanel");
+		obfv_m_BlacklistRootPanel = layoutRoot.FindAnyWidget("BlacklistSettingsPanel");
+		obfv_m_OnlinePlayersList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("TextListboxWidgetOnlinePlayers"));
+		obfv_m_BlacklistedPlayersList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("TextListboxWidgetBlacklistedPlayers"));
+		obfv_m_AddToBlacklistBtn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("AddToBlacklistBTN"));
+		obfv_m_RemoveFromBlacklistBtn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("RemoveFromBlacklistBTN"));
+		obfv_m_RefreshBlacklistPlayerListBtn = ButtonWidget.Cast(layoutRoot.FindAnyWidget("RefreshBlacklistPlayerListBTN"));
+		obfv_m_EnableBountySystem = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("EnableBountySystem"));
+		obfv_m_DisableSelfBounty = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("DisableSelfBounty"));
+		obfv_m_TeleportOutOfOwnTerritory = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("TeleportOutOfOwnTerritory"));
+		obfv_m_PauseBountyInTerritory = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("PauseBountyInTerritory"));
+		obfv_m_TeleportOutOfSafeZone = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("TeleportOutOfSafeZone"));
+		obfv_m_EnableAutomatedBountyPlacement = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("EnableAutomatedBountyPlacement"));
+		obfv_m_BountyCooldownSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCooldownSeconds"));
+		obfv_m_MaxBountiedPlayers = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("MaxBountiedPlayers"));
+		obfv_m_MinOnlinePlayersRequired = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("MinOnlinePlayersRequired"));
+		obfv_m_SkipBountyTokenRequired = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("SkipBountyTokenRequired"));
+		obfv_m_PlaceBountyTokenRequired = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlaceBountyTokenRequired"));
+		obfv_m_ResumeBountyDistanceFromTerritory = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("ResumeBountyDistanceFromTerritory"));
+		obfv_m_PausedBountyResumeCheckInterval = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PausedBountyResumeCheckInterval"));
+		obfv_m_TeleportOutOfSafeZoneDistance = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("TeleportOutOfSafeZoneDistance"));
+		obfv_m_MinimumPlayerLifetimeSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("MinimumPlayerLifetimeSeconds"));
+		obfv_m_AutomatedBountyPlacementIntervalSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("AutomatedBountyPlacementIntervalSeconds"));
+		obfv_m_EnableRuleBreakerHitThreshold = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("EnableRuleBreakerHitThreshold"));
+		obfv_m_EnablePvEToPvPRuleBreaker = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("EnablePvEToPvPRuleBreaker"));
+		obfv_m_ClearPendingRewardsOnRuleBreakerBounty = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("ClearPendingRewardsOnRuleBreakerBounty"));
+		obfv_m_AllowPvEToPvEVictimKill = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("AllowPvEToPvEVictimKill"));
+		obfv_m_BountyRuleBreakerDurationSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyRuleBreakerDurationSeconds"));
+		obfv_m_RuleBreakerHitThresholdTime = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHitThresholdTime"));
+		obfv_m_RuleBreakerHitThresholdWarningHits = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHitThresholdWarningHits"));
+		obfv_m_RuleBreakerHitThresholdBountyHits = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHitThresholdBountyHits"));
+		obfv_m_PvEToPvPInstantRuleBreakerHits = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PvEToPvPInstantRuleBreakerHits"));
+		obfv_m_Expansion_EnableHardlineReputationDecrease = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("Expansion_EnableHardlineReputationDecrease"));
+		obfv_m_Expansion_HardlineReputationDecreaseAmount = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("Expansion_HardlineReputationDecreaseAmount"));
+		obfv_m_BountyDurationSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyDurationSeconds"));
+		obfv_m_EnableSurvivalReward = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("EnableSurvivalReward"));
+		obfv_m_PvERuleBreakerGiveRewards = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("PvERuleBreakerGiveRewards"));
+		obfv_m_BountyEnableMapDrawing = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyEnableMapDrawing"));
+		obfv_m_BountyCircleReduceRadiusOverTime = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleReduceRadiusOverTime"));
+		obfv_m_BountyCircleIncreaseRadiusOverTime = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleIncreaseRadiusOverTime"));
+		obfv_m_BountyCircleRadius = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleRadius"));
+		obfv_m_BountyCircleMinRadius = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleMinRadius"));
+		obfv_m_BountyCircleColor = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleColor"));
+		obfv_m_BountyCircleDrawingWidth = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleDrawingWidth"));
+		obfv_m_BountyMapUpdateIntervalSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyMapUpdateIntervalSeconds"));
+		obfv_m_BountyMapRequestCooldownSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyMapRequestCooldownSeconds"));
+		obfv_m_BountyMapSyncIntervalSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyMapSyncIntervalSeconds"));
+		obfv_m_BountyMapSyncIntervalNoBountiesSeconds = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyMapSyncIntervalNoBountiesSeconds"));
+		obfv_m_BountyCircleOffsetMinMultiplier = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleOffsetMinMultiplier"));
+		obfv_m_BountyCircleOffsetMaxMultiplier = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyCircleOffsetMaxMultiplier"));
+		obfv_m_CountdownWidgetPositionX = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("CountdownWidgetPositionX"));
+		obfv_m_CountdownWidgetPositionY = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("CountdownWidgetPositionY"));
+		obfv_m_CountdownWidgetWidth = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("CountdownWidgetWidth"));
+		obfv_m_CountdownWidgetHeight = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("CountdownWidgetHeight"));
+		obfv_m_CountdownWidgetBackgroundColor = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("CountdownWidgetBackgroundColor"));
+		obfv_m_CountdownWidgetTextColor = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("CountdownWidgetTextColor"));
+		obfv_m_PlacedBountyHuntedEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyHuntedEnabled0"));
+		obfv_m_PlacedBountyHuntedTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyHuntedTitle0"));
+		obfv_m_PlacedBountyHuntedMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyHuntedMessage0"));
+		obfv_m_PlacedBountyHuntedIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyHuntedIconPath0"));
+		obfv_m_PlacedBountyExpiredEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyExpiredEnabled0"));
+		obfv_m_PlacedBountyExpiredTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyExpiredTitle0"));
+		obfv_m_PlacedBountyExpiredMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyExpiredMessage0"));
+		obfv_m_PlacedBountyExpiredIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyExpiredIconPath0"));
+		obfv_m_PlacedBountySurvivalRewardEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountySurvivalRewardEnabled0"));
+		obfv_m_PlacedBountySurvivalRewardTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountySurvivalRewardTitle0"));
+		obfv_m_PlacedBountySurvivalRewardMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountySurvivalRewardMessage0"));
+		obfv_m_PlacedBountySurvivalRewardIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountySurvivalRewardIconPath0"));
+		obfv_m_PlacedBountyKilledRewardEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyKilledRewardEnabled0"));
+		obfv_m_PlacedBountyKilledRewardTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyKilledRewardTitle0"));
+		obfv_m_PlacedBountyKilledRewardMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyKilledRewardMessage0"));
+		obfv_m_PlacedBountyKilledRewardIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("PlacedBountyKilledRewardIconPath0"));
+		obfv_m_RuleBreakerHuntedEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHuntedEnabled0"));
+		obfv_m_RuleBreakerHuntedTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHuntedTitle0"));
+		obfv_m_RuleBreakerHuntedMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHuntedMessage0"));
+		obfv_m_RuleBreakerHuntedIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHuntedIconPath0"));
+		obfv_m_RuleBreakerHitWarningEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHitWarningEnabled0"));
+		obfv_m_RuleBreakerHitWarningTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHitWarningTitle0"));
+		obfv_m_RuleBreakerHitWarningMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHitWarningMessage0"));
+		obfv_m_RuleBreakerHitWarningIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerHitWarningIconPath0"));
+		obfv_m_RuleBreakerExpiredEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerExpiredEnabled0"));
+		obfv_m_RuleBreakerExpiredTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerExpiredTitle0"));
+		obfv_m_RuleBreakerExpiredMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerExpiredMessage0"));
+		obfv_m_RuleBreakerExpiredIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerExpiredIconPath0"));
+		obfv_m_RuleBreakerSurvivalRewardEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerSurvivalRewardEnabled0"));
+		obfv_m_RuleBreakerSurvivalRewardTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerSurvivalRewardTitle0"));
+		obfv_m_RuleBreakerSurvivalRewardMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerSurvivalRewardMessage0"));
+		obfv_m_RuleBreakerSurvivalRewardIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerSurvivalRewardIconPath0"));
+		obfv_m_RuleBreakerKilledRewardEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerKilledRewardEnabled0"));
+		obfv_m_RuleBreakerKilledRewardTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerKilledRewardTitle0"));
+		obfv_m_RuleBreakerKilledRewardMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerKilledRewardMessage0"));
+		obfv_m_RuleBreakerKilledRewardIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("RuleBreakerKilledRewardIconPath0"));
+		obfv_m_OtherInsufficientTokensEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherInsufficientTokensEnabled0"));
+		obfv_m_OtherInsufficientTokensTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherInsufficientTokensTitle0"));
+		obfv_m_OtherInsufficientTokensMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherInsufficientTokensMessage0"));
+		obfv_m_OtherInsufficientTokensIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherInsufficientTokensIconPath0"));
+		obfv_m_OtherSkipBountyNoPlayersEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountyNoPlayersEnabled0"));
+		obfv_m_OtherSkipBountyNoPlayersTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountyNoPlayersTitle0"));
+		obfv_m_OtherSkipBountyNoPlayersMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountyNoPlayersMessage0"));
+		obfv_m_OtherSkipBountyNoPlayersIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountyNoPlayersIconPath0"));
+		obfv_m_OtherSkipBountySuccessEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountySuccessEnabled0"));
+		obfv_m_OtherSkipBountySuccessTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountySuccessTitle0"));
+		obfv_m_OtherSkipBountySuccessMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountySuccessMessage0"));
+		obfv_m_OtherSkipBountySuccessIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherSkipBountySuccessIconPath0"));
+		obfv_m_OtherBountySkippedEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountySkippedEnabled0"));
+		obfv_m_OtherBountySkippedTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountySkippedTitle0"));
+		obfv_m_OtherBountySkippedMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountySkippedMessage0"));
+		obfv_m_OtherBountySkippedIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountySkippedIconPath0"));
+		obfv_m_OtherRewardHandsNotFreeEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherRewardHandsNotFreeEnabled0"));
+		obfv_m_OtherRewardHandsNotFreeTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherRewardHandsNotFreeTitle0"));
+		obfv_m_OtherRewardHandsNotFreeMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherRewardHandsNotFreeMessage0"));
+		obfv_m_OtherRewardHandsNotFreeIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherRewardHandsNotFreeIconPath0"));
+		obfv_m_OtherPlayerOnCooldownEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerOnCooldownEnabled0"));
+		obfv_m_OtherPlayerOnCooldownTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerOnCooldownTitle0"));
+		obfv_m_OtherPlayerOnCooldownMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerOnCooldownMessage0"));
+		obfv_m_OtherPlayerOnCooldownIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerOnCooldownIconPath0"));
+		obfv_m_OtherPlayerInSafeZoneEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerInSafeZoneEnabled0"));
+		obfv_m_OtherPlayerInSafeZoneTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerInSafeZoneTitle0"));
+		obfv_m_OtherPlayerInSafeZoneMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerInSafeZoneMessage0"));
+		obfv_m_OtherPlayerInSafeZoneIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherPlayerInSafeZoneIconPath0"));
+		obfv_m_OtherBountyPersistedEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPersistedEnabled0"));
+		obfv_m_OtherBountyPersistedTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPersistedTitle0"));
+		obfv_m_OtherBountyPersistedMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPersistedMessage0"));
+		obfv_m_OtherBountyPersistedIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPersistedIconPath0"));
+		obfv_m_OtherTeleportedOutOfTerritoryEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherTeleportedOutOfTerritoryEnabled0"));
+		obfv_m_OtherTeleportedOutOfTerritoryTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherTeleportedOutOfTerritoryTitle0"));
+		obfv_m_OtherTeleportedOutOfTerritoryMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherTeleportedOutOfTerritoryMessage0"));
+		obfv_m_OtherTeleportedOutOfTerritoryIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherTeleportedOutOfTerritoryIconPath0"));
+		obfv_m_OtherBountyPausedInTerritoryEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPausedInTerritoryEnabled0"));
+		obfv_m_OtherBountyPausedInTerritoryTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPausedInTerritoryTitle0"));
+		obfv_m_OtherBountyPausedInTerritoryMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPausedInTerritoryMessage0"));
+		obfv_m_OtherBountyPausedInTerritoryIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("OtherBountyPausedInTerritoryIconPath0"));
+		obfv_m_BroadcastsPlacedBountyEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsPlacedBountyEnabled0"));
+		obfv_m_BroadcastsPlacedBountyTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsPlacedBountyTitle0"));
+		obfv_m_BroadcastsPlacedBountyMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsPlacedBountyMessage0"));
+		obfv_m_BroadcastsPlacedBountyIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsPlacedBountyIconPath0"));
+		obfv_m_BroadcastsRuleBreakerEnabled = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsRuleBreakerEnabled0"));
+		obfv_m_BroadcastsRuleBreakerTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsRuleBreakerTitle0"));
+		obfv_m_BroadcastsRuleBreakerMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsRuleBreakerMessage0"));
+		obfv_m_BroadcastsRuleBreakerIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsRuleBreakerIconPath0"));
+		if (!obfv_m_PlayersList)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] PlayersList widget not found in layout!");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] PlayersList widget not found in layout!");
 		}
 		return layoutRoot;
 	}
-	private void ShowOnlyPanel(Widget panelToShow)
+	private void obfm_ShowOnlyPanel(Widget panelToShow)
 	{
-		if (m_GeneralRootPanel)
-			m_GeneralRootPanel.Show(false);
-		if (m_NotificationsRootPanel)
-			m_NotificationsRootPanel.Show(false);
-		if (m_BlacklistRootPanel)
-			m_BlacklistRootPanel.Show(false);
+		if (obfv_m_GeneralRootPanel)
+			obfv_m_GeneralRootPanel.Show(false);
+		if (obfv_m_NotificationsRootPanel)
+			obfv_m_NotificationsRootPanel.Show(false);
+		if (obfv_m_BlacklistRootPanel)
+			obfv_m_BlacklistRootPanel.Show(false);
 		if (panelToShow)
 			panelToShow.Show(true);
-		if (m_btnNormalSettings)
+		if (obfv_m_btnNormalSettings)
 		{
-			if (panelToShow == m_GeneralRootPanel)
-				m_btnNormalSettings.SetColor(ARGB(255, 27, 89, 95)); 
+			if (panelToShow == obfv_m_GeneralRootPanel)
+				obfv_m_btnNormalSettings.SetColor(ARGB(255, 27, 89, 95)); 
 			else
-				m_btnNormalSettings.SetColor(ARGB(241, 30, 40, 56)); 
+				obfv_m_btnNormalSettings.SetColor(ARGB(241, 30, 40, 56)); 
 		}
-		if (m_btnNotifications)
+		if (obfv_m_btnNotifications)
 		{
-			if (panelToShow == m_NotificationsRootPanel)
-				m_btnNotifications.SetColor(ARGB(255, 27, 89, 95)); 
+			if (panelToShow == obfv_m_NotificationsRootPanel)
+				obfv_m_btnNotifications.SetColor(ARGB(255, 27, 89, 95)); 
 			else
-				m_btnNotifications.SetColor(ARGB(241, 30, 40, 56)); 
+				obfv_m_btnNotifications.SetColor(ARGB(241, 30, 40, 56)); 
 		}
-		if (m_btnBlacklist)
+		if (obfv_m_btnBlacklist)
 		{
-			if (panelToShow == m_BlacklistRootPanel)
-				m_btnBlacklist.SetColor(ARGB(255, 27, 89, 95)); 
+			if (panelToShow == obfv_m_BlacklistRootPanel)
+				obfv_m_btnBlacklist.SetColor(ARGB(255, 27, 89, 95)); 
 			else
-				m_btnBlacklist.SetColor(ARGB(241, 30, 40, 56)); 
+				obfv_m_btnBlacklist.SetColor(ARGB(241, 30, 40, 56)); 
 		}
-		if (panelToShow == m_BlacklistRootPanel)
+		if (panelToShow == obfv_m_BlacklistRootPanel)
 		{
-			RefreshBlacklistLists();
+			obfm_RefreshBlacklistLists();
 		}
 	}
 	override void OnShow()
@@ -389,318 +389,318 @@ class BountyAdminMenu extends UIScriptedMenu
 		g_Game.GetUIManager().ShowUICursor(true);
 		g_Game.GetMission().GetHud().Show(false);
 		TIntArray skip = { UAUIBack, UABountyAdminMenu };
-		ForceDisableInputs(true, skip);
+		obfm_ForceDisableInputs(true, skip);
 		SetFocus(layoutRoot);
-		ShowOnlyPanel(m_GeneralRootPanel);
+		obfm_ShowOnlyPanel(obfv_m_GeneralRootPanel);
 		if (player && player.GetIdentity())
 		{
 			GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminRequestConfig", new Param1<int>(0), true, player.GetIdentity());
 		}
-		RefreshPlayersList();
+		obfm_RefreshPlayersList();
 	}
-	void UpdateConfigFromServer(BountyConfig config)
+	void obfm_UpdateConfigFromServer(obfc_BountyConfig config)
 	{
-		m_CachedConfig = config;
-		PopulateConfigValues();
+		obfv_m_CachedConfig = config;
+		obfm_PopulateConfigValues();
 	}
-	void PopulateConfigValues()
+	void obfm_PopulateConfigValues()
 	{
-		BountyConfig config;
-		config = m_CachedConfig;
+		obfc_BountyConfig config;
+		config = obfv_m_CachedConfig;
 		if (!config)
 			return;
-		if (m_EnableBountySystem && config.Core)
-			m_EnableBountySystem.SetChecked(config.Core.EnableBountySystem);
-		if (m_DisableSelfBounty && config.Core)
-			m_DisableSelfBounty.SetChecked(config.Core.DisableSelfBounty);
-		if (m_TeleportOutOfOwnTerritory && config.Core)
-			m_TeleportOutOfOwnTerritory.SetChecked(config.Core.TeleportOutOfOwnTerritory);
-		if (m_PauseBountyInTerritory && config.Core)
-			m_PauseBountyInTerritory.SetChecked(config.Core.PauseBountyInTerritory);
-		if (m_TeleportOutOfSafeZone && config.Core)
-			m_TeleportOutOfSafeZone.SetChecked(config.Core.TeleportOutOfSafeZone);
-		if (m_EnableAutomatedBountyPlacement && config.Core)
-			m_EnableAutomatedBountyPlacement.SetChecked(config.Core.EnableAutomatedBountyPlacement);
-		if (m_BountyCooldownSeconds && config.Core)
-			m_BountyCooldownSeconds.SetText(config.Core.BountyCooldownSeconds.ToString());
-		if (m_MaxBountiedPlayers && config.Core)
-			m_MaxBountiedPlayers.SetText(config.Core.MaxBountiedPlayers.ToString());
-		if (m_MinOnlinePlayersRequired && config.Core)
-			m_MinOnlinePlayersRequired.SetText(config.Core.MinOnlinePlayersRequired.ToString());
-		if (m_SkipBountyTokenRequired && config.Core)
-			m_SkipBountyTokenRequired.SetText(config.Core.SkipBountyTokenRequired.ToString());
-		if (m_PlaceBountyTokenRequired && config.Core)
-			m_PlaceBountyTokenRequired.SetText(config.Core.PlaceBountyTokenRequired.ToString());
-		if (m_ResumeBountyDistanceFromTerritory && config.Core)
-			m_ResumeBountyDistanceFromTerritory.SetText(config.Core.ResumeBountyDistanceFromTerritory.ToString());
-		if (m_PausedBountyResumeCheckInterval && config.Core)
-			m_PausedBountyResumeCheckInterval.SetText(config.Core.PausedBountyResumeCheckInterval.ToString());
-		if (m_TeleportOutOfSafeZoneDistance && config.Core)
-			m_TeleportOutOfSafeZoneDistance.SetText(config.Core.TeleportOutOfSafeZoneDistance.ToString());
-		if (m_MinimumPlayerLifetimeSeconds && config.Core)
-			m_MinimumPlayerLifetimeSeconds.SetText(config.Core.MinimumPlayerLifetimeSeconds.ToString());
-		if (m_AutomatedBountyPlacementIntervalSeconds && config.Core)
-			m_AutomatedBountyPlacementIntervalSeconds.SetText(config.Core.AutomatedBountyPlacementIntervalSeconds.ToString());
-		if (m_EnableRuleBreakerHitThreshold && config.RuleBreaker)
-			m_EnableRuleBreakerHitThreshold.SetChecked(config.RuleBreaker.EnableRuleBreakerHitThreshold);
-		if (m_EnablePvEToPvPRuleBreaker && config.RuleBreaker)
-			m_EnablePvEToPvPRuleBreaker.SetChecked(config.RuleBreaker.EnablePvEToPvPRuleBreaker);
-		if (m_ClearPendingRewardsOnRuleBreakerBounty && config.RuleBreaker)
-			m_ClearPendingRewardsOnRuleBreakerBounty.SetChecked(config.RuleBreaker.ClearPendingRewardsOnRuleBreakerBounty);
-		if (m_AllowPvEToPvEVictimKill && config.RuleBreaker)
-			m_AllowPvEToPvEVictimKill.SetChecked(config.RuleBreaker.AllowPvEToPvEVictimKill);
-		if (m_BountyRuleBreakerDurationSeconds && config.RuleBreaker)
-			m_BountyRuleBreakerDurationSeconds.SetText(config.RuleBreaker.BountyRuleBreakerDurationSeconds.ToString());
-		if (m_RuleBreakerHitThresholdTime && config.RuleBreaker)
-			m_RuleBreakerHitThresholdTime.SetText(config.RuleBreaker.RuleBreakerHitThresholdTime.ToString());
-		if (m_RuleBreakerHitThresholdWarningHits && config.RuleBreaker)
-			m_RuleBreakerHitThresholdWarningHits.SetText(config.RuleBreaker.RuleBreakerHitThresholdWarningHits.ToString());
-		if (m_RuleBreakerHitThresholdBountyHits && config.RuleBreaker)
-			m_RuleBreakerHitThresholdBountyHits.SetText(config.RuleBreaker.RuleBreakerHitThresholdBountyHits.ToString());
-		if (m_PvEToPvPInstantRuleBreakerHits && config.RuleBreaker)
-			m_PvEToPvPInstantRuleBreakerHits.SetText(config.RuleBreaker.PvEToPvPInstantRuleBreakerHits.ToString());
-		if (m_Expansion_EnableHardlineReputationDecrease && config.RuleBreaker)
-			m_Expansion_EnableHardlineReputationDecrease.SetChecked(config.RuleBreaker.Expansion_EnableHardlineReputationDecrease);
-		if (m_Expansion_HardlineReputationDecreaseAmount && config.RuleBreaker)
-			m_Expansion_HardlineReputationDecreaseAmount.SetText(config.RuleBreaker.Expansion_HardlineReputationDecreaseAmount.ToString());
-		if (m_BountyDurationSeconds && config.PlacedBounty)
-			m_BountyDurationSeconds.SetText(config.PlacedBounty.BountyDurationSeconds.ToString());
-		if (m_EnableSurvivalReward && config.Reward)
-			m_EnableSurvivalReward.SetChecked(config.Reward.EnableSurvivalReward);
-		if (m_PvERuleBreakerGiveRewards && config.Reward)
-			m_PvERuleBreakerGiveRewards.SetChecked(config.Reward.PvERuleBreakerGiveRewards);
-		if (m_BountyEnableMapDrawing && config.Map)
-			m_BountyEnableMapDrawing.SetChecked(config.Map.BountyEnableMapDrawing);
-		if (m_BountyCircleReduceRadiusOverTime && config.Map)
-			m_BountyCircleReduceRadiusOverTime.SetChecked(config.Map.BountyCircleReduceRadiusOverTime);
-		if (m_BountyCircleIncreaseRadiusOverTime && config.Map)
-			m_BountyCircleIncreaseRadiusOverTime.SetChecked(config.Map.BountyCircleIncreaseRadiusOverTime);
-		if (m_BountyCircleRadius && config.Map)
-			m_BountyCircleRadius.SetText(config.Map.BountyCircleRadius.ToString());
-		if (m_BountyCircleMinRadius && config.Map)
-			m_BountyCircleMinRadius.SetText(config.Map.BountyCircleMinRadius.ToString());
-		if (m_BountyCircleColor && config.Map)
-			m_BountyCircleColor.SetText(config.Map.BountyCircleColor.ToString());
-		if (m_BountyCircleDrawingWidth && config.Map)
-			m_BountyCircleDrawingWidth.SetText(config.Map.BountyCircleDrawingWidth.ToString());
-		if (m_BountyMapUpdateIntervalSeconds && config.Map)
-			m_BountyMapUpdateIntervalSeconds.SetText(config.Map.BountyMapUpdateIntervalSeconds.ToString());
-		if (m_BountyMapRequestCooldownSeconds && config.Map)
-			m_BountyMapRequestCooldownSeconds.SetText(config.Map.BountyMapRequestCooldownSeconds.ToString());
-		if (m_BountyMapSyncIntervalSeconds && config.Map)
-			m_BountyMapSyncIntervalSeconds.SetText(config.Map.BountyMapSyncIntervalSeconds.ToString());
-		if (m_BountyMapSyncIntervalNoBountiesSeconds && config.Map)
-			m_BountyMapSyncIntervalNoBountiesSeconds.SetText(config.Map.BountyMapSyncIntervalNoBountiesSeconds.ToString());
-		if (m_BountyCircleOffsetMinMultiplier && config.Map)
-			m_BountyCircleOffsetMinMultiplier.SetText(config.Map.BountyCircleOffsetMinMultiplier.ToString());
-		if (m_BountyCircleOffsetMaxMultiplier && config.Map)
-			m_BountyCircleOffsetMaxMultiplier.SetText(config.Map.BountyCircleOffsetMaxMultiplier.ToString());
-		if (m_CountdownWidgetPositionX && config.UI)
-			m_CountdownWidgetPositionX.SetText(config.UI.CountdownWidgetPositionX.ToString());
-		if (m_CountdownWidgetPositionY && config.UI)
-			m_CountdownWidgetPositionY.SetText(config.UI.CountdownWidgetPositionY.ToString());
-		if (m_CountdownWidgetWidth && config.UI)
-			m_CountdownWidgetWidth.SetText(config.UI.CountdownWidgetWidth.ToString());
-		if (m_CountdownWidgetHeight && config.UI)
-			m_CountdownWidgetHeight.SetText(config.UI.CountdownWidgetHeight.ToString());
-		if (m_CountdownWidgetBackgroundColor && config.UI)
-			m_CountdownWidgetBackgroundColor.SetText(config.UI.CountdownWidgetBackgroundColor.ToString());
-		if (m_CountdownWidgetTextColor && config.UI)
-			m_CountdownWidgetTextColor.SetText(config.UI.CountdownWidgetTextColor.ToString());
+		if (obfv_m_EnableBountySystem && config.Core)
+			obfv_m_EnableBountySystem.SetChecked(config.Core.EnableBountySystem);
+		if (obfv_m_DisableSelfBounty && config.Core)
+			obfv_m_DisableSelfBounty.SetChecked(config.Core.DisableSelfBounty);
+		if (obfv_m_TeleportOutOfOwnTerritory && config.Core)
+			obfv_m_TeleportOutOfOwnTerritory.SetChecked(config.Core.obfm_TeleportOutOfOwnTerritory);
+		if (obfv_m_PauseBountyInTerritory && config.Core)
+			obfv_m_PauseBountyInTerritory.SetChecked(config.Core.PauseBountyInTerritory);
+		if (obfv_m_TeleportOutOfSafeZone && config.Core)
+			obfv_m_TeleportOutOfSafeZone.SetChecked(config.Core.obfm_TeleportOutOfSafeZone);
+		if (obfv_m_EnableAutomatedBountyPlacement && config.Core)
+			obfv_m_EnableAutomatedBountyPlacement.SetChecked(config.Core.EnableAutomatedBountyPlacement);
+		if (obfv_m_BountyCooldownSeconds && config.Core)
+			obfv_m_BountyCooldownSeconds.SetText(config.Core.BountyCooldownSeconds.ToString());
+		if (obfv_m_MaxBountiedPlayers && config.Core)
+			obfv_m_MaxBountiedPlayers.SetText(config.Core.MaxBountiedPlayers.ToString());
+		if (obfv_m_MinOnlinePlayersRequired && config.Core)
+			obfv_m_MinOnlinePlayersRequired.SetText(config.Core.MinOnlinePlayersRequired.ToString());
+		if (obfv_m_SkipBountyTokenRequired && config.Core)
+			obfv_m_SkipBountyTokenRequired.SetText(config.Core.SkipBountyTokenRequired.ToString());
+		if (obfv_m_PlaceBountyTokenRequired && config.Core)
+			obfv_m_PlaceBountyTokenRequired.SetText(config.Core.PlaceBountyTokenRequired.ToString());
+		if (obfv_m_ResumeBountyDistanceFromTerritory && config.Core)
+			obfv_m_ResumeBountyDistanceFromTerritory.SetText(config.Core.ResumeBountyDistanceFromTerritory.ToString());
+		if (obfv_m_PausedBountyResumeCheckInterval && config.Core)
+			obfv_m_PausedBountyResumeCheckInterval.SetText(config.Core.PausedBountyResumeCheckInterval.ToString());
+		if (obfv_m_TeleportOutOfSafeZoneDistance && config.Core)
+			obfv_m_TeleportOutOfSafeZoneDistance.SetText(config.Core.TeleportOutOfSafeZoneDistance.ToString());
+		if (obfv_m_MinimumPlayerLifetimeSeconds && config.Core)
+			obfv_m_MinimumPlayerLifetimeSeconds.SetText(config.Core.MinimumPlayerLifetimeSeconds.ToString());
+		if (obfv_m_AutomatedBountyPlacementIntervalSeconds && config.Core)
+			obfv_m_AutomatedBountyPlacementIntervalSeconds.SetText(config.Core.AutomatedBountyPlacementIntervalSeconds.ToString());
+		if (obfv_m_EnableRuleBreakerHitThreshold && config.RuleBreaker)
+			obfv_m_EnableRuleBreakerHitThreshold.SetChecked(config.RuleBreaker.EnableRuleBreakerHitThreshold);
+		if (obfv_m_EnablePvEToPvPRuleBreaker && config.RuleBreaker)
+			obfv_m_EnablePvEToPvPRuleBreaker.SetChecked(config.RuleBreaker.EnablePvEToPvPRuleBreaker);
+		if (obfv_m_ClearPendingRewardsOnRuleBreakerBounty && config.RuleBreaker)
+			obfv_m_ClearPendingRewardsOnRuleBreakerBounty.SetChecked(config.RuleBreaker.ClearPendingRewardsOnRuleBreakerBounty);
+		if (obfv_m_AllowPvEToPvEVictimKill && config.RuleBreaker)
+			obfv_m_AllowPvEToPvEVictimKill.SetChecked(config.RuleBreaker.AllowPvEToPvEVictimKill);
+		if (obfv_m_BountyRuleBreakerDurationSeconds && config.RuleBreaker)
+			obfv_m_BountyRuleBreakerDurationSeconds.SetText(config.RuleBreaker.BountyRuleBreakerDurationSeconds.ToString());
+		if (obfv_m_RuleBreakerHitThresholdTime && config.RuleBreaker)
+			obfv_m_RuleBreakerHitThresholdTime.SetText(config.RuleBreaker.RuleBreakerHitThresholdTime.ToString());
+		if (obfv_m_RuleBreakerHitThresholdWarningHits && config.RuleBreaker)
+			obfv_m_RuleBreakerHitThresholdWarningHits.SetText(config.RuleBreaker.RuleBreakerHitThresholdWarningHits.ToString());
+		if (obfv_m_RuleBreakerHitThresholdBountyHits && config.RuleBreaker)
+			obfv_m_RuleBreakerHitThresholdBountyHits.SetText(config.RuleBreaker.RuleBreakerHitThresholdBountyHits.ToString());
+		if (obfv_m_PvEToPvPInstantRuleBreakerHits && config.RuleBreaker)
+			obfv_m_PvEToPvPInstantRuleBreakerHits.SetText(config.RuleBreaker.PvEToPvPInstantRuleBreakerHits.ToString());
+		if (obfv_m_Expansion_EnableHardlineReputationDecrease && config.RuleBreaker)
+			obfv_m_Expansion_EnableHardlineReputationDecrease.SetChecked(config.RuleBreaker.Expansion_EnableHardlineReputationDecrease);
+		if (obfv_m_Expansion_HardlineReputationDecreaseAmount && config.RuleBreaker)
+			obfv_m_Expansion_HardlineReputationDecreaseAmount.SetText(config.RuleBreaker.Expansion_HardlineReputationDecreaseAmount.ToString());
+		if (obfv_m_BountyDurationSeconds && config.PlacedBounty)
+			obfv_m_BountyDurationSeconds.SetText(config.PlacedBounty.BountyDurationSeconds.ToString());
+		if (obfv_m_EnableSurvivalReward && config.Reward)
+			obfv_m_EnableSurvivalReward.SetChecked(config.Reward.EnableSurvivalReward);
+		if (obfv_m_PvERuleBreakerGiveRewards && config.Reward)
+			obfv_m_PvERuleBreakerGiveRewards.SetChecked(config.Reward.PvERuleBreakerGiveRewards);
+		if (obfv_m_BountyEnableMapDrawing && config.Map)
+			obfv_m_BountyEnableMapDrawing.SetChecked(config.Map.BountyEnableMapDrawing);
+		if (obfv_m_BountyCircleReduceRadiusOverTime && config.Map)
+			obfv_m_BountyCircleReduceRadiusOverTime.SetChecked(config.Map.BountyCircleReduceRadiusOverTime);
+		if (obfv_m_BountyCircleIncreaseRadiusOverTime && config.Map)
+			obfv_m_BountyCircleIncreaseRadiusOverTime.SetChecked(config.Map.BountyCircleIncreaseRadiusOverTime);
+		if (obfv_m_BountyCircleRadius && config.Map)
+			obfv_m_BountyCircleRadius.SetText(config.Map.BountyCircleRadius.ToString());
+		if (obfv_m_BountyCircleMinRadius && config.Map)
+			obfv_m_BountyCircleMinRadius.SetText(config.Map.BountyCircleMinRadius.ToString());
+		if (obfv_m_BountyCircleColor && config.Map)
+			obfv_m_BountyCircleColor.SetText(config.Map.BountyCircleColor.ToString());
+		if (obfv_m_BountyCircleDrawingWidth && config.Map)
+			obfv_m_BountyCircleDrawingWidth.SetText(config.Map.BountyCircleDrawingWidth.ToString());
+		if (obfv_m_BountyMapUpdateIntervalSeconds && config.Map)
+			obfv_m_BountyMapUpdateIntervalSeconds.SetText(config.Map.BountyMapUpdateIntervalSeconds.ToString());
+		if (obfv_m_BountyMapRequestCooldownSeconds && config.Map)
+			obfv_m_BountyMapRequestCooldownSeconds.SetText(config.Map.BountyMapRequestCooldownSeconds.ToString());
+		if (obfv_m_BountyMapSyncIntervalSeconds && config.Map)
+			obfv_m_BountyMapSyncIntervalSeconds.SetText(config.Map.BountyMapSyncIntervalSeconds.ToString());
+		if (obfv_m_BountyMapSyncIntervalNoBountiesSeconds && config.Map)
+			obfv_m_BountyMapSyncIntervalNoBountiesSeconds.SetText(config.Map.BountyMapSyncIntervalNoBountiesSeconds.ToString());
+		if (obfv_m_BountyCircleOffsetMinMultiplier && config.Map)
+			obfv_m_BountyCircleOffsetMinMultiplier.SetText(config.Map.BountyCircleOffsetMinMultiplier.ToString());
+		if (obfv_m_BountyCircleOffsetMaxMultiplier && config.Map)
+			obfv_m_BountyCircleOffsetMaxMultiplier.SetText(config.Map.BountyCircleOffsetMaxMultiplier.ToString());
+		if (obfv_m_CountdownWidgetPositionX && config.UI)
+			obfv_m_CountdownWidgetPositionX.SetText(config.UI.CountdownWidgetPositionX.ToString());
+		if (obfv_m_CountdownWidgetPositionY && config.UI)
+			obfv_m_CountdownWidgetPositionY.SetText(config.UI.CountdownWidgetPositionY.ToString());
+		if (obfv_m_CountdownWidgetWidth && config.UI)
+			obfv_m_CountdownWidgetWidth.SetText(config.UI.CountdownWidgetWidth.ToString());
+		if (obfv_m_CountdownWidgetHeight && config.UI)
+			obfv_m_CountdownWidgetHeight.SetText(config.UI.CountdownWidgetHeight.ToString());
+		if (obfv_m_CountdownWidgetBackgroundColor && config.UI)
+			obfv_m_CountdownWidgetBackgroundColor.SetText(config.UI.CountdownWidgetBackgroundColor.ToString());
+		if (obfv_m_CountdownWidgetTextColor && config.UI)
+			obfv_m_CountdownWidgetTextColor.SetText(config.UI.CountdownWidgetTextColor.ToString());
 		if (config.Notifications && config.Notifications.PlacedBounty)
 		{
-			if (m_PlacedBountyHuntedEnabled && config.Notifications.PlacedBounty.Hunted)
+			if (obfv_m_PlacedBountyHuntedEnabled && config.Notifications.PlacedBounty.Hunted)
 			{
-				m_PlacedBountyHuntedEnabled.SetChecked(config.Notifications.PlacedBounty.Hunted.Enabled);
-				if (m_PlacedBountyHuntedTitle) m_PlacedBountyHuntedTitle.SetText(config.Notifications.PlacedBounty.Hunted.Title);
-				if (m_PlacedBountyHuntedMessage) m_PlacedBountyHuntedMessage.SetText(config.Notifications.PlacedBounty.Hunted.Message);
-				if (m_PlacedBountyHuntedIconPath) m_PlacedBountyHuntedIconPath.SetText(config.Notifications.PlacedBounty.Hunted.IconPath);
+				obfv_m_PlacedBountyHuntedEnabled.SetChecked(config.Notifications.PlacedBounty.Hunted.Enabled);
+				if (obfv_m_PlacedBountyHuntedTitle) obfv_m_PlacedBountyHuntedTitle.SetText(config.Notifications.PlacedBounty.Hunted.Title);
+				if (obfv_m_PlacedBountyHuntedMessage) obfv_m_PlacedBountyHuntedMessage.SetText(config.Notifications.PlacedBounty.Hunted.Message);
+				if (obfv_m_PlacedBountyHuntedIconPath) obfv_m_PlacedBountyHuntedIconPath.SetText(config.Notifications.PlacedBounty.Hunted.IconPath);
 			}
-			if (m_PlacedBountyExpiredEnabled && config.Notifications.PlacedBounty.Expired)
+			if (obfv_m_PlacedBountyExpiredEnabled && config.Notifications.PlacedBounty.Expired)
 			{
-				m_PlacedBountyExpiredEnabled.SetChecked(config.Notifications.PlacedBounty.Expired.Enabled);
-				if (m_PlacedBountyExpiredTitle) m_PlacedBountyExpiredTitle.SetText(config.Notifications.PlacedBounty.Expired.Title);
-				if (m_PlacedBountyExpiredMessage) m_PlacedBountyExpiredMessage.SetText(config.Notifications.PlacedBounty.Expired.Message);
-				if (m_PlacedBountyExpiredIconPath) m_PlacedBountyExpiredIconPath.SetText(config.Notifications.PlacedBounty.Expired.IconPath);
+				obfv_m_PlacedBountyExpiredEnabled.SetChecked(config.Notifications.PlacedBounty.Expired.Enabled);
+				if (obfv_m_PlacedBountyExpiredTitle) obfv_m_PlacedBountyExpiredTitle.SetText(config.Notifications.PlacedBounty.Expired.Title);
+				if (obfv_m_PlacedBountyExpiredMessage) obfv_m_PlacedBountyExpiredMessage.SetText(config.Notifications.PlacedBounty.Expired.Message);
+				if (obfv_m_PlacedBountyExpiredIconPath) obfv_m_PlacedBountyExpiredIconPath.SetText(config.Notifications.PlacedBounty.Expired.IconPath);
 			}
-			if (m_PlacedBountySurvivalRewardEnabled && config.Notifications.PlacedBounty.SurvivalReward)
+			if (obfv_m_PlacedBountySurvivalRewardEnabled && config.Notifications.PlacedBounty.SurvivalReward)
 			{
-				m_PlacedBountySurvivalRewardEnabled.SetChecked(config.Notifications.PlacedBounty.SurvivalReward.Enabled);
-				if (m_PlacedBountySurvivalRewardTitle) m_PlacedBountySurvivalRewardTitle.SetText(config.Notifications.PlacedBounty.SurvivalReward.Title);
-				if (m_PlacedBountySurvivalRewardMessage) m_PlacedBountySurvivalRewardMessage.SetText(config.Notifications.PlacedBounty.SurvivalReward.Message);
-				if (m_PlacedBountySurvivalRewardIconPath) m_PlacedBountySurvivalRewardIconPath.SetText(config.Notifications.PlacedBounty.SurvivalReward.IconPath);
+				obfv_m_PlacedBountySurvivalRewardEnabled.SetChecked(config.Notifications.PlacedBounty.SurvivalReward.Enabled);
+				if (obfv_m_PlacedBountySurvivalRewardTitle) obfv_m_PlacedBountySurvivalRewardTitle.SetText(config.Notifications.PlacedBounty.SurvivalReward.Title);
+				if (obfv_m_PlacedBountySurvivalRewardMessage) obfv_m_PlacedBountySurvivalRewardMessage.SetText(config.Notifications.PlacedBounty.SurvivalReward.Message);
+				if (obfv_m_PlacedBountySurvivalRewardIconPath) obfv_m_PlacedBountySurvivalRewardIconPath.SetText(config.Notifications.PlacedBounty.SurvivalReward.IconPath);
 			}
-			if (m_PlacedBountyKilledRewardEnabled && config.Notifications.PlacedBounty.KilledReward)
+			if (obfv_m_PlacedBountyKilledRewardEnabled && config.Notifications.PlacedBounty.KilledReward)
 			{
-				m_PlacedBountyKilledRewardEnabled.SetChecked(config.Notifications.PlacedBounty.KilledReward.Enabled);
-				if (m_PlacedBountyKilledRewardTitle) m_PlacedBountyKilledRewardTitle.SetText(config.Notifications.PlacedBounty.KilledReward.Title);
-				if (m_PlacedBountyKilledRewardMessage) m_PlacedBountyKilledRewardMessage.SetText(config.Notifications.PlacedBounty.KilledReward.Message);
-				if (m_PlacedBountyKilledRewardIconPath) m_PlacedBountyKilledRewardIconPath.SetText(config.Notifications.PlacedBounty.KilledReward.IconPath);
+				obfv_m_PlacedBountyKilledRewardEnabled.SetChecked(config.Notifications.PlacedBounty.KilledReward.Enabled);
+				if (obfv_m_PlacedBountyKilledRewardTitle) obfv_m_PlacedBountyKilledRewardTitle.SetText(config.Notifications.PlacedBounty.KilledReward.Title);
+				if (obfv_m_PlacedBountyKilledRewardMessage) obfv_m_PlacedBountyKilledRewardMessage.SetText(config.Notifications.PlacedBounty.KilledReward.Message);
+				if (obfv_m_PlacedBountyKilledRewardIconPath) obfv_m_PlacedBountyKilledRewardIconPath.SetText(config.Notifications.PlacedBounty.KilledReward.IconPath);
 			}
 		}
 		if (config.Notifications && config.Notifications.RuleBreaker)
 		{
-			if (m_RuleBreakerHuntedEnabled && config.Notifications.RuleBreaker.Hunted)
+			if (obfv_m_RuleBreakerHuntedEnabled && config.Notifications.RuleBreaker.Hunted)
 			{
-				m_RuleBreakerHuntedEnabled.SetChecked(config.Notifications.RuleBreaker.Hunted.Enabled);
-				if (m_RuleBreakerHuntedTitle) m_RuleBreakerHuntedTitle.SetText(config.Notifications.RuleBreaker.Hunted.Title);
-				if (m_RuleBreakerHuntedMessage) m_RuleBreakerHuntedMessage.SetText(config.Notifications.RuleBreaker.Hunted.Message);
-				if (m_RuleBreakerHuntedIconPath) m_RuleBreakerHuntedIconPath.SetText(config.Notifications.RuleBreaker.Hunted.IconPath);
+				obfv_m_RuleBreakerHuntedEnabled.SetChecked(config.Notifications.RuleBreaker.Hunted.Enabled);
+				if (obfv_m_RuleBreakerHuntedTitle) obfv_m_RuleBreakerHuntedTitle.SetText(config.Notifications.RuleBreaker.Hunted.Title);
+				if (obfv_m_RuleBreakerHuntedMessage) obfv_m_RuleBreakerHuntedMessage.SetText(config.Notifications.RuleBreaker.Hunted.Message);
+				if (obfv_m_RuleBreakerHuntedIconPath) obfv_m_RuleBreakerHuntedIconPath.SetText(config.Notifications.RuleBreaker.Hunted.IconPath);
 			}
-			if (m_RuleBreakerHitWarningEnabled && config.Notifications.RuleBreaker.HitWarning)
+			if (obfv_m_RuleBreakerHitWarningEnabled && config.Notifications.RuleBreaker.HitWarning)
 			{
-				m_RuleBreakerHitWarningEnabled.SetChecked(config.Notifications.RuleBreaker.HitWarning.Enabled);
-				if (m_RuleBreakerHitWarningTitle) m_RuleBreakerHitWarningTitle.SetText(config.Notifications.RuleBreaker.HitWarning.Title);
-				if (m_RuleBreakerHitWarningMessage) m_RuleBreakerHitWarningMessage.SetText(config.Notifications.RuleBreaker.HitWarning.Message);
-				if (m_RuleBreakerHitWarningIconPath) m_RuleBreakerHitWarningIconPath.SetText(config.Notifications.RuleBreaker.HitWarning.IconPath);
+				obfv_m_RuleBreakerHitWarningEnabled.SetChecked(config.Notifications.RuleBreaker.HitWarning.Enabled);
+				if (obfv_m_RuleBreakerHitWarningTitle) obfv_m_RuleBreakerHitWarningTitle.SetText(config.Notifications.RuleBreaker.HitWarning.Title);
+				if (obfv_m_RuleBreakerHitWarningMessage) obfv_m_RuleBreakerHitWarningMessage.SetText(config.Notifications.RuleBreaker.HitWarning.Message);
+				if (obfv_m_RuleBreakerHitWarningIconPath) obfv_m_RuleBreakerHitWarningIconPath.SetText(config.Notifications.RuleBreaker.HitWarning.IconPath);
 			}
-			if (m_RuleBreakerExpiredEnabled && config.Notifications.RuleBreaker.Expired)
+			if (obfv_m_RuleBreakerExpiredEnabled && config.Notifications.RuleBreaker.Expired)
 			{
-				m_RuleBreakerExpiredEnabled.SetChecked(config.Notifications.RuleBreaker.Expired.Enabled);
-				if (m_RuleBreakerExpiredTitle) m_RuleBreakerExpiredTitle.SetText(config.Notifications.RuleBreaker.Expired.Title);
-				if (m_RuleBreakerExpiredMessage) m_RuleBreakerExpiredMessage.SetText(config.Notifications.RuleBreaker.Expired.Message);
-				if (m_RuleBreakerExpiredIconPath) m_RuleBreakerExpiredIconPath.SetText(config.Notifications.RuleBreaker.Expired.IconPath);
+				obfv_m_RuleBreakerExpiredEnabled.SetChecked(config.Notifications.RuleBreaker.Expired.Enabled);
+				if (obfv_m_RuleBreakerExpiredTitle) obfv_m_RuleBreakerExpiredTitle.SetText(config.Notifications.RuleBreaker.Expired.Title);
+				if (obfv_m_RuleBreakerExpiredMessage) obfv_m_RuleBreakerExpiredMessage.SetText(config.Notifications.RuleBreaker.Expired.Message);
+				if (obfv_m_RuleBreakerExpiredIconPath) obfv_m_RuleBreakerExpiredIconPath.SetText(config.Notifications.RuleBreaker.Expired.IconPath);
 			}
-			if (m_RuleBreakerSurvivalRewardEnabled && config.Notifications.RuleBreaker.SurvivalReward)
+			if (obfv_m_RuleBreakerSurvivalRewardEnabled && config.Notifications.RuleBreaker.SurvivalReward)
 			{
-				m_RuleBreakerSurvivalRewardEnabled.SetChecked(config.Notifications.RuleBreaker.SurvivalReward.Enabled);
-				if (m_RuleBreakerSurvivalRewardTitle) m_RuleBreakerSurvivalRewardTitle.SetText(config.Notifications.RuleBreaker.SurvivalReward.Title);
-				if (m_RuleBreakerSurvivalRewardMessage) m_RuleBreakerSurvivalRewardMessage.SetText(config.Notifications.RuleBreaker.SurvivalReward.Message);
-				if (m_RuleBreakerSurvivalRewardIconPath) m_RuleBreakerSurvivalRewardIconPath.SetText(config.Notifications.RuleBreaker.SurvivalReward.IconPath);
+				obfv_m_RuleBreakerSurvivalRewardEnabled.SetChecked(config.Notifications.RuleBreaker.SurvivalReward.Enabled);
+				if (obfv_m_RuleBreakerSurvivalRewardTitle) obfv_m_RuleBreakerSurvivalRewardTitle.SetText(config.Notifications.RuleBreaker.SurvivalReward.Title);
+				if (obfv_m_RuleBreakerSurvivalRewardMessage) obfv_m_RuleBreakerSurvivalRewardMessage.SetText(config.Notifications.RuleBreaker.SurvivalReward.Message);
+				if (obfv_m_RuleBreakerSurvivalRewardIconPath) obfv_m_RuleBreakerSurvivalRewardIconPath.SetText(config.Notifications.RuleBreaker.SurvivalReward.IconPath);
 			}
-			if (m_RuleBreakerKilledRewardEnabled && config.Notifications.RuleBreaker.KilledReward)
+			if (obfv_m_RuleBreakerKilledRewardEnabled && config.Notifications.RuleBreaker.KilledReward)
 			{
-				m_RuleBreakerKilledRewardEnabled.SetChecked(config.Notifications.RuleBreaker.KilledReward.Enabled);
-				if (m_RuleBreakerKilledRewardTitle) m_RuleBreakerKilledRewardTitle.SetText(config.Notifications.RuleBreaker.KilledReward.Title);
-				if (m_RuleBreakerKilledRewardMessage) m_RuleBreakerKilledRewardMessage.SetText(config.Notifications.RuleBreaker.KilledReward.Message);
-				if (m_RuleBreakerKilledRewardIconPath) m_RuleBreakerKilledRewardIconPath.SetText(config.Notifications.RuleBreaker.KilledReward.IconPath);
+				obfv_m_RuleBreakerKilledRewardEnabled.SetChecked(config.Notifications.RuleBreaker.KilledReward.Enabled);
+				if (obfv_m_RuleBreakerKilledRewardTitle) obfv_m_RuleBreakerKilledRewardTitle.SetText(config.Notifications.RuleBreaker.KilledReward.Title);
+				if (obfv_m_RuleBreakerKilledRewardMessage) obfv_m_RuleBreakerKilledRewardMessage.SetText(config.Notifications.RuleBreaker.KilledReward.Message);
+				if (obfv_m_RuleBreakerKilledRewardIconPath) obfv_m_RuleBreakerKilledRewardIconPath.SetText(config.Notifications.RuleBreaker.KilledReward.IconPath);
 			}
 		}
 		if (config.Notifications && config.Notifications.Other)
 		{
-			if (m_OtherInsufficientTokensEnabled && config.Notifications.Other.InsufficientTokens)
+			if (obfv_m_OtherInsufficientTokensEnabled && config.Notifications.Other.InsufficientTokens)
 			{
-				m_OtherInsufficientTokensEnabled.SetChecked(config.Notifications.Other.InsufficientTokens.Enabled);
-				if (m_OtherInsufficientTokensTitle) m_OtherInsufficientTokensTitle.SetText(config.Notifications.Other.InsufficientTokens.Title);
-				if (m_OtherInsufficientTokensMessage) m_OtherInsufficientTokensMessage.SetText(config.Notifications.Other.InsufficientTokens.Message);
-				if (m_OtherInsufficientTokensIconPath) m_OtherInsufficientTokensIconPath.SetText(config.Notifications.Other.InsufficientTokens.IconPath);
+				obfv_m_OtherInsufficientTokensEnabled.SetChecked(config.Notifications.Other.InsufficientTokens.Enabled);
+				if (obfv_m_OtherInsufficientTokensTitle) obfv_m_OtherInsufficientTokensTitle.SetText(config.Notifications.Other.InsufficientTokens.Title);
+				if (obfv_m_OtherInsufficientTokensMessage) obfv_m_OtherInsufficientTokensMessage.SetText(config.Notifications.Other.InsufficientTokens.Message);
+				if (obfv_m_OtherInsufficientTokensIconPath) obfv_m_OtherInsufficientTokensIconPath.SetText(config.Notifications.Other.InsufficientTokens.IconPath);
 			}
-			if (m_OtherSkipBountyNoPlayersEnabled && config.Notifications.Other.SkipBountyNoPlayers)
+			if (obfv_m_OtherSkipBountyNoPlayersEnabled && config.Notifications.Other.SkipBountyNoPlayers)
 			{
-				m_OtherSkipBountyNoPlayersEnabled.SetChecked(config.Notifications.Other.SkipBountyNoPlayers.Enabled);
-				if (m_OtherSkipBountyNoPlayersTitle) m_OtherSkipBountyNoPlayersTitle.SetText(config.Notifications.Other.SkipBountyNoPlayers.Title);
-				if (m_OtherSkipBountyNoPlayersMessage) m_OtherSkipBountyNoPlayersMessage.SetText(config.Notifications.Other.SkipBountyNoPlayers.Message);
-				if (m_OtherSkipBountyNoPlayersIconPath) m_OtherSkipBountyNoPlayersIconPath.SetText(config.Notifications.Other.SkipBountyNoPlayers.IconPath);
+				obfv_m_OtherSkipBountyNoPlayersEnabled.SetChecked(config.Notifications.Other.SkipBountyNoPlayers.Enabled);
+				if (obfv_m_OtherSkipBountyNoPlayersTitle) obfv_m_OtherSkipBountyNoPlayersTitle.SetText(config.Notifications.Other.SkipBountyNoPlayers.Title);
+				if (obfv_m_OtherSkipBountyNoPlayersMessage) obfv_m_OtherSkipBountyNoPlayersMessage.SetText(config.Notifications.Other.SkipBountyNoPlayers.Message);
+				if (obfv_m_OtherSkipBountyNoPlayersIconPath) obfv_m_OtherSkipBountyNoPlayersIconPath.SetText(config.Notifications.Other.SkipBountyNoPlayers.IconPath);
 			}
-			if (m_OtherSkipBountySuccessEnabled && config.Notifications.Other.SkipBountySuccess)
+			if (obfv_m_OtherSkipBountySuccessEnabled && config.Notifications.Other.SkipBountySuccess)
 			{
-				m_OtherSkipBountySuccessEnabled.SetChecked(config.Notifications.Other.SkipBountySuccess.Enabled);
-				if (m_OtherSkipBountySuccessTitle) m_OtherSkipBountySuccessTitle.SetText(config.Notifications.Other.SkipBountySuccess.Title);
-				if (m_OtherSkipBountySuccessMessage) m_OtherSkipBountySuccessMessage.SetText(config.Notifications.Other.SkipBountySuccess.Message);
-				if (m_OtherSkipBountySuccessIconPath) m_OtherSkipBountySuccessIconPath.SetText(config.Notifications.Other.SkipBountySuccess.IconPath);
+				obfv_m_OtherSkipBountySuccessEnabled.SetChecked(config.Notifications.Other.SkipBountySuccess.Enabled);
+				if (obfv_m_OtherSkipBountySuccessTitle) obfv_m_OtherSkipBountySuccessTitle.SetText(config.Notifications.Other.SkipBountySuccess.Title);
+				if (obfv_m_OtherSkipBountySuccessMessage) obfv_m_OtherSkipBountySuccessMessage.SetText(config.Notifications.Other.SkipBountySuccess.Message);
+				if (obfv_m_OtherSkipBountySuccessIconPath) obfv_m_OtherSkipBountySuccessIconPath.SetText(config.Notifications.Other.SkipBountySuccess.IconPath);
 			}
-			if (m_OtherBountySkippedEnabled && config.Notifications.Other.BountySkipped)
+			if (obfv_m_OtherBountySkippedEnabled && config.Notifications.Other.BountySkipped)
 			{
-				m_OtherBountySkippedEnabled.SetChecked(config.Notifications.Other.BountySkipped.Enabled);
-				if (m_OtherBountySkippedTitle) m_OtherBountySkippedTitle.SetText(config.Notifications.Other.BountySkipped.Title);
-				if (m_OtherBountySkippedMessage) m_OtherBountySkippedMessage.SetText(config.Notifications.Other.BountySkipped.Message);
-				if (m_OtherBountySkippedIconPath) m_OtherBountySkippedIconPath.SetText(config.Notifications.Other.BountySkipped.IconPath);
+				obfv_m_OtherBountySkippedEnabled.SetChecked(config.Notifications.Other.BountySkipped.Enabled);
+				if (obfv_m_OtherBountySkippedTitle) obfv_m_OtherBountySkippedTitle.SetText(config.Notifications.Other.BountySkipped.Title);
+				if (obfv_m_OtherBountySkippedMessage) obfv_m_OtherBountySkippedMessage.SetText(config.Notifications.Other.BountySkipped.Message);
+				if (obfv_m_OtherBountySkippedIconPath) obfv_m_OtherBountySkippedIconPath.SetText(config.Notifications.Other.BountySkipped.IconPath);
 			}
-			if (m_OtherRewardHandsNotFreeEnabled && config.Notifications.Other.RewardHandsNotFree)
+			if (obfv_m_OtherRewardHandsNotFreeEnabled && config.Notifications.Other.RewardHandsNotFree)
 			{
-				m_OtherRewardHandsNotFreeEnabled.SetChecked(config.Notifications.Other.RewardHandsNotFree.Enabled);
-				if (m_OtherRewardHandsNotFreeTitle) m_OtherRewardHandsNotFreeTitle.SetText(config.Notifications.Other.RewardHandsNotFree.Title);
-				if (m_OtherRewardHandsNotFreeMessage) m_OtherRewardHandsNotFreeMessage.SetText(config.Notifications.Other.RewardHandsNotFree.Message);
-				if (m_OtherRewardHandsNotFreeIconPath) m_OtherRewardHandsNotFreeIconPath.SetText(config.Notifications.Other.RewardHandsNotFree.IconPath);
+				obfv_m_OtherRewardHandsNotFreeEnabled.SetChecked(config.Notifications.Other.RewardHandsNotFree.Enabled);
+				if (obfv_m_OtherRewardHandsNotFreeTitle) obfv_m_OtherRewardHandsNotFreeTitle.SetText(config.Notifications.Other.RewardHandsNotFree.Title);
+				if (obfv_m_OtherRewardHandsNotFreeMessage) obfv_m_OtherRewardHandsNotFreeMessage.SetText(config.Notifications.Other.RewardHandsNotFree.Message);
+				if (obfv_m_OtherRewardHandsNotFreeIconPath) obfv_m_OtherRewardHandsNotFreeIconPath.SetText(config.Notifications.Other.RewardHandsNotFree.IconPath);
 			}
-			if (m_OtherPlayerOnCooldownEnabled && config.Notifications.Other.PlayerOnCooldown)
+			if (obfv_m_OtherPlayerOnCooldownEnabled && config.Notifications.Other.PlayerOnCooldown)
 			{
-				m_OtherPlayerOnCooldownEnabled.SetChecked(config.Notifications.Other.PlayerOnCooldown.Enabled);
-				if (m_OtherPlayerOnCooldownTitle) m_OtherPlayerOnCooldownTitle.SetText(config.Notifications.Other.PlayerOnCooldown.Title);
-				if (m_OtherPlayerOnCooldownMessage) m_OtherPlayerOnCooldownMessage.SetText(config.Notifications.Other.PlayerOnCooldown.Message);
-				if (m_OtherPlayerOnCooldownIconPath) m_OtherPlayerOnCooldownIconPath.SetText(config.Notifications.Other.PlayerOnCooldown.IconPath);
+				obfv_m_OtherPlayerOnCooldownEnabled.SetChecked(config.Notifications.Other.PlayerOnCooldown.Enabled);
+				if (obfv_m_OtherPlayerOnCooldownTitle) obfv_m_OtherPlayerOnCooldownTitle.SetText(config.Notifications.Other.PlayerOnCooldown.Title);
+				if (obfv_m_OtherPlayerOnCooldownMessage) obfv_m_OtherPlayerOnCooldownMessage.SetText(config.Notifications.Other.PlayerOnCooldown.Message);
+				if (obfv_m_OtherPlayerOnCooldownIconPath) obfv_m_OtherPlayerOnCooldownIconPath.SetText(config.Notifications.Other.PlayerOnCooldown.IconPath);
 			}
-			if (m_OtherPlayerInSafeZoneEnabled && config.Notifications.Other.PlayerInSafeZone)
+			if (obfv_m_OtherPlayerInSafeZoneEnabled && config.Notifications.Other.PlayerInSafeZone)
 			{
-				m_OtherPlayerInSafeZoneEnabled.SetChecked(config.Notifications.Other.PlayerInSafeZone.Enabled);
-				if (m_OtherPlayerInSafeZoneTitle) m_OtherPlayerInSafeZoneTitle.SetText(config.Notifications.Other.PlayerInSafeZone.Title);
-				if (m_OtherPlayerInSafeZoneMessage) m_OtherPlayerInSafeZoneMessage.SetText(config.Notifications.Other.PlayerInSafeZone.Message);
-				if (m_OtherPlayerInSafeZoneIconPath) m_OtherPlayerInSafeZoneIconPath.SetText(config.Notifications.Other.PlayerInSafeZone.IconPath);
+				obfv_m_OtherPlayerInSafeZoneEnabled.SetChecked(config.Notifications.Other.PlayerInSafeZone.Enabled);
+				if (obfv_m_OtherPlayerInSafeZoneTitle) obfv_m_OtherPlayerInSafeZoneTitle.SetText(config.Notifications.Other.PlayerInSafeZone.Title);
+				if (obfv_m_OtherPlayerInSafeZoneMessage) obfv_m_OtherPlayerInSafeZoneMessage.SetText(config.Notifications.Other.PlayerInSafeZone.Message);
+				if (obfv_m_OtherPlayerInSafeZoneIconPath) obfv_m_OtherPlayerInSafeZoneIconPath.SetText(config.Notifications.Other.PlayerInSafeZone.IconPath);
 			}
-			if (m_OtherBountyPersistedEnabled && config.Notifications.Other.BountyPersisted)
+			if (obfv_m_OtherBountyPersistedEnabled && config.Notifications.Other.BountyPersisted)
 			{
-				m_OtherBountyPersistedEnabled.SetChecked(config.Notifications.Other.BountyPersisted.Enabled);
-				if (m_OtherBountyPersistedTitle) m_OtherBountyPersistedTitle.SetText(config.Notifications.Other.BountyPersisted.Title);
-				if (m_OtherBountyPersistedMessage) m_OtherBountyPersistedMessage.SetText(config.Notifications.Other.BountyPersisted.Message);
-				if (m_OtherBountyPersistedIconPath) m_OtherBountyPersistedIconPath.SetText(config.Notifications.Other.BountyPersisted.IconPath);
+				obfv_m_OtherBountyPersistedEnabled.SetChecked(config.Notifications.Other.BountyPersisted.Enabled);
+				if (obfv_m_OtherBountyPersistedTitle) obfv_m_OtherBountyPersistedTitle.SetText(config.Notifications.Other.BountyPersisted.Title);
+				if (obfv_m_OtherBountyPersistedMessage) obfv_m_OtherBountyPersistedMessage.SetText(config.Notifications.Other.BountyPersisted.Message);
+				if (obfv_m_OtherBountyPersistedIconPath) obfv_m_OtherBountyPersistedIconPath.SetText(config.Notifications.Other.BountyPersisted.IconPath);
 			}
-			if (m_OtherTeleportedOutOfTerritoryEnabled && config.Notifications.Other.TeleportedOutOfTerritory)
+			if (obfv_m_OtherTeleportedOutOfTerritoryEnabled && config.Notifications.Other.TeleportedOutOfTerritory)
 			{
-				m_OtherTeleportedOutOfTerritoryEnabled.SetChecked(config.Notifications.Other.TeleportedOutOfTerritory.Enabled);
-				if (m_OtherTeleportedOutOfTerritoryTitle) m_OtherTeleportedOutOfTerritoryTitle.SetText(config.Notifications.Other.TeleportedOutOfTerritory.Title);
-				if (m_OtherTeleportedOutOfTerritoryMessage) m_OtherTeleportedOutOfTerritoryMessage.SetText(config.Notifications.Other.TeleportedOutOfTerritory.Message);
-				if (m_OtherTeleportedOutOfTerritoryIconPath) m_OtherTeleportedOutOfTerritoryIconPath.SetText(config.Notifications.Other.TeleportedOutOfTerritory.IconPath);
+				obfv_m_OtherTeleportedOutOfTerritoryEnabled.SetChecked(config.Notifications.Other.TeleportedOutOfTerritory.Enabled);
+				if (obfv_m_OtherTeleportedOutOfTerritoryTitle) obfv_m_OtherTeleportedOutOfTerritoryTitle.SetText(config.Notifications.Other.TeleportedOutOfTerritory.Title);
+				if (obfv_m_OtherTeleportedOutOfTerritoryMessage) obfv_m_OtherTeleportedOutOfTerritoryMessage.SetText(config.Notifications.Other.TeleportedOutOfTerritory.Message);
+				if (obfv_m_OtherTeleportedOutOfTerritoryIconPath) obfv_m_OtherTeleportedOutOfTerritoryIconPath.SetText(config.Notifications.Other.TeleportedOutOfTerritory.IconPath);
 			}
-			if (m_OtherBountyPausedInTerritoryEnabled && config.Notifications.Other.BountyPausedInTerritory)
+			if (obfv_m_OtherBountyPausedInTerritoryEnabled && config.Notifications.Other.BountyPausedInTerritory)
 			{
-				m_OtherBountyPausedInTerritoryEnabled.SetChecked(config.Notifications.Other.BountyPausedInTerritory.Enabled);
-				if (m_OtherBountyPausedInTerritoryTitle) m_OtherBountyPausedInTerritoryTitle.SetText(config.Notifications.Other.BountyPausedInTerritory.Title);
-				if (m_OtherBountyPausedInTerritoryMessage) m_OtherBountyPausedInTerritoryMessage.SetText(config.Notifications.Other.BountyPausedInTerritory.Message);
-				if (m_OtherBountyPausedInTerritoryIconPath) m_OtherBountyPausedInTerritoryIconPath.SetText(config.Notifications.Other.BountyPausedInTerritory.IconPath);
+				obfv_m_OtherBountyPausedInTerritoryEnabled.SetChecked(config.Notifications.Other.BountyPausedInTerritory.Enabled);
+				if (obfv_m_OtherBountyPausedInTerritoryTitle) obfv_m_OtherBountyPausedInTerritoryTitle.SetText(config.Notifications.Other.BountyPausedInTerritory.Title);
+				if (obfv_m_OtherBountyPausedInTerritoryMessage) obfv_m_OtherBountyPausedInTerritoryMessage.SetText(config.Notifications.Other.BountyPausedInTerritory.Message);
+				if (obfv_m_OtherBountyPausedInTerritoryIconPath) obfv_m_OtherBountyPausedInTerritoryIconPath.SetText(config.Notifications.Other.BountyPausedInTerritory.IconPath);
 			}
 		}
 		if (config.Broadcasts)
 		{
-			if (m_BroadcastsPlacedBountyEnabled && config.Broadcasts.PlacedBounty)
+			if (obfv_m_BroadcastsPlacedBountyEnabled && config.Broadcasts.PlacedBounty)
 			{
-				m_BroadcastsPlacedBountyEnabled.SetChecked(config.Broadcasts.PlacedBounty.Enabled);
-				if (m_BroadcastsPlacedBountyTitle) m_BroadcastsPlacedBountyTitle.SetText(config.Broadcasts.PlacedBounty.Title);
-				if (m_BroadcastsPlacedBountyMessage) m_BroadcastsPlacedBountyMessage.SetText(config.Broadcasts.PlacedBounty.Message);
-				if (m_BroadcastsPlacedBountyIconPath) m_BroadcastsPlacedBountyIconPath.SetText(config.Broadcasts.PlacedBounty.IconPath);
+				obfv_m_BroadcastsPlacedBountyEnabled.SetChecked(config.Broadcasts.PlacedBounty.Enabled);
+				if (obfv_m_BroadcastsPlacedBountyTitle) obfv_m_BroadcastsPlacedBountyTitle.SetText(config.Broadcasts.PlacedBounty.Title);
+				if (obfv_m_BroadcastsPlacedBountyMessage) obfv_m_BroadcastsPlacedBountyMessage.SetText(config.Broadcasts.PlacedBounty.Message);
+				if (obfv_m_BroadcastsPlacedBountyIconPath) obfv_m_BroadcastsPlacedBountyIconPath.SetText(config.Broadcasts.PlacedBounty.IconPath);
 			}
-			if (m_BroadcastsRuleBreakerEnabled && config.Broadcasts.RuleBreaker)
+			if (obfv_m_BroadcastsRuleBreakerEnabled && config.Broadcasts.RuleBreaker)
 			{
-				m_BroadcastsRuleBreakerEnabled.SetChecked(config.Broadcasts.RuleBreaker.Enabled);
-				if (m_BroadcastsRuleBreakerTitle) m_BroadcastsRuleBreakerTitle.SetText(config.Broadcasts.RuleBreaker.Title);
-				if (m_BroadcastsRuleBreakerMessage) m_BroadcastsRuleBreakerMessage.SetText(config.Broadcasts.RuleBreaker.Message);
-				if (m_BroadcastsRuleBreakerIconPath) m_BroadcastsRuleBreakerIconPath.SetText(config.Broadcasts.RuleBreaker.IconPath);
+				obfv_m_BroadcastsRuleBreakerEnabled.SetChecked(config.Broadcasts.RuleBreaker.Enabled);
+				if (obfv_m_BroadcastsRuleBreakerTitle) obfv_m_BroadcastsRuleBreakerTitle.SetText(config.Broadcasts.RuleBreaker.Title);
+				if (obfv_m_BroadcastsRuleBreakerMessage) obfv_m_BroadcastsRuleBreakerMessage.SetText(config.Broadcasts.RuleBreaker.Message);
+				if (obfv_m_BroadcastsRuleBreakerIconPath) obfv_m_BroadcastsRuleBreakerIconPath.SetText(config.Broadcasts.RuleBreaker.IconPath);
 			}
 		}
 	}
-	void RefreshPlayersList()
+	void obfm_RefreshPlayersList()
 	{
 		PlayerBase player;
 		player = PlayerBase.Cast(g_Game.GetPlayer());
 		if (!player || !player.GetIdentity())
 			return;
 		GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminRequestPlayers", new Param1<int>(0), true, player.GetIdentity());
-		GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] Requested players list from server via RPC");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] Requested players list from server via RPC");
 	}
-	void UpdatePlayersList(array<string> players)
+	void obfm_UpdatePlayersList(array<string> players)
 	{
-		if (!m_PlayersList)
+		if (!obfv_m_PlayersList)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] Cannot update - PlayersList widget is null!");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] Cannot update - PlayersList widget is null!");
 			return;
 		}
-		m_PlayersList.ClearItems();
-		m_PlayerIdentifiers.Clear();
+		obfv_m_PlayersList.ClearItems();
+		obfv_m_PlayerIdentifiers.Clear();
 		if (!players)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] Received null players array from server!");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] Received null players array from server!");
 			return;
 		}
 		foreach (string playerEntry : players)
 		{
 			if (playerEntry != "")
 			{
-				m_PlayerIdentifiers.Insert(GetPlayerEntryIdentifier(playerEntry));
-				m_PlayersList.AddItem(GetPlayerEntryDisplayName(playerEntry), null, 0);
+				obfv_m_PlayerIdentifiers.Insert(obfm_GetPlayerEntryIdentifier(playerEntry));
+				obfv_m_PlayersList.AddItem(obfm_GetPlayerEntryDisplayName(playerEntry), null, 0);
 			}
 		}
-		GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] Updated players list: " + players.Count().ToString() + " players");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] Updated players list: " + players.Count().ToString() + " players");
 	}
-	static void ForceDisableInputs(bool state, inout TIntArray skipIDs = null)
+	static void obfm_ForceDisableInputs(bool state, inout TIntArray skipIDs = null)
 	{
 		if (!skipIDs)
 			skipIDs = new TIntArray;
@@ -719,19 +719,19 @@ class BountyAdminMenu extends UIScriptedMenu
 	override bool OnClick(Widget w, int x, int y, int button)
 	{
 		super.OnClick(w, x, y, button);
-		if (w == m_btnNormalSettings)
+		if (w == obfv_m_btnNormalSettings)
 		{
-			ShowOnlyPanel(m_GeneralRootPanel);
+			obfm_ShowOnlyPanel(obfv_m_GeneralRootPanel);
 			return true;
 		}
-		else if (w == m_btnNotifications)
+		else if (w == obfv_m_btnNotifications)
 		{
-			ShowOnlyPanel(m_NotificationsRootPanel);
+			obfm_ShowOnlyPanel(obfv_m_NotificationsRootPanel);
 			return true;
 		}
-		else if (w == m_btnBlacklist)
+		else if (w == obfv_m_btnBlacklist)
 		{
-			ShowOnlyPanel(m_BlacklistRootPanel);
+			obfm_ShowOnlyPanel(obfv_m_BlacklistRootPanel);
 			return true;
 		}
 		int selectedRow;
@@ -743,266 +743,266 @@ class BountyAdminMenu extends UIScriptedMenu
 		player = PlayerBase.Cast(g_Game.GetPlayer());
 		if (!player || !player.GetIdentity())
 			return false;
-		if (w == m_BtnApplyTestRuleBreakerBounty)
+		if (w == obfv_m_BtnApplyTestRuleBreakerBounty)
 		{
-			if (m_PlayersList)
+			if (obfv_m_PlayersList)
 			{
-				selectedRow = m_PlayersList.GetSelectedRow();
+				selectedRow = obfv_m_PlayersList.GetSelectedRow();
 				if (selectedRow >= 0)
 				{
-					if (selectedRow < m_PlayerIdentifiers.Count())
-						selectedPlayerIdentifier = m_PlayerIdentifiers.Get(selectedRow);
-					m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
+					if (selectedRow < obfv_m_PlayerIdentifiers.Count())
+						selectedPlayerIdentifier = obfv_m_PlayerIdentifiers.Get(selectedRow);
+					obfv_m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
 					if (selectedPlayerIdentifier != "")
 					{
 						GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("ApplyTestRuleBreakerBounty:" + selectedPlayerIdentifier), true, player.GetIdentity());
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] ApplyTestRuleBreakerBounty button clicked for player: " + selectedPlayerName);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] ApplyTestRuleBreakerBounty button clicked for player: " + selectedPlayerName);
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] No player selected from list!");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] No player selected from list!");
 					}
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] No player selected from list!");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] No player selected from list!");
 				}
 			}
 			return true;
 		}
-		else if (w == m_BtnAddBountySelectedPlayer)
+		else if (w == obfv_m_BtnAddBountySelectedPlayer)
 		{
-			if (m_PlayersList)
+			if (obfv_m_PlayersList)
 			{
-				selectedRow = m_PlayersList.GetSelectedRow();
+				selectedRow = obfv_m_PlayersList.GetSelectedRow();
 				if (selectedRow >= 0)
 				{
-					if (selectedRow < m_PlayerIdentifiers.Count())
-						selectedPlayerIdentifier = m_PlayerIdentifiers.Get(selectedRow);
-					m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
+					if (selectedRow < obfv_m_PlayerIdentifiers.Count())
+						selectedPlayerIdentifier = obfv_m_PlayerIdentifiers.Get(selectedRow);
+					obfv_m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
 					if (selectedPlayerIdentifier != "")
 					{
 						GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("AddBountySelectedPlayer:" + selectedPlayerIdentifier), true, player.GetIdentity());
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] AddBountySelectedPlayer button clicked for player: " + selectedPlayerName);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] AddBountySelectedPlayer button clicked for player: " + selectedPlayerName);
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] No player selected from list!");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] No player selected from list!");
 					}
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] No player selected from list!");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] No player selected from list!");
 				}
 			}
 			return true;
 		}
-		else if (w == m_BtnClearBounty)
+		else if (w == obfv_m_BtnClearBounty)
 		{
 			GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("ClearBounty"), true, player.GetIdentity());
-			GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] ClearBounty button clicked");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] ClearBounty button clicked");
 			return true;
 		}
-		else if (w == m_BtnClearBountySelectedPlayer)
+		else if (w == obfv_m_BtnClearBountySelectedPlayer)
 		{
-			if (m_PlayersList)
+			if (obfv_m_PlayersList)
 			{
-				selectedRow = m_PlayersList.GetSelectedRow();
+				selectedRow = obfv_m_PlayersList.GetSelectedRow();
 				if (selectedRow >= 0)
 				{
-					if (selectedRow < m_PlayerIdentifiers.Count())
-						selectedPlayerIdentifier = m_PlayerIdentifiers.Get(selectedRow);
-					m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
+					if (selectedRow < obfv_m_PlayerIdentifiers.Count())
+						selectedPlayerIdentifier = obfv_m_PlayerIdentifiers.Get(selectedRow);
+					obfv_m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
 					if (selectedPlayerIdentifier != "")
 					{
 						GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("ClearBountySelectedPlayer:" + selectedPlayerIdentifier), true, player.GetIdentity());
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] ClearBountySelectedPlayer button clicked for player: " + selectedPlayerName);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] ClearBountySelectedPlayer button clicked for player: " + selectedPlayerName);
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] No player selected from list!");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] No player selected from list!");
 					}
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] No player selected from list!");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] No player selected from list!");
 				}
 			}
 			return true;
 		}
-		else if (w == m_BtnReloadConfigs)
+		else if (w == obfv_m_BtnReloadConfigs)
 		{
 			GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("ReloadConfigs"), true, player.GetIdentity());
-			GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] ReloadConfigs button clicked");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] ReloadConfigs button clicked");
 			return true;
 		}
-		else if (w == m_BtnClearAllCooldowns)
+		else if (w == obfv_m_BtnClearAllCooldowns)
 		{
-			if (m_PlayersList)
+			if (obfv_m_PlayersList)
 			{
-				selectedRow = m_PlayersList.GetSelectedRow();
+				selectedRow = obfv_m_PlayersList.GetSelectedRow();
 				if (selectedRow >= 0)
 				{
-					if (selectedRow < m_PlayerIdentifiers.Count())
-						selectedPlayerIdentifier = m_PlayerIdentifiers.Get(selectedRow);
-					m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
+					if (selectedRow < obfv_m_PlayerIdentifiers.Count())
+						selectedPlayerIdentifier = obfv_m_PlayerIdentifiers.Get(selectedRow);
+					obfv_m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
 					if (selectedPlayerIdentifier != "")
 					{
 						GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("ClearAllCooldowns:" + selectedPlayerIdentifier), true, player.GetIdentity());
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] ClearAllCooldowns button clicked for player: " + selectedPlayerName);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] ClearAllCooldowns button clicked for player: " + selectedPlayerName);
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] No player selected from list!");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] No player selected from list!");
 					}
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] No player selected from list!");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] No player selected from list!");
 				}
 			}
 			return true;
 		}
-		else if (w == m_BtnClearPlayerCooldown)
+		else if (w == obfv_m_BtnClearPlayerCooldown)
 		{
-			if (m_PlayersList)
+			if (obfv_m_PlayersList)
 			{
-				selectedRow = m_PlayersList.GetSelectedRow();
+				selectedRow = obfv_m_PlayersList.GetSelectedRow();
 				if (selectedRow >= 0)
 				{
-					if (selectedRow < m_PlayerIdentifiers.Count())
-						selectedPlayerIdentifier = m_PlayerIdentifiers.Get(selectedRow);
-					m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
+					if (selectedRow < obfv_m_PlayerIdentifiers.Count())
+						selectedPlayerIdentifier = obfv_m_PlayerIdentifiers.Get(selectedRow);
+					obfv_m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
 					if (selectedPlayerIdentifier != "")
 					{
 						GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("ClearPlayerCooldown:" + selectedPlayerIdentifier), true, player.GetIdentity());
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] ClearPlayerCooldown button clicked for player: " + selectedPlayerName);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] ClearPlayerCooldown button clicked for player: " + selectedPlayerName);
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] No player selected from list!");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] No player selected from list!");
 					}
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] No player selected from list!");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] No player selected from list!");
 				}
 			}
 			return true;
 		}
-		else if (w == m_BtnSaveAndReload)
+		else if (w == obfv_m_BtnSaveAndReload)
 		{
-			BountyConfig updatedConfig = ReadConfigFromUI();
+			obfc_BountyConfig updatedConfig = obfm_ReadConfigFromUI();
 			if (updatedConfig)
 			{
-				GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminUpdateConfig", new Param1<ref BountyConfig>(updatedConfig), true, player.GetIdentity());
-				GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] Save & Reload button clicked - config sent to server");
+				GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminUpdateConfig", new Param1<ref obfc_BountyConfig>(updatedConfig), true, player.GetIdentity());
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] Save & Reload button clicked - config sent to server");
 			}
 			else
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] Failed to read config from UI!");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] Failed to read config from UI!");
 			}
 			return true;
 		}
-		else if (w == m_BtnAddRewardPoint)
+		else if (w == obfv_m_BtnAddRewardPoint)
 		{
-			if (m_PlayersList)
+			if (obfv_m_PlayersList)
 			{
-				selectedRow = m_PlayersList.GetSelectedRow();
+				selectedRow = obfv_m_PlayersList.GetSelectedRow();
 				if (selectedRow >= 0)
 				{
-					if (selectedRow < m_PlayerIdentifiers.Count())
-						selectedPlayerIdentifier = m_PlayerIdentifiers.Get(selectedRow);
-					m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
+					if (selectedRow < obfv_m_PlayerIdentifiers.Count())
+						selectedPlayerIdentifier = obfv_m_PlayerIdentifiers.Get(selectedRow);
+					obfv_m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
 					if (selectedPlayerIdentifier != "")
 					{
 						GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("AddRewardPoint:" + selectedPlayerIdentifier), true, player.GetIdentity());
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] AddRewardPoint button clicked for player: " + selectedPlayerName);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] AddRewardPoint button clicked for player: " + selectedPlayerName);
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] No player selected from list!");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] No player selected from list!");
 					}
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] No player selected from list!");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] No player selected from list!");
 				}
 			}
 			return true;
 		}
-		else if (w == m_BtnRemoveRewardPoint)
+		else if (w == obfv_m_BtnRemoveRewardPoint)
 		{
-			if (m_PlayersList)
+			if (obfv_m_PlayersList)
 			{
-				selectedRow = m_PlayersList.GetSelectedRow();
+				selectedRow = obfv_m_PlayersList.GetSelectedRow();
 				if (selectedRow >= 0)
 				{
-					if (selectedRow < m_PlayerIdentifiers.Count())
-						selectedPlayerIdentifier = m_PlayerIdentifiers.Get(selectedRow);
-					m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
+					if (selectedRow < obfv_m_PlayerIdentifiers.Count())
+						selectedPlayerIdentifier = obfv_m_PlayerIdentifiers.Get(selectedRow);
+					obfv_m_PlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
 					if (selectedPlayerIdentifier != "")
 					{
 						GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("RemoveRewardPoint:" + selectedPlayerIdentifier), true, player.GetIdentity());
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] RemoveRewardPoint button clicked for player: " + selectedPlayerName);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] RemoveRewardPoint button clicked for player: " + selectedPlayerName);
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] No player selected from list!");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] No player selected from list!");
 					}
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] No player selected from list!");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] No player selected from list!");
 				}
 			}
 			return true;
 		}
-		if (w == m_AddToBlacklistBtn)
+		if (w == obfv_m_AddToBlacklistBtn)
 		{
-			if (m_OnlinePlayersList)
+			if (obfv_m_OnlinePlayersList)
 			{
-				row = m_OnlinePlayersList.GetSelectedRow();
+				row = obfv_m_OnlinePlayersList.GetSelectedRow();
 				if (row >= 0)
 				{
 					selectedPlayerIdentifier = "";
-					if (row < m_OnlinePlayerIdentifiers.Count())
-						selectedPlayerIdentifier = m_OnlinePlayerIdentifiers.Get(row);
-					m_OnlinePlayersList.GetItemText(row, 0, entry);
+					if (row < obfv_m_OnlinePlayerIdentifiers.Count())
+						selectedPlayerIdentifier = obfv_m_OnlinePlayerIdentifiers.Get(row);
+					obfv_m_OnlinePlayersList.GetItemText(row, 0, entry);
 					if (selectedPlayerIdentifier != "")
 					{
 						GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("AddToBlacklist:" + selectedPlayerIdentifier), true, player.GetIdentity());
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] AddToBlacklist button clicked for player: " + entry);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] AddToBlacklist button clicked for player: " + entry);
 					}
 				}
 			}
 			return true;
 		}
-		else if (w == m_RemoveFromBlacklistBtn)
+		else if (w == obfv_m_RemoveFromBlacklistBtn)
 		{
-			if (m_BlacklistedPlayersList)
+			if (obfv_m_BlacklistedPlayersList)
 			{
-				row = m_BlacklistedPlayersList.GetSelectedRow();
+				row = obfv_m_BlacklistedPlayersList.GetSelectedRow();
 				if (row >= 0)
 				{
-					m_BlacklistedPlayersList.GetItemText(row, 0, entry);
+					obfv_m_BlacklistedPlayersList.GetItemText(row, 0, entry);
 					if (entry != "")
 					{
 						GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminAction", new Param1<string>("RemoveFromBlacklist:" + entry), true, player.GetIdentity());
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] RemoveFromBlacklist button clicked for entry: " + entry);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] RemoveFromBlacklist button clicked for entry: " + entry);
 					}
 				}
 			}
 			return true;
 		}
-		else if (w == m_RefreshBlacklistPlayerListBtn)
+		else if (w == obfv_m_RefreshBlacklistPlayerListBtn)
 		{
-			RefreshBlacklistLists();
+			obfm_RefreshBlacklistLists();
 			return true;
 		}
 		return false;
 	}
-	void RefreshBlacklistLists()
+	void obfm_RefreshBlacklistLists()
 	{
 		PlayerBase player;
 		player = PlayerBase.Cast(g_Game.GetPlayer());
@@ -1011,295 +1011,295 @@ class BountyAdminMenu extends UIScriptedMenu
 		GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyRequestOnlinePlayers", new Param1<int>(0), true, player.GetIdentity());
 		GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminRequestBlacklist", new Param1<int>(0), true, player.GetIdentity());
 	}
-	void UpdateOnlinePlayersList(array<string> players)
+	void obfm_UpdateOnlinePlayersList(array<string> players)
 	{
-		if (!m_OnlinePlayersList)
+		if (!obfv_m_OnlinePlayersList)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] Cannot update - OnlinePlayersList widget is null!");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] Cannot update - OnlinePlayersList widget is null!");
 			return;
 		}
-		m_OnlinePlayersList.ClearItems();
-		m_OnlinePlayerIdentifiers.Clear();
+		obfv_m_OnlinePlayersList.ClearItems();
+		obfv_m_OnlinePlayerIdentifiers.Clear();
 		if (!players)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] Received null players array from server!");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] Received null players array from server!");
 			return;
 		}
 		foreach (string playerEntry : players)
 		{
 			if (playerEntry != "")
 			{
-				m_OnlinePlayerIdentifiers.Insert(GetPlayerEntryIdentifier(playerEntry));
-				m_OnlinePlayersList.AddItem(GetPlayerEntryDisplayName(playerEntry), null, 0);
+				obfv_m_OnlinePlayerIdentifiers.Insert(obfm_GetPlayerEntryIdentifier(playerEntry));
+				obfv_m_OnlinePlayersList.AddItem(obfm_GetPlayerEntryDisplayName(playerEntry), null, 0);
 			}
 		}
-		GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] Updated online players list: " + players.Count().ToString() + " players");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] Updated online players list: " + players.Count().ToString() + " players");
 	}
-	void UpdateBlacklistedPlayersList(array<string> blacklistedPlayers)
+	void obfm_UpdateBlacklistedPlayersList(array<string> blacklistedPlayers)
 	{
-		if (!m_BlacklistedPlayersList)
+		if (!obfv_m_BlacklistedPlayersList)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] Cannot update - BlacklistedPlayersList widget is null!");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] Cannot update - BlacklistedPlayersList widget is null!");
 			return;
 		}
-		m_BlacklistedPlayersList.ClearItems();
+		obfv_m_BlacklistedPlayersList.ClearItems();
 		if (!blacklistedPlayers)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminMenu] Received null blacklisted players array from server!");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] Received null blacklisted players array from server!");
 			return;
 		}
 		foreach (string entry : blacklistedPlayers)
 		{
 			if (entry != "")
 			{
-				m_BlacklistedPlayersList.AddItem(entry, null, 0);
+				obfv_m_BlacklistedPlayersList.AddItem(entry, null, 0);
 			}
 		}
-		GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminMenu] Updated blacklisted players list: " + blacklistedPlayers.Count().ToString() + " players");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminMenu] Updated blacklisted players list: " + blacklistedPlayers.Count().ToString() + " players");
 	}
-	BountyConfig ReadConfigFromUI()
+	obfc_BountyConfig obfm_ReadConfigFromUI()
 	{
-		BountyConfig sourceConfig = m_CachedConfig;
+		obfc_BountyConfig sourceConfig = obfv_m_CachedConfig;
 		if (!sourceConfig)
 			return null;
-		BountyConfig config = new BountyConfig();
+		obfc_BountyConfig config = new obfc_BountyConfig();
 		string messageText;
 		if (sourceConfig.Core)
 		{
-			config.Core = new BountyCoreSystemSettings();
-			if (m_EnableBountySystem)
-				config.Core.EnableBountySystem = m_EnableBountySystem.IsChecked();
+			config.Core = new obfc_BountyCoreSystemSettings();
+			if (obfv_m_EnableBountySystem)
+				config.Core.EnableBountySystem = obfv_m_EnableBountySystem.IsChecked();
 			else
 				config.Core.EnableBountySystem = sourceConfig.Core.EnableBountySystem;
-			if (m_DisableSelfBounty)
-				config.Core.DisableSelfBounty = m_DisableSelfBounty.IsChecked();
+			if (obfv_m_DisableSelfBounty)
+				config.Core.DisableSelfBounty = obfv_m_DisableSelfBounty.IsChecked();
 			else
 				config.Core.DisableSelfBounty = sourceConfig.Core.DisableSelfBounty;
-			if (m_TeleportOutOfOwnTerritory)
-				config.Core.TeleportOutOfOwnTerritory = m_TeleportOutOfOwnTerritory.IsChecked();
+			if (obfv_m_TeleportOutOfOwnTerritory)
+				config.Core.obfm_TeleportOutOfOwnTerritory = obfv_m_TeleportOutOfOwnTerritory.IsChecked();
 			else
-				config.Core.TeleportOutOfOwnTerritory = sourceConfig.Core.TeleportOutOfOwnTerritory;
-			if (m_PauseBountyInTerritory)
-				config.Core.PauseBountyInTerritory = m_PauseBountyInTerritory.IsChecked();
+				config.Core.obfm_TeleportOutOfOwnTerritory = sourceConfig.Core.obfm_TeleportOutOfOwnTerritory;
+			if (obfv_m_PauseBountyInTerritory)
+				config.Core.PauseBountyInTerritory = obfv_m_PauseBountyInTerritory.IsChecked();
 			else
 				config.Core.PauseBountyInTerritory = sourceConfig.Core.PauseBountyInTerritory;
-			if (m_TeleportOutOfSafeZone)
-				config.Core.TeleportOutOfSafeZone = m_TeleportOutOfSafeZone.IsChecked();
+			if (obfv_m_TeleportOutOfSafeZone)
+				config.Core.obfm_TeleportOutOfSafeZone = obfv_m_TeleportOutOfSafeZone.IsChecked();
 			else
-				config.Core.TeleportOutOfSafeZone = sourceConfig.Core.TeleportOutOfSafeZone;
-			if (m_EnableAutomatedBountyPlacement)
-				config.Core.EnableAutomatedBountyPlacement = m_EnableAutomatedBountyPlacement.IsChecked();
+				config.Core.obfm_TeleportOutOfSafeZone = sourceConfig.Core.obfm_TeleportOutOfSafeZone;
+			if (obfv_m_EnableAutomatedBountyPlacement)
+				config.Core.EnableAutomatedBountyPlacement = obfv_m_EnableAutomatedBountyPlacement.IsChecked();
 			else
 				config.Core.EnableAutomatedBountyPlacement = sourceConfig.Core.EnableAutomatedBountyPlacement;
-			if (m_BountyCooldownSeconds)
-				config.Core.BountyCooldownSeconds = m_BountyCooldownSeconds.GetText().ToFloat();
+			if (obfv_m_BountyCooldownSeconds)
+				config.Core.BountyCooldownSeconds = obfv_m_BountyCooldownSeconds.GetText().ToFloat();
 			else
 				config.Core.BountyCooldownSeconds = sourceConfig.Core.BountyCooldownSeconds;
-			if (m_MaxBountiedPlayers)
-				config.Core.MaxBountiedPlayers = m_MaxBountiedPlayers.GetText().ToInt();
+			if (obfv_m_MaxBountiedPlayers)
+				config.Core.MaxBountiedPlayers = obfv_m_MaxBountiedPlayers.GetText().ToInt();
 			else
 				config.Core.MaxBountiedPlayers = sourceConfig.Core.MaxBountiedPlayers;
-			if (m_MinOnlinePlayersRequired)
-				config.Core.MinOnlinePlayersRequired = m_MinOnlinePlayersRequired.GetText().ToInt();
+			if (obfv_m_MinOnlinePlayersRequired)
+				config.Core.MinOnlinePlayersRequired = obfv_m_MinOnlinePlayersRequired.GetText().ToInt();
 			else
 				config.Core.MinOnlinePlayersRequired = sourceConfig.Core.MinOnlinePlayersRequired;
-			if (m_SkipBountyTokenRequired)
-				config.Core.SkipBountyTokenRequired = m_SkipBountyTokenRequired.GetText().ToInt();
+			if (obfv_m_SkipBountyTokenRequired)
+				config.Core.SkipBountyTokenRequired = obfv_m_SkipBountyTokenRequired.GetText().ToInt();
 			else
 				config.Core.SkipBountyTokenRequired = sourceConfig.Core.SkipBountyTokenRequired;
-			if (m_PlaceBountyTokenRequired)
-				config.Core.PlaceBountyTokenRequired = m_PlaceBountyTokenRequired.GetText().ToInt();
+			if (obfv_m_PlaceBountyTokenRequired)
+				config.Core.PlaceBountyTokenRequired = obfv_m_PlaceBountyTokenRequired.GetText().ToInt();
 			else
 				config.Core.PlaceBountyTokenRequired = sourceConfig.Core.PlaceBountyTokenRequired;
-			if (m_ResumeBountyDistanceFromTerritory)
-				config.Core.ResumeBountyDistanceFromTerritory = m_ResumeBountyDistanceFromTerritory.GetText().ToFloat();
+			if (obfv_m_ResumeBountyDistanceFromTerritory)
+				config.Core.ResumeBountyDistanceFromTerritory = obfv_m_ResumeBountyDistanceFromTerritory.GetText().ToFloat();
 			else
 				config.Core.ResumeBountyDistanceFromTerritory = sourceConfig.Core.ResumeBountyDistanceFromTerritory;
-			if (m_PausedBountyResumeCheckInterval)
-				config.Core.PausedBountyResumeCheckInterval = m_PausedBountyResumeCheckInterval.GetText().ToFloat();
+			if (obfv_m_PausedBountyResumeCheckInterval)
+				config.Core.PausedBountyResumeCheckInterval = obfv_m_PausedBountyResumeCheckInterval.GetText().ToFloat();
 			else
 				config.Core.PausedBountyResumeCheckInterval = sourceConfig.Core.PausedBountyResumeCheckInterval;
-			if (m_TeleportOutOfSafeZoneDistance)
-				config.Core.TeleportOutOfSafeZoneDistance = m_TeleportOutOfSafeZoneDistance.GetText().ToFloat();
+			if (obfv_m_TeleportOutOfSafeZoneDistance)
+				config.Core.TeleportOutOfSafeZoneDistance = obfv_m_TeleportOutOfSafeZoneDistance.GetText().ToFloat();
 			else
 				config.Core.TeleportOutOfSafeZoneDistance = sourceConfig.Core.TeleportOutOfSafeZoneDistance;
-			if (m_MinimumPlayerLifetimeSeconds)
-				config.Core.MinimumPlayerLifetimeSeconds = m_MinimumPlayerLifetimeSeconds.GetText().ToInt();
+			if (obfv_m_MinimumPlayerLifetimeSeconds)
+				config.Core.MinimumPlayerLifetimeSeconds = obfv_m_MinimumPlayerLifetimeSeconds.GetText().ToInt();
 			else
 				config.Core.MinimumPlayerLifetimeSeconds = sourceConfig.Core.MinimumPlayerLifetimeSeconds;
-			if (m_AutomatedBountyPlacementIntervalSeconds)
-				config.Core.AutomatedBountyPlacementIntervalSeconds = m_AutomatedBountyPlacementIntervalSeconds.GetText().ToFloat();
+			if (obfv_m_AutomatedBountyPlacementIntervalSeconds)
+				config.Core.AutomatedBountyPlacementIntervalSeconds = obfv_m_AutomatedBountyPlacementIntervalSeconds.GetText().ToFloat();
 			else
 				config.Core.AutomatedBountyPlacementIntervalSeconds = sourceConfig.Core.AutomatedBountyPlacementIntervalSeconds;
 		}
 		if (sourceConfig.RuleBreaker)
 		{
-			config.RuleBreaker = new BountyRuleBreakerSettings();
-			if (m_EnableRuleBreakerHitThreshold)
-				config.RuleBreaker.EnableRuleBreakerHitThreshold = m_EnableRuleBreakerHitThreshold.IsChecked();
+			config.RuleBreaker = new obfc_BountyRuleBreakerSettings();
+			if (obfv_m_EnableRuleBreakerHitThreshold)
+				config.RuleBreaker.EnableRuleBreakerHitThreshold = obfv_m_EnableRuleBreakerHitThreshold.IsChecked();
 			else
 				config.RuleBreaker.EnableRuleBreakerHitThreshold = sourceConfig.RuleBreaker.EnableRuleBreakerHitThreshold;
-			if (m_EnablePvEToPvPRuleBreaker)
-				config.RuleBreaker.EnablePvEToPvPRuleBreaker = m_EnablePvEToPvPRuleBreaker.IsChecked();
+			if (obfv_m_EnablePvEToPvPRuleBreaker)
+				config.RuleBreaker.EnablePvEToPvPRuleBreaker = obfv_m_EnablePvEToPvPRuleBreaker.IsChecked();
 			else
 				config.RuleBreaker.EnablePvEToPvPRuleBreaker = sourceConfig.RuleBreaker.EnablePvEToPvPRuleBreaker;
-			if (m_ClearPendingRewardsOnRuleBreakerBounty)
-				config.RuleBreaker.ClearPendingRewardsOnRuleBreakerBounty = m_ClearPendingRewardsOnRuleBreakerBounty.IsChecked();
+			if (obfv_m_ClearPendingRewardsOnRuleBreakerBounty)
+				config.RuleBreaker.ClearPendingRewardsOnRuleBreakerBounty = obfv_m_ClearPendingRewardsOnRuleBreakerBounty.IsChecked();
 			else
 				config.RuleBreaker.ClearPendingRewardsOnRuleBreakerBounty = sourceConfig.RuleBreaker.ClearPendingRewardsOnRuleBreakerBounty;
-			if (m_AllowPvEToPvEVictimKill)
-				config.RuleBreaker.AllowPvEToPvEVictimKill = m_AllowPvEToPvEVictimKill.IsChecked();
+			if (obfv_m_AllowPvEToPvEVictimKill)
+				config.RuleBreaker.AllowPvEToPvEVictimKill = obfv_m_AllowPvEToPvEVictimKill.IsChecked();
 			else
 				config.RuleBreaker.AllowPvEToPvEVictimKill = sourceConfig.RuleBreaker.AllowPvEToPvEVictimKill;
-			if (m_BountyRuleBreakerDurationSeconds)
-				config.RuleBreaker.BountyRuleBreakerDurationSeconds = m_BountyRuleBreakerDurationSeconds.GetText().ToFloat();
+			if (obfv_m_BountyRuleBreakerDurationSeconds)
+				config.RuleBreaker.BountyRuleBreakerDurationSeconds = obfv_m_BountyRuleBreakerDurationSeconds.GetText().ToFloat();
 			else
 				config.RuleBreaker.BountyRuleBreakerDurationSeconds = sourceConfig.RuleBreaker.BountyRuleBreakerDurationSeconds;
-			if (m_RuleBreakerHitThresholdTime)
-				config.RuleBreaker.RuleBreakerHitThresholdTime = m_RuleBreakerHitThresholdTime.GetText().ToFloat();
+			if (obfv_m_RuleBreakerHitThresholdTime)
+				config.RuleBreaker.RuleBreakerHitThresholdTime = obfv_m_RuleBreakerHitThresholdTime.GetText().ToFloat();
 			else
 				config.RuleBreaker.RuleBreakerHitThresholdTime = sourceConfig.RuleBreaker.RuleBreakerHitThresholdTime;
-			if (m_RuleBreakerHitThresholdWarningHits)
-				config.RuleBreaker.RuleBreakerHitThresholdWarningHits = m_RuleBreakerHitThresholdWarningHits.GetText().ToInt();
+			if (obfv_m_RuleBreakerHitThresholdWarningHits)
+				config.RuleBreaker.RuleBreakerHitThresholdWarningHits = obfv_m_RuleBreakerHitThresholdWarningHits.GetText().ToInt();
 			else
 				config.RuleBreaker.RuleBreakerHitThresholdWarningHits = sourceConfig.RuleBreaker.RuleBreakerHitThresholdWarningHits;
-			if (m_RuleBreakerHitThresholdBountyHits)
-				config.RuleBreaker.RuleBreakerHitThresholdBountyHits = m_RuleBreakerHitThresholdBountyHits.GetText().ToInt();
+			if (obfv_m_RuleBreakerHitThresholdBountyHits)
+				config.RuleBreaker.RuleBreakerHitThresholdBountyHits = obfv_m_RuleBreakerHitThresholdBountyHits.GetText().ToInt();
 			else
 				config.RuleBreaker.RuleBreakerHitThresholdBountyHits = sourceConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits;
-			if (m_PvEToPvPInstantRuleBreakerHits)
-				config.RuleBreaker.PvEToPvPInstantRuleBreakerHits = m_PvEToPvPInstantRuleBreakerHits.GetText().ToInt();
+			if (obfv_m_PvEToPvPInstantRuleBreakerHits)
+				config.RuleBreaker.PvEToPvPInstantRuleBreakerHits = obfv_m_PvEToPvPInstantRuleBreakerHits.GetText().ToInt();
 			else
 				config.RuleBreaker.PvEToPvPInstantRuleBreakerHits = sourceConfig.RuleBreaker.PvEToPvPInstantRuleBreakerHits;
-			if (m_Expansion_EnableHardlineReputationDecrease)
-				config.RuleBreaker.Expansion_EnableHardlineReputationDecrease = m_Expansion_EnableHardlineReputationDecrease.IsChecked();
+			if (obfv_m_Expansion_EnableHardlineReputationDecrease)
+				config.RuleBreaker.Expansion_EnableHardlineReputationDecrease = obfv_m_Expansion_EnableHardlineReputationDecrease.IsChecked();
 			else
 				config.RuleBreaker.Expansion_EnableHardlineReputationDecrease = sourceConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease;
-			if (m_Expansion_HardlineReputationDecreaseAmount)
-				config.RuleBreaker.Expansion_HardlineReputationDecreaseAmount = m_Expansion_HardlineReputationDecreaseAmount.GetText().ToInt();
+			if (obfv_m_Expansion_HardlineReputationDecreaseAmount)
+				config.RuleBreaker.Expansion_HardlineReputationDecreaseAmount = obfv_m_Expansion_HardlineReputationDecreaseAmount.GetText().ToInt();
 			else
 				config.RuleBreaker.Expansion_HardlineReputationDecreaseAmount = sourceConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount;
 		}
 		if (sourceConfig.PlacedBounty)
 		{
-			config.PlacedBounty = new BountyPlacedBountySettings();
-			if (m_BountyDurationSeconds)
-				config.PlacedBounty.BountyDurationSeconds = m_BountyDurationSeconds.GetText().ToFloat();
+			config.PlacedBounty = new obfc_BountyPlacedBountySettings();
+			if (obfv_m_BountyDurationSeconds)
+				config.PlacedBounty.BountyDurationSeconds = obfv_m_BountyDurationSeconds.GetText().ToFloat();
 			else
 				config.PlacedBounty.BountyDurationSeconds = sourceConfig.PlacedBounty.BountyDurationSeconds;
 		}
 		if (sourceConfig.Reward)
 		{
-			config.Reward = new BountyRewardSettings();
-			if (m_EnableSurvivalReward)
-				config.Reward.EnableSurvivalReward = m_EnableSurvivalReward.IsChecked();
+			config.Reward = new obfc_BountyRewardSettings();
+			if (obfv_m_EnableSurvivalReward)
+				config.Reward.EnableSurvivalReward = obfv_m_EnableSurvivalReward.IsChecked();
 			else
 				config.Reward.EnableSurvivalReward = sourceConfig.Reward.EnableSurvivalReward;
-			if (m_PvERuleBreakerGiveRewards)
-				config.Reward.PvERuleBreakerGiveRewards = m_PvERuleBreakerGiveRewards.IsChecked();
+			if (obfv_m_PvERuleBreakerGiveRewards)
+				config.Reward.PvERuleBreakerGiveRewards = obfv_m_PvERuleBreakerGiveRewards.IsChecked();
 			else
 				config.Reward.PvERuleBreakerGiveRewards = sourceConfig.Reward.PvERuleBreakerGiveRewards;
 		}
 		if (sourceConfig.Map)
 		{
-			config.Map = new BountyMapSettings();
-			if (m_BountyEnableMapDrawing)
-				config.Map.BountyEnableMapDrawing = m_BountyEnableMapDrawing.IsChecked();
+			config.Map = new obfc_BountyMapSettings();
+			if (obfv_m_BountyEnableMapDrawing)
+				config.Map.BountyEnableMapDrawing = obfv_m_BountyEnableMapDrawing.IsChecked();
 			else
 				config.Map.BountyEnableMapDrawing = sourceConfig.Map.BountyEnableMapDrawing;
-			if (m_BountyCircleReduceRadiusOverTime)
-				config.Map.BountyCircleReduceRadiusOverTime = m_BountyCircleReduceRadiusOverTime.IsChecked();
+			if (obfv_m_BountyCircleReduceRadiusOverTime)
+				config.Map.BountyCircleReduceRadiusOverTime = obfv_m_BountyCircleReduceRadiusOverTime.IsChecked();
 			else
 				config.Map.BountyCircleReduceRadiusOverTime = sourceConfig.Map.BountyCircleReduceRadiusOverTime;
-			if (m_BountyCircleIncreaseRadiusOverTime)
-				config.Map.BountyCircleIncreaseRadiusOverTime = m_BountyCircleIncreaseRadiusOverTime.IsChecked();
+			if (obfv_m_BountyCircleIncreaseRadiusOverTime)
+				config.Map.BountyCircleIncreaseRadiusOverTime = obfv_m_BountyCircleIncreaseRadiusOverTime.IsChecked();
 			else
 				config.Map.BountyCircleIncreaseRadiusOverTime = sourceConfig.Map.BountyCircleIncreaseRadiusOverTime;
-			if (m_BountyCircleRadius)
-				config.Map.BountyCircleRadius = m_BountyCircleRadius.GetText().ToFloat();
+			if (obfv_m_BountyCircleRadius)
+				config.Map.BountyCircleRadius = obfv_m_BountyCircleRadius.GetText().ToFloat();
 			else
 				config.Map.BountyCircleRadius = sourceConfig.Map.BountyCircleRadius;
-			if (m_BountyCircleMinRadius)
-				config.Map.BountyCircleMinRadius = m_BountyCircleMinRadius.GetText().ToFloat();
+			if (obfv_m_BountyCircleMinRadius)
+				config.Map.BountyCircleMinRadius = obfv_m_BountyCircleMinRadius.GetText().ToFloat();
 			else
 				config.Map.BountyCircleMinRadius = sourceConfig.Map.BountyCircleMinRadius;
-			if (m_BountyCircleColor)
-				config.Map.BountyCircleColor = m_BountyCircleColor.GetText().ToInt();
+			if (obfv_m_BountyCircleColor)
+				config.Map.BountyCircleColor = obfv_m_BountyCircleColor.GetText().ToInt();
 			else
 				config.Map.BountyCircleColor = sourceConfig.Map.BountyCircleColor;
-			if (m_BountyCircleDrawingWidth)
-				config.Map.BountyCircleDrawingWidth = m_BountyCircleDrawingWidth.GetText().ToInt();
+			if (obfv_m_BountyCircleDrawingWidth)
+				config.Map.BountyCircleDrawingWidth = obfv_m_BountyCircleDrawingWidth.GetText().ToInt();
 			else
 				config.Map.BountyCircleDrawingWidth = sourceConfig.Map.BountyCircleDrawingWidth;
-			if (m_BountyMapUpdateIntervalSeconds)
-				config.Map.BountyMapUpdateIntervalSeconds = m_BountyMapUpdateIntervalSeconds.GetText().ToFloat();
+			if (obfv_m_BountyMapUpdateIntervalSeconds)
+				config.Map.BountyMapUpdateIntervalSeconds = obfv_m_BountyMapUpdateIntervalSeconds.GetText().ToFloat();
 			else
 				config.Map.BountyMapUpdateIntervalSeconds = sourceConfig.Map.BountyMapUpdateIntervalSeconds;
-			if (m_BountyMapRequestCooldownSeconds)
-				config.Map.BountyMapRequestCooldownSeconds = m_BountyMapRequestCooldownSeconds.GetText().ToFloat();
+			if (obfv_m_BountyMapRequestCooldownSeconds)
+				config.Map.BountyMapRequestCooldownSeconds = obfv_m_BountyMapRequestCooldownSeconds.GetText().ToFloat();
 			else
 				config.Map.BountyMapRequestCooldownSeconds = sourceConfig.Map.BountyMapRequestCooldownSeconds;
-			if (m_BountyMapSyncIntervalSeconds)
-				config.Map.BountyMapSyncIntervalSeconds = m_BountyMapSyncIntervalSeconds.GetText().ToFloat();
+			if (obfv_m_BountyMapSyncIntervalSeconds)
+				config.Map.BountyMapSyncIntervalSeconds = obfv_m_BountyMapSyncIntervalSeconds.GetText().ToFloat();
 			else
 				config.Map.BountyMapSyncIntervalSeconds = sourceConfig.Map.BountyMapSyncIntervalSeconds;
-			if (m_BountyMapSyncIntervalNoBountiesSeconds)
-				config.Map.BountyMapSyncIntervalNoBountiesSeconds = m_BountyMapSyncIntervalNoBountiesSeconds.GetText().ToFloat();
+			if (obfv_m_BountyMapSyncIntervalNoBountiesSeconds)
+				config.Map.BountyMapSyncIntervalNoBountiesSeconds = obfv_m_BountyMapSyncIntervalNoBountiesSeconds.GetText().ToFloat();
 			else
 				config.Map.BountyMapSyncIntervalNoBountiesSeconds = sourceConfig.Map.BountyMapSyncIntervalNoBountiesSeconds;
-			if (m_BountyCircleOffsetMinMultiplier)
-				config.Map.BountyCircleOffsetMinMultiplier = m_BountyCircleOffsetMinMultiplier.GetText().ToFloat();
+			if (obfv_m_BountyCircleOffsetMinMultiplier)
+				config.Map.BountyCircleOffsetMinMultiplier = obfv_m_BountyCircleOffsetMinMultiplier.GetText().ToFloat();
 			else
 				config.Map.BountyCircleOffsetMinMultiplier = sourceConfig.Map.BountyCircleOffsetMinMultiplier;
-			if (m_BountyCircleOffsetMaxMultiplier)
-				config.Map.BountyCircleOffsetMaxMultiplier = m_BountyCircleOffsetMaxMultiplier.GetText().ToFloat();
+			if (obfv_m_BountyCircleOffsetMaxMultiplier)
+				config.Map.BountyCircleOffsetMaxMultiplier = obfv_m_BountyCircleOffsetMaxMultiplier.GetText().ToFloat();
 			else
 				config.Map.BountyCircleOffsetMaxMultiplier = sourceConfig.Map.BountyCircleOffsetMaxMultiplier;
 		}
 		if (sourceConfig.UI)
 		{
-			config.UI = new BountyUISettings();
-			if (m_CountdownWidgetPositionX)
-				config.UI.CountdownWidgetPositionX = m_CountdownWidgetPositionX.GetText().ToFloat();
+			config.UI = new obfc_BountyUISettings();
+			if (obfv_m_CountdownWidgetPositionX)
+				config.UI.CountdownWidgetPositionX = obfv_m_CountdownWidgetPositionX.GetText().ToFloat();
 			else
 				config.UI.CountdownWidgetPositionX = sourceConfig.UI.CountdownWidgetPositionX;
-			if (m_CountdownWidgetPositionY)
-				config.UI.CountdownWidgetPositionY = m_CountdownWidgetPositionY.GetText().ToFloat();
+			if (obfv_m_CountdownWidgetPositionY)
+				config.UI.CountdownWidgetPositionY = obfv_m_CountdownWidgetPositionY.GetText().ToFloat();
 			else
 				config.UI.CountdownWidgetPositionY = sourceConfig.UI.CountdownWidgetPositionY;
-			if (m_CountdownWidgetWidth)
-				config.UI.CountdownWidgetWidth = m_CountdownWidgetWidth.GetText().ToFloat();
+			if (obfv_m_CountdownWidgetWidth)
+				config.UI.CountdownWidgetWidth = obfv_m_CountdownWidgetWidth.GetText().ToFloat();
 			else
 				config.UI.CountdownWidgetWidth = sourceConfig.UI.CountdownWidgetWidth;
-			if (m_CountdownWidgetHeight)
-				config.UI.CountdownWidgetHeight = m_CountdownWidgetHeight.GetText().ToFloat();
+			if (obfv_m_CountdownWidgetHeight)
+				config.UI.CountdownWidgetHeight = obfv_m_CountdownWidgetHeight.GetText().ToFloat();
 			else
 				config.UI.CountdownWidgetHeight = sourceConfig.UI.CountdownWidgetHeight;
-			if (m_CountdownWidgetBackgroundColor)
-				config.UI.CountdownWidgetBackgroundColor = m_CountdownWidgetBackgroundColor.GetText().ToInt();
+			if (obfv_m_CountdownWidgetBackgroundColor)
+				config.UI.CountdownWidgetBackgroundColor = obfv_m_CountdownWidgetBackgroundColor.GetText().ToInt();
 			else
 				config.UI.CountdownWidgetBackgroundColor = sourceConfig.UI.CountdownWidgetBackgroundColor;
-			if (m_CountdownWidgetTextColor)
-				config.UI.CountdownWidgetTextColor = m_CountdownWidgetTextColor.GetText().ToInt();
+			if (obfv_m_CountdownWidgetTextColor)
+				config.UI.CountdownWidgetTextColor = obfv_m_CountdownWidgetTextColor.GetText().ToInt();
 			else
 				config.UI.CountdownWidgetTextColor = sourceConfig.UI.CountdownWidgetTextColor;
 		}
 		if (sourceConfig.Notifications && sourceConfig.Notifications.PlacedBounty)
 		{
 			if (!config.Notifications)
-				config.Notifications = new BountyNotificationConfig();
+				config.Notifications = new obfc_BountyNotificationConfig();
 			if (!config.Notifications.PlacedBounty)
-				config.Notifications.PlacedBounty = new BountyNotificationGroup();
-			if (m_PlacedBountyHuntedEnabled && config.Notifications.PlacedBounty.Hunted)
+				config.Notifications.PlacedBounty = new obfc_BountyNotificationGroup();
+			if (obfv_m_PlacedBountyHuntedEnabled && config.Notifications.PlacedBounty.Hunted)
 			{
-				config.Notifications.PlacedBounty.Hunted.Enabled = m_PlacedBountyHuntedEnabled.IsChecked();
-				if (m_PlacedBountyHuntedTitle) config.Notifications.PlacedBounty.Hunted.Title = m_PlacedBountyHuntedTitle.GetText();
-				if (m_PlacedBountyHuntedMessage)
+				config.Notifications.PlacedBounty.Hunted.Enabled = obfv_m_PlacedBountyHuntedEnabled.IsChecked();
+				if (obfv_m_PlacedBountyHuntedTitle) config.Notifications.PlacedBounty.Hunted.Title = obfv_m_PlacedBountyHuntedTitle.GetText();
+				if (obfv_m_PlacedBountyHuntedMessage)
 				{
-					m_PlacedBountyHuntedMessage.GetText(messageText);
+					obfv_m_PlacedBountyHuntedMessage.GetText(messageText);
 					config.Notifications.PlacedBounty.Hunted.Message = messageText;
 				}
-				if (m_PlacedBountyHuntedIconPath) config.Notifications.PlacedBounty.Hunted.IconPath = m_PlacedBountyHuntedIconPath.GetText();
+				if (obfv_m_PlacedBountyHuntedIconPath) config.Notifications.PlacedBounty.Hunted.IconPath = obfv_m_PlacedBountyHuntedIconPath.GetText();
 			}
 			else if (config.Notifications.PlacedBounty.Hunted)
 			{
@@ -1308,16 +1308,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.PlacedBounty.Hunted.Message = sourceConfig.Notifications.PlacedBounty.Hunted.Message;
 				config.Notifications.PlacedBounty.Hunted.IconPath = sourceConfig.Notifications.PlacedBounty.Hunted.IconPath;
 			}
-			if (m_PlacedBountyExpiredEnabled && config.Notifications.PlacedBounty.Expired)
+			if (obfv_m_PlacedBountyExpiredEnabled && config.Notifications.PlacedBounty.Expired)
 			{
-				config.Notifications.PlacedBounty.Expired.Enabled = m_PlacedBountyExpiredEnabled.IsChecked();
-				if (m_PlacedBountyExpiredTitle) config.Notifications.PlacedBounty.Expired.Title = m_PlacedBountyExpiredTitle.GetText();
-				if (m_PlacedBountyExpiredMessage)
+				config.Notifications.PlacedBounty.Expired.Enabled = obfv_m_PlacedBountyExpiredEnabled.IsChecked();
+				if (obfv_m_PlacedBountyExpiredTitle) config.Notifications.PlacedBounty.Expired.Title = obfv_m_PlacedBountyExpiredTitle.GetText();
+				if (obfv_m_PlacedBountyExpiredMessage)
 				{
-					m_PlacedBountyExpiredMessage.GetText(messageText);
+					obfv_m_PlacedBountyExpiredMessage.GetText(messageText);
 					config.Notifications.PlacedBounty.Expired.Message = messageText;
 				}
-				if (m_PlacedBountyExpiredIconPath) config.Notifications.PlacedBounty.Expired.IconPath = m_PlacedBountyExpiredIconPath.GetText();
+				if (obfv_m_PlacedBountyExpiredIconPath) config.Notifications.PlacedBounty.Expired.IconPath = obfv_m_PlacedBountyExpiredIconPath.GetText();
 			}
 			else if (config.Notifications.PlacedBounty.Expired)
 			{
@@ -1326,16 +1326,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.PlacedBounty.Expired.Message = sourceConfig.Notifications.PlacedBounty.Expired.Message;
 				config.Notifications.PlacedBounty.Expired.IconPath = sourceConfig.Notifications.PlacedBounty.Expired.IconPath;
 			}
-			if (m_PlacedBountySurvivalRewardEnabled && config.Notifications.PlacedBounty.SurvivalReward)
+			if (obfv_m_PlacedBountySurvivalRewardEnabled && config.Notifications.PlacedBounty.SurvivalReward)
 			{
-				config.Notifications.PlacedBounty.SurvivalReward.Enabled = m_PlacedBountySurvivalRewardEnabled.IsChecked();
-				if (m_PlacedBountySurvivalRewardTitle) config.Notifications.PlacedBounty.SurvivalReward.Title = m_PlacedBountySurvivalRewardTitle.GetText();
-				if (m_PlacedBountySurvivalRewardMessage)
+				config.Notifications.PlacedBounty.SurvivalReward.Enabled = obfv_m_PlacedBountySurvivalRewardEnabled.IsChecked();
+				if (obfv_m_PlacedBountySurvivalRewardTitle) config.Notifications.PlacedBounty.SurvivalReward.Title = obfv_m_PlacedBountySurvivalRewardTitle.GetText();
+				if (obfv_m_PlacedBountySurvivalRewardMessage)
 				{
-					m_PlacedBountySurvivalRewardMessage.GetText(messageText);
+					obfv_m_PlacedBountySurvivalRewardMessage.GetText(messageText);
 					config.Notifications.PlacedBounty.SurvivalReward.Message = messageText;
 				}
-				if (m_PlacedBountySurvivalRewardIconPath) config.Notifications.PlacedBounty.SurvivalReward.IconPath = m_PlacedBountySurvivalRewardIconPath.GetText();
+				if (obfv_m_PlacedBountySurvivalRewardIconPath) config.Notifications.PlacedBounty.SurvivalReward.IconPath = obfv_m_PlacedBountySurvivalRewardIconPath.GetText();
 			}
 			else if (config.Notifications.PlacedBounty.SurvivalReward)
 			{
@@ -1344,16 +1344,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.PlacedBounty.SurvivalReward.Message = sourceConfig.Notifications.PlacedBounty.SurvivalReward.Message;
 				config.Notifications.PlacedBounty.SurvivalReward.IconPath = sourceConfig.Notifications.PlacedBounty.SurvivalReward.IconPath;
 			}
-			if (m_PlacedBountyKilledRewardEnabled && config.Notifications.PlacedBounty.KilledReward)
+			if (obfv_m_PlacedBountyKilledRewardEnabled && config.Notifications.PlacedBounty.KilledReward)
 			{
-				config.Notifications.PlacedBounty.KilledReward.Enabled = m_PlacedBountyKilledRewardEnabled.IsChecked();
-				if (m_PlacedBountyKilledRewardTitle) config.Notifications.PlacedBounty.KilledReward.Title = m_PlacedBountyKilledRewardTitle.GetText();
-				if (m_PlacedBountyKilledRewardMessage)
+				config.Notifications.PlacedBounty.KilledReward.Enabled = obfv_m_PlacedBountyKilledRewardEnabled.IsChecked();
+				if (obfv_m_PlacedBountyKilledRewardTitle) config.Notifications.PlacedBounty.KilledReward.Title = obfv_m_PlacedBountyKilledRewardTitle.GetText();
+				if (obfv_m_PlacedBountyKilledRewardMessage)
 				{
-					m_PlacedBountyKilledRewardMessage.GetText(messageText);
+					obfv_m_PlacedBountyKilledRewardMessage.GetText(messageText);
 					config.Notifications.PlacedBounty.KilledReward.Message = messageText;
 				}
-				if (m_PlacedBountyKilledRewardIconPath) config.Notifications.PlacedBounty.KilledReward.IconPath = m_PlacedBountyKilledRewardIconPath.GetText();
+				if (obfv_m_PlacedBountyKilledRewardIconPath) config.Notifications.PlacedBounty.KilledReward.IconPath = obfv_m_PlacedBountyKilledRewardIconPath.GetText();
 			}
 			else if (config.Notifications.PlacedBounty.KilledReward)
 			{
@@ -1366,19 +1366,19 @@ class BountyAdminMenu extends UIScriptedMenu
 		if (sourceConfig.Notifications && sourceConfig.Notifications.RuleBreaker)
 		{
 			if (!config.Notifications)
-				config.Notifications = new BountyNotificationConfig();
+				config.Notifications = new obfc_BountyNotificationConfig();
 			if (!config.Notifications.RuleBreaker)
-				config.Notifications.RuleBreaker = new BountyRuleBreakerNotificationGroup();
-			if (m_RuleBreakerHuntedEnabled && config.Notifications.RuleBreaker.Hunted)
+				config.Notifications.RuleBreaker = new obfc_BountyRuleBreakerNotificationGroup();
+			if (obfv_m_RuleBreakerHuntedEnabled && config.Notifications.RuleBreaker.Hunted)
 			{
-				config.Notifications.RuleBreaker.Hunted.Enabled = m_RuleBreakerHuntedEnabled.IsChecked();
-				if (m_RuleBreakerHuntedTitle) config.Notifications.RuleBreaker.Hunted.Title = m_RuleBreakerHuntedTitle.GetText();
-				if (m_RuleBreakerHuntedMessage)
+				config.Notifications.RuleBreaker.Hunted.Enabled = obfv_m_RuleBreakerHuntedEnabled.IsChecked();
+				if (obfv_m_RuleBreakerHuntedTitle) config.Notifications.RuleBreaker.Hunted.Title = obfv_m_RuleBreakerHuntedTitle.GetText();
+				if (obfv_m_RuleBreakerHuntedMessage)
 				{
-					m_RuleBreakerHuntedMessage.GetText(messageText);
+					obfv_m_RuleBreakerHuntedMessage.GetText(messageText);
 					config.Notifications.RuleBreaker.Hunted.Message = messageText;
 				}
-				if (m_RuleBreakerHuntedIconPath) config.Notifications.RuleBreaker.Hunted.IconPath = m_RuleBreakerHuntedIconPath.GetText();
+				if (obfv_m_RuleBreakerHuntedIconPath) config.Notifications.RuleBreaker.Hunted.IconPath = obfv_m_RuleBreakerHuntedIconPath.GetText();
 			}
 			else if (config.Notifications.RuleBreaker.Hunted)
 			{
@@ -1387,16 +1387,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.RuleBreaker.Hunted.Message = sourceConfig.Notifications.RuleBreaker.Hunted.Message;
 				config.Notifications.RuleBreaker.Hunted.IconPath = sourceConfig.Notifications.RuleBreaker.Hunted.IconPath;
 			}
-			if (m_RuleBreakerHitWarningEnabled && config.Notifications.RuleBreaker.HitWarning)
+			if (obfv_m_RuleBreakerHitWarningEnabled && config.Notifications.RuleBreaker.HitWarning)
 			{
-				config.Notifications.RuleBreaker.HitWarning.Enabled = m_RuleBreakerHitWarningEnabled.IsChecked();
-				if (m_RuleBreakerHitWarningTitle) config.Notifications.RuleBreaker.HitWarning.Title = m_RuleBreakerHitWarningTitle.GetText();
-				if (m_RuleBreakerHitWarningMessage)
+				config.Notifications.RuleBreaker.HitWarning.Enabled = obfv_m_RuleBreakerHitWarningEnabled.IsChecked();
+				if (obfv_m_RuleBreakerHitWarningTitle) config.Notifications.RuleBreaker.HitWarning.Title = obfv_m_RuleBreakerHitWarningTitle.GetText();
+				if (obfv_m_RuleBreakerHitWarningMessage)
 				{
-					m_RuleBreakerHitWarningMessage.GetText(messageText);
+					obfv_m_RuleBreakerHitWarningMessage.GetText(messageText);
 					config.Notifications.RuleBreaker.HitWarning.Message = messageText;
 				}
-				if (m_RuleBreakerHitWarningIconPath) config.Notifications.RuleBreaker.HitWarning.IconPath = m_RuleBreakerHitWarningIconPath.GetText();
+				if (obfv_m_RuleBreakerHitWarningIconPath) config.Notifications.RuleBreaker.HitWarning.IconPath = obfv_m_RuleBreakerHitWarningIconPath.GetText();
 			}
 			else if (config.Notifications.RuleBreaker.HitWarning)
 			{
@@ -1405,16 +1405,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.RuleBreaker.HitWarning.Message = sourceConfig.Notifications.RuleBreaker.HitWarning.Message;
 				config.Notifications.RuleBreaker.HitWarning.IconPath = sourceConfig.Notifications.RuleBreaker.HitWarning.IconPath;
 			}
-			if (m_RuleBreakerExpiredEnabled && config.Notifications.RuleBreaker.Expired)
+			if (obfv_m_RuleBreakerExpiredEnabled && config.Notifications.RuleBreaker.Expired)
 			{
-				config.Notifications.RuleBreaker.Expired.Enabled = m_RuleBreakerExpiredEnabled.IsChecked();
-				if (m_RuleBreakerExpiredTitle) config.Notifications.RuleBreaker.Expired.Title = m_RuleBreakerExpiredTitle.GetText();
-				if (m_RuleBreakerExpiredMessage)
+				config.Notifications.RuleBreaker.Expired.Enabled = obfv_m_RuleBreakerExpiredEnabled.IsChecked();
+				if (obfv_m_RuleBreakerExpiredTitle) config.Notifications.RuleBreaker.Expired.Title = obfv_m_RuleBreakerExpiredTitle.GetText();
+				if (obfv_m_RuleBreakerExpiredMessage)
 				{
-					m_RuleBreakerExpiredMessage.GetText(messageText);
+					obfv_m_RuleBreakerExpiredMessage.GetText(messageText);
 					config.Notifications.RuleBreaker.Expired.Message = messageText;
 				}
-				if (m_RuleBreakerExpiredIconPath) config.Notifications.RuleBreaker.Expired.IconPath = m_RuleBreakerExpiredIconPath.GetText();
+				if (obfv_m_RuleBreakerExpiredIconPath) config.Notifications.RuleBreaker.Expired.IconPath = obfv_m_RuleBreakerExpiredIconPath.GetText();
 			}
 			else if (config.Notifications.RuleBreaker.Expired)
 			{
@@ -1423,16 +1423,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.RuleBreaker.Expired.Message = sourceConfig.Notifications.RuleBreaker.Expired.Message;
 				config.Notifications.RuleBreaker.Expired.IconPath = sourceConfig.Notifications.RuleBreaker.Expired.IconPath;
 			}
-			if (m_RuleBreakerSurvivalRewardEnabled && config.Notifications.RuleBreaker.SurvivalReward)
+			if (obfv_m_RuleBreakerSurvivalRewardEnabled && config.Notifications.RuleBreaker.SurvivalReward)
 			{
-				config.Notifications.RuleBreaker.SurvivalReward.Enabled = m_RuleBreakerSurvivalRewardEnabled.IsChecked();
-				if (m_RuleBreakerSurvivalRewardTitle) config.Notifications.RuleBreaker.SurvivalReward.Title = m_RuleBreakerSurvivalRewardTitle.GetText();
-				if (m_RuleBreakerSurvivalRewardMessage)
+				config.Notifications.RuleBreaker.SurvivalReward.Enabled = obfv_m_RuleBreakerSurvivalRewardEnabled.IsChecked();
+				if (obfv_m_RuleBreakerSurvivalRewardTitle) config.Notifications.RuleBreaker.SurvivalReward.Title = obfv_m_RuleBreakerSurvivalRewardTitle.GetText();
+				if (obfv_m_RuleBreakerSurvivalRewardMessage)
 				{
-					m_RuleBreakerSurvivalRewardMessage.GetText(messageText);
+					obfv_m_RuleBreakerSurvivalRewardMessage.GetText(messageText);
 					config.Notifications.RuleBreaker.SurvivalReward.Message = messageText;
 				}
-				if (m_RuleBreakerSurvivalRewardIconPath) config.Notifications.RuleBreaker.SurvivalReward.IconPath = m_RuleBreakerSurvivalRewardIconPath.GetText();
+				if (obfv_m_RuleBreakerSurvivalRewardIconPath) config.Notifications.RuleBreaker.SurvivalReward.IconPath = obfv_m_RuleBreakerSurvivalRewardIconPath.GetText();
 			}
 			else if (config.Notifications.RuleBreaker.SurvivalReward)
 			{
@@ -1441,16 +1441,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.RuleBreaker.SurvivalReward.Message = sourceConfig.Notifications.RuleBreaker.SurvivalReward.Message;
 				config.Notifications.RuleBreaker.SurvivalReward.IconPath = sourceConfig.Notifications.RuleBreaker.SurvivalReward.IconPath;
 			}
-			if (m_RuleBreakerKilledRewardEnabled && config.Notifications.RuleBreaker.KilledReward)
+			if (obfv_m_RuleBreakerKilledRewardEnabled && config.Notifications.RuleBreaker.KilledReward)
 			{
-				config.Notifications.RuleBreaker.KilledReward.Enabled = m_RuleBreakerKilledRewardEnabled.IsChecked();
-				if (m_RuleBreakerKilledRewardTitle) config.Notifications.RuleBreaker.KilledReward.Title = m_RuleBreakerKilledRewardTitle.GetText();
-				if (m_RuleBreakerKilledRewardMessage)
+				config.Notifications.RuleBreaker.KilledReward.Enabled = obfv_m_RuleBreakerKilledRewardEnabled.IsChecked();
+				if (obfv_m_RuleBreakerKilledRewardTitle) config.Notifications.RuleBreaker.KilledReward.Title = obfv_m_RuleBreakerKilledRewardTitle.GetText();
+				if (obfv_m_RuleBreakerKilledRewardMessage)
 				{
-					m_RuleBreakerKilledRewardMessage.GetText(messageText);
+					obfv_m_RuleBreakerKilledRewardMessage.GetText(messageText);
 					config.Notifications.RuleBreaker.KilledReward.Message = messageText;
 				}
-				if (m_RuleBreakerKilledRewardIconPath) config.Notifications.RuleBreaker.KilledReward.IconPath = m_RuleBreakerKilledRewardIconPath.GetText();
+				if (obfv_m_RuleBreakerKilledRewardIconPath) config.Notifications.RuleBreaker.KilledReward.IconPath = obfv_m_RuleBreakerKilledRewardIconPath.GetText();
 			}
 			else if (config.Notifications.RuleBreaker.KilledReward)
 			{
@@ -1463,19 +1463,19 @@ class BountyAdminMenu extends UIScriptedMenu
 		if (sourceConfig.Notifications && sourceConfig.Notifications.Other)
 		{
 			if (!config.Notifications)
-				config.Notifications = new BountyNotificationConfig();
+				config.Notifications = new obfc_BountyNotificationConfig();
 			if (!config.Notifications.Other)
-				config.Notifications.Other = new BountyOtherNotifications();
-			if (m_OtherInsufficientTokensEnabled && config.Notifications.Other.InsufficientTokens)
+				config.Notifications.Other = new obfc_BountyOtherNotifications();
+			if (obfv_m_OtherInsufficientTokensEnabled && config.Notifications.Other.InsufficientTokens)
 			{
-				config.Notifications.Other.InsufficientTokens.Enabled = m_OtherInsufficientTokensEnabled.IsChecked();
-				if (m_OtherInsufficientTokensTitle) config.Notifications.Other.InsufficientTokens.Title = m_OtherInsufficientTokensTitle.GetText();
-				if (m_OtherInsufficientTokensMessage)
+				config.Notifications.Other.InsufficientTokens.Enabled = obfv_m_OtherInsufficientTokensEnabled.IsChecked();
+				if (obfv_m_OtherInsufficientTokensTitle) config.Notifications.Other.InsufficientTokens.Title = obfv_m_OtherInsufficientTokensTitle.GetText();
+				if (obfv_m_OtherInsufficientTokensMessage)
 				{
-					m_OtherInsufficientTokensMessage.GetText(messageText);
+					obfv_m_OtherInsufficientTokensMessage.GetText(messageText);
 					config.Notifications.Other.InsufficientTokens.Message = messageText;
 				}
-				if (m_OtherInsufficientTokensIconPath) config.Notifications.Other.InsufficientTokens.IconPath = m_OtherInsufficientTokensIconPath.GetText();
+				if (obfv_m_OtherInsufficientTokensIconPath) config.Notifications.Other.InsufficientTokens.IconPath = obfv_m_OtherInsufficientTokensIconPath.GetText();
 			}
 			else if (config.Notifications.Other.InsufficientTokens)
 			{
@@ -1484,16 +1484,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.Other.InsufficientTokens.Message = sourceConfig.Notifications.Other.InsufficientTokens.Message;
 				config.Notifications.Other.InsufficientTokens.IconPath = sourceConfig.Notifications.Other.InsufficientTokens.IconPath;
 			}
-			if (m_OtherSkipBountyNoPlayersEnabled && config.Notifications.Other.SkipBountyNoPlayers)
+			if (obfv_m_OtherSkipBountyNoPlayersEnabled && config.Notifications.Other.SkipBountyNoPlayers)
 			{
-				config.Notifications.Other.SkipBountyNoPlayers.Enabled = m_OtherSkipBountyNoPlayersEnabled.IsChecked();
-				if (m_OtherSkipBountyNoPlayersTitle) config.Notifications.Other.SkipBountyNoPlayers.Title = m_OtherSkipBountyNoPlayersTitle.GetText();
-				if (m_OtherSkipBountyNoPlayersMessage)
+				config.Notifications.Other.SkipBountyNoPlayers.Enabled = obfv_m_OtherSkipBountyNoPlayersEnabled.IsChecked();
+				if (obfv_m_OtherSkipBountyNoPlayersTitle) config.Notifications.Other.SkipBountyNoPlayers.Title = obfv_m_OtherSkipBountyNoPlayersTitle.GetText();
+				if (obfv_m_OtherSkipBountyNoPlayersMessage)
 				{
-					m_OtherSkipBountyNoPlayersMessage.GetText(messageText);
+					obfv_m_OtherSkipBountyNoPlayersMessage.GetText(messageText);
 					config.Notifications.Other.SkipBountyNoPlayers.Message = messageText;
 				}
-				if (m_OtherSkipBountyNoPlayersIconPath) config.Notifications.Other.SkipBountyNoPlayers.IconPath = m_OtherSkipBountyNoPlayersIconPath.GetText();
+				if (obfv_m_OtherSkipBountyNoPlayersIconPath) config.Notifications.Other.SkipBountyNoPlayers.IconPath = obfv_m_OtherSkipBountyNoPlayersIconPath.GetText();
 			}
 			else if (config.Notifications.Other.SkipBountyNoPlayers)
 			{
@@ -1502,16 +1502,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.Other.SkipBountyNoPlayers.Message = sourceConfig.Notifications.Other.SkipBountyNoPlayers.Message;
 				config.Notifications.Other.SkipBountyNoPlayers.IconPath = sourceConfig.Notifications.Other.SkipBountyNoPlayers.IconPath;
 			}
-			if (m_OtherSkipBountySuccessEnabled && config.Notifications.Other.SkipBountySuccess)
+			if (obfv_m_OtherSkipBountySuccessEnabled && config.Notifications.Other.SkipBountySuccess)
 			{
-				config.Notifications.Other.SkipBountySuccess.Enabled = m_OtherSkipBountySuccessEnabled.IsChecked();
-				if (m_OtherSkipBountySuccessTitle) config.Notifications.Other.SkipBountySuccess.Title = m_OtherSkipBountySuccessTitle.GetText();
-				if (m_OtherSkipBountySuccessMessage)
+				config.Notifications.Other.SkipBountySuccess.Enabled = obfv_m_OtherSkipBountySuccessEnabled.IsChecked();
+				if (obfv_m_OtherSkipBountySuccessTitle) config.Notifications.Other.SkipBountySuccess.Title = obfv_m_OtherSkipBountySuccessTitle.GetText();
+				if (obfv_m_OtherSkipBountySuccessMessage)
 				{
-					m_OtherSkipBountySuccessMessage.GetText(messageText);
+					obfv_m_OtherSkipBountySuccessMessage.GetText(messageText);
 					config.Notifications.Other.SkipBountySuccess.Message = messageText;
 				}
-				if (m_OtherSkipBountySuccessIconPath) config.Notifications.Other.SkipBountySuccess.IconPath = m_OtherSkipBountySuccessIconPath.GetText();
+				if (obfv_m_OtherSkipBountySuccessIconPath) config.Notifications.Other.SkipBountySuccess.IconPath = obfv_m_OtherSkipBountySuccessIconPath.GetText();
 			}
 			else if (config.Notifications.Other.SkipBountySuccess)
 			{
@@ -1520,16 +1520,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.Other.SkipBountySuccess.Message = sourceConfig.Notifications.Other.SkipBountySuccess.Message;
 				config.Notifications.Other.SkipBountySuccess.IconPath = sourceConfig.Notifications.Other.SkipBountySuccess.IconPath;
 			}
-			if (m_OtherBountySkippedEnabled && config.Notifications.Other.BountySkipped)
+			if (obfv_m_OtherBountySkippedEnabled && config.Notifications.Other.BountySkipped)
 			{
-				config.Notifications.Other.BountySkipped.Enabled = m_OtherBountySkippedEnabled.IsChecked();
-				if (m_OtherBountySkippedTitle) config.Notifications.Other.BountySkipped.Title = m_OtherBountySkippedTitle.GetText();
-				if (m_OtherBountySkippedMessage)
+				config.Notifications.Other.BountySkipped.Enabled = obfv_m_OtherBountySkippedEnabled.IsChecked();
+				if (obfv_m_OtherBountySkippedTitle) config.Notifications.Other.BountySkipped.Title = obfv_m_OtherBountySkippedTitle.GetText();
+				if (obfv_m_OtherBountySkippedMessage)
 				{
-					m_OtherBountySkippedMessage.GetText(messageText);
+					obfv_m_OtherBountySkippedMessage.GetText(messageText);
 					config.Notifications.Other.BountySkipped.Message = messageText;
 				}
-				if (m_OtherBountySkippedIconPath) config.Notifications.Other.BountySkipped.IconPath = m_OtherBountySkippedIconPath.GetText();
+				if (obfv_m_OtherBountySkippedIconPath) config.Notifications.Other.BountySkipped.IconPath = obfv_m_OtherBountySkippedIconPath.GetText();
 			}
 			else if (config.Notifications.Other.BountySkipped)
 			{
@@ -1538,16 +1538,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.Other.BountySkipped.Message = sourceConfig.Notifications.Other.BountySkipped.Message;
 				config.Notifications.Other.BountySkipped.IconPath = sourceConfig.Notifications.Other.BountySkipped.IconPath;
 			}
-			if (m_OtherRewardHandsNotFreeEnabled && config.Notifications.Other.RewardHandsNotFree)
+			if (obfv_m_OtherRewardHandsNotFreeEnabled && config.Notifications.Other.RewardHandsNotFree)
 			{
-				config.Notifications.Other.RewardHandsNotFree.Enabled = m_OtherRewardHandsNotFreeEnabled.IsChecked();
-				if (m_OtherRewardHandsNotFreeTitle) config.Notifications.Other.RewardHandsNotFree.Title = m_OtherRewardHandsNotFreeTitle.GetText();
-				if (m_OtherRewardHandsNotFreeMessage)
+				config.Notifications.Other.RewardHandsNotFree.Enabled = obfv_m_OtherRewardHandsNotFreeEnabled.IsChecked();
+				if (obfv_m_OtherRewardHandsNotFreeTitle) config.Notifications.Other.RewardHandsNotFree.Title = obfv_m_OtherRewardHandsNotFreeTitle.GetText();
+				if (obfv_m_OtherRewardHandsNotFreeMessage)
 				{
-					m_OtherRewardHandsNotFreeMessage.GetText(messageText);
+					obfv_m_OtherRewardHandsNotFreeMessage.GetText(messageText);
 					config.Notifications.Other.RewardHandsNotFree.Message = messageText;
 				}
-				if (m_OtherRewardHandsNotFreeIconPath) config.Notifications.Other.RewardHandsNotFree.IconPath = m_OtherRewardHandsNotFreeIconPath.GetText();
+				if (obfv_m_OtherRewardHandsNotFreeIconPath) config.Notifications.Other.RewardHandsNotFree.IconPath = obfv_m_OtherRewardHandsNotFreeIconPath.GetText();
 			}
 			else if (config.Notifications.Other.RewardHandsNotFree)
 			{
@@ -1556,16 +1556,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.Other.RewardHandsNotFree.Message = sourceConfig.Notifications.Other.RewardHandsNotFree.Message;
 				config.Notifications.Other.RewardHandsNotFree.IconPath = sourceConfig.Notifications.Other.RewardHandsNotFree.IconPath;
 			}
-			if (m_OtherPlayerOnCooldownEnabled && config.Notifications.Other.PlayerOnCooldown)
+			if (obfv_m_OtherPlayerOnCooldownEnabled && config.Notifications.Other.PlayerOnCooldown)
 			{
-				config.Notifications.Other.PlayerOnCooldown.Enabled = m_OtherPlayerOnCooldownEnabled.IsChecked();
-				if (m_OtherPlayerOnCooldownTitle) config.Notifications.Other.PlayerOnCooldown.Title = m_OtherPlayerOnCooldownTitle.GetText();
-				if (m_OtherPlayerOnCooldownMessage)
+				config.Notifications.Other.PlayerOnCooldown.Enabled = obfv_m_OtherPlayerOnCooldownEnabled.IsChecked();
+				if (obfv_m_OtherPlayerOnCooldownTitle) config.Notifications.Other.PlayerOnCooldown.Title = obfv_m_OtherPlayerOnCooldownTitle.GetText();
+				if (obfv_m_OtherPlayerOnCooldownMessage)
 				{
-					m_OtherPlayerOnCooldownMessage.GetText(messageText);
+					obfv_m_OtherPlayerOnCooldownMessage.GetText(messageText);
 					config.Notifications.Other.PlayerOnCooldown.Message = messageText;
 				}
-				if (m_OtherPlayerOnCooldownIconPath) config.Notifications.Other.PlayerOnCooldown.IconPath = m_OtherPlayerOnCooldownIconPath.GetText();
+				if (obfv_m_OtherPlayerOnCooldownIconPath) config.Notifications.Other.PlayerOnCooldown.IconPath = obfv_m_OtherPlayerOnCooldownIconPath.GetText();
 			}
 			else if (config.Notifications.Other.PlayerOnCooldown)
 			{
@@ -1574,16 +1574,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.Other.PlayerOnCooldown.Message = sourceConfig.Notifications.Other.PlayerOnCooldown.Message;
 				config.Notifications.Other.PlayerOnCooldown.IconPath = sourceConfig.Notifications.Other.PlayerOnCooldown.IconPath;
 			}
-			if (m_OtherPlayerInSafeZoneEnabled && config.Notifications.Other.PlayerInSafeZone)
+			if (obfv_m_OtherPlayerInSafeZoneEnabled && config.Notifications.Other.PlayerInSafeZone)
 			{
-				config.Notifications.Other.PlayerInSafeZone.Enabled = m_OtherPlayerInSafeZoneEnabled.IsChecked();
-				if (m_OtherPlayerInSafeZoneTitle) config.Notifications.Other.PlayerInSafeZone.Title = m_OtherPlayerInSafeZoneTitle.GetText();
-				if (m_OtherPlayerInSafeZoneMessage)
+				config.Notifications.Other.PlayerInSafeZone.Enabled = obfv_m_OtherPlayerInSafeZoneEnabled.IsChecked();
+				if (obfv_m_OtherPlayerInSafeZoneTitle) config.Notifications.Other.PlayerInSafeZone.Title = obfv_m_OtherPlayerInSafeZoneTitle.GetText();
+				if (obfv_m_OtherPlayerInSafeZoneMessage)
 				{
-					m_OtherPlayerInSafeZoneMessage.GetText(messageText);
+					obfv_m_OtherPlayerInSafeZoneMessage.GetText(messageText);
 					config.Notifications.Other.PlayerInSafeZone.Message = messageText;
 				}
-				if (m_OtherPlayerInSafeZoneIconPath) config.Notifications.Other.PlayerInSafeZone.IconPath = m_OtherPlayerInSafeZoneIconPath.GetText();
+				if (obfv_m_OtherPlayerInSafeZoneIconPath) config.Notifications.Other.PlayerInSafeZone.IconPath = obfv_m_OtherPlayerInSafeZoneIconPath.GetText();
 			}
 			else if (config.Notifications.Other.PlayerInSafeZone)
 			{
@@ -1592,16 +1592,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.Other.PlayerInSafeZone.Message = sourceConfig.Notifications.Other.PlayerInSafeZone.Message;
 				config.Notifications.Other.PlayerInSafeZone.IconPath = sourceConfig.Notifications.Other.PlayerInSafeZone.IconPath;
 			}
-			if (m_OtherBountyPersistedEnabled && config.Notifications.Other.BountyPersisted)
+			if (obfv_m_OtherBountyPersistedEnabled && config.Notifications.Other.BountyPersisted)
 			{
-				config.Notifications.Other.BountyPersisted.Enabled = m_OtherBountyPersistedEnabled.IsChecked();
-				if (m_OtherBountyPersistedTitle) config.Notifications.Other.BountyPersisted.Title = m_OtherBountyPersistedTitle.GetText();
-				if (m_OtherBountyPersistedMessage)
+				config.Notifications.Other.BountyPersisted.Enabled = obfv_m_OtherBountyPersistedEnabled.IsChecked();
+				if (obfv_m_OtherBountyPersistedTitle) config.Notifications.Other.BountyPersisted.Title = obfv_m_OtherBountyPersistedTitle.GetText();
+				if (obfv_m_OtherBountyPersistedMessage)
 				{
-					m_OtherBountyPersistedMessage.GetText(messageText);
+					obfv_m_OtherBountyPersistedMessage.GetText(messageText);
 					config.Notifications.Other.BountyPersisted.Message = messageText;
 				}
-				if (m_OtherBountyPersistedIconPath) config.Notifications.Other.BountyPersisted.IconPath = m_OtherBountyPersistedIconPath.GetText();
+				if (obfv_m_OtherBountyPersistedIconPath) config.Notifications.Other.BountyPersisted.IconPath = obfv_m_OtherBountyPersistedIconPath.GetText();
 			}
 			else if (config.Notifications.Other.BountyPersisted)
 			{
@@ -1610,16 +1610,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.Other.BountyPersisted.Message = sourceConfig.Notifications.Other.BountyPersisted.Message;
 				config.Notifications.Other.BountyPersisted.IconPath = sourceConfig.Notifications.Other.BountyPersisted.IconPath;
 			}
-			if (m_OtherTeleportedOutOfTerritoryEnabled && config.Notifications.Other.TeleportedOutOfTerritory)
+			if (obfv_m_OtherTeleportedOutOfTerritoryEnabled && config.Notifications.Other.TeleportedOutOfTerritory)
 			{
-				config.Notifications.Other.TeleportedOutOfTerritory.Enabled = m_OtherTeleportedOutOfTerritoryEnabled.IsChecked();
-				if (m_OtherTeleportedOutOfTerritoryTitle) config.Notifications.Other.TeleportedOutOfTerritory.Title = m_OtherTeleportedOutOfTerritoryTitle.GetText();
-				if (m_OtherTeleportedOutOfTerritoryMessage)
+				config.Notifications.Other.TeleportedOutOfTerritory.Enabled = obfv_m_OtherTeleportedOutOfTerritoryEnabled.IsChecked();
+				if (obfv_m_OtherTeleportedOutOfTerritoryTitle) config.Notifications.Other.TeleportedOutOfTerritory.Title = obfv_m_OtherTeleportedOutOfTerritoryTitle.GetText();
+				if (obfv_m_OtherTeleportedOutOfTerritoryMessage)
 				{
-					m_OtherTeleportedOutOfTerritoryMessage.GetText(messageText);
+					obfv_m_OtherTeleportedOutOfTerritoryMessage.GetText(messageText);
 					config.Notifications.Other.TeleportedOutOfTerritory.Message = messageText;
 				}
-				if (m_OtherTeleportedOutOfTerritoryIconPath) config.Notifications.Other.TeleportedOutOfTerritory.IconPath = m_OtherTeleportedOutOfTerritoryIconPath.GetText();
+				if (obfv_m_OtherTeleportedOutOfTerritoryIconPath) config.Notifications.Other.TeleportedOutOfTerritory.IconPath = obfv_m_OtherTeleportedOutOfTerritoryIconPath.GetText();
 			}
 			else if (config.Notifications.Other.TeleportedOutOfTerritory)
 			{
@@ -1628,16 +1628,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Notifications.Other.TeleportedOutOfTerritory.Message = sourceConfig.Notifications.Other.TeleportedOutOfTerritory.Message;
 				config.Notifications.Other.TeleportedOutOfTerritory.IconPath = sourceConfig.Notifications.Other.TeleportedOutOfTerritory.IconPath;
 			}
-			if (m_OtherBountyPausedInTerritoryEnabled && config.Notifications.Other.BountyPausedInTerritory)
+			if (obfv_m_OtherBountyPausedInTerritoryEnabled && config.Notifications.Other.BountyPausedInTerritory)
 			{
-				config.Notifications.Other.BountyPausedInTerritory.Enabled = m_OtherBountyPausedInTerritoryEnabled.IsChecked();
-				if (m_OtherBountyPausedInTerritoryTitle) config.Notifications.Other.BountyPausedInTerritory.Title = m_OtherBountyPausedInTerritoryTitle.GetText();
-				if (m_OtherBountyPausedInTerritoryMessage)
+				config.Notifications.Other.BountyPausedInTerritory.Enabled = obfv_m_OtherBountyPausedInTerritoryEnabled.IsChecked();
+				if (obfv_m_OtherBountyPausedInTerritoryTitle) config.Notifications.Other.BountyPausedInTerritory.Title = obfv_m_OtherBountyPausedInTerritoryTitle.GetText();
+				if (obfv_m_OtherBountyPausedInTerritoryMessage)
 				{
-					m_OtherBountyPausedInTerritoryMessage.GetText(messageText);
+					obfv_m_OtherBountyPausedInTerritoryMessage.GetText(messageText);
 					config.Notifications.Other.BountyPausedInTerritory.Message = messageText;
 				}
-				if (m_OtherBountyPausedInTerritoryIconPath) config.Notifications.Other.BountyPausedInTerritory.IconPath = m_OtherBountyPausedInTerritoryIconPath.GetText();
+				if (obfv_m_OtherBountyPausedInTerritoryIconPath) config.Notifications.Other.BountyPausedInTerritory.IconPath = obfv_m_OtherBountyPausedInTerritoryIconPath.GetText();
 			}
 			else if (config.Notifications.Other.BountyPausedInTerritory)
 			{
@@ -1650,17 +1650,17 @@ class BountyAdminMenu extends UIScriptedMenu
 		if (sourceConfig.Broadcasts)
 		{
 			if (!config.Broadcasts)
-				config.Broadcasts = new BountyBroadcasts();
-			if (m_BroadcastsPlacedBountyEnabled && config.Broadcasts.PlacedBounty)
+				config.Broadcasts = new obfc_BountyBroadcasts();
+			if (obfv_m_BroadcastsPlacedBountyEnabled && config.Broadcasts.PlacedBounty)
 			{
-				config.Broadcasts.PlacedBounty.Enabled = m_BroadcastsPlacedBountyEnabled.IsChecked();
-				if (m_BroadcastsPlacedBountyTitle) config.Broadcasts.PlacedBounty.Title = m_BroadcastsPlacedBountyTitle.GetText();
-				if (m_BroadcastsPlacedBountyMessage)
+				config.Broadcasts.PlacedBounty.Enabled = obfv_m_BroadcastsPlacedBountyEnabled.IsChecked();
+				if (obfv_m_BroadcastsPlacedBountyTitle) config.Broadcasts.PlacedBounty.Title = obfv_m_BroadcastsPlacedBountyTitle.GetText();
+				if (obfv_m_BroadcastsPlacedBountyMessage)
 				{
-					m_BroadcastsPlacedBountyMessage.GetText(messageText);
+					obfv_m_BroadcastsPlacedBountyMessage.GetText(messageText);
 					config.Broadcasts.PlacedBounty.Message = messageText;
 				}
-				if (m_BroadcastsPlacedBountyIconPath) config.Broadcasts.PlacedBounty.IconPath = m_BroadcastsPlacedBountyIconPath.GetText();
+				if (obfv_m_BroadcastsPlacedBountyIconPath) config.Broadcasts.PlacedBounty.IconPath = obfv_m_BroadcastsPlacedBountyIconPath.GetText();
 			}
 			else if (config.Broadcasts.PlacedBounty)
 			{
@@ -1669,16 +1669,16 @@ class BountyAdminMenu extends UIScriptedMenu
 				config.Broadcasts.PlacedBounty.Message = sourceConfig.Broadcasts.PlacedBounty.Message;
 				config.Broadcasts.PlacedBounty.IconPath = sourceConfig.Broadcasts.PlacedBounty.IconPath;
 			}
-			if (m_BroadcastsRuleBreakerEnabled && config.Broadcasts.RuleBreaker)
+			if (obfv_m_BroadcastsRuleBreakerEnabled && config.Broadcasts.RuleBreaker)
 			{
-				config.Broadcasts.RuleBreaker.Enabled = m_BroadcastsRuleBreakerEnabled.IsChecked();
-				if (m_BroadcastsRuleBreakerTitle) config.Broadcasts.RuleBreaker.Title = m_BroadcastsRuleBreakerTitle.GetText();
-				if (m_BroadcastsRuleBreakerMessage)
+				config.Broadcasts.RuleBreaker.Enabled = obfv_m_BroadcastsRuleBreakerEnabled.IsChecked();
+				if (obfv_m_BroadcastsRuleBreakerTitle) config.Broadcasts.RuleBreaker.Title = obfv_m_BroadcastsRuleBreakerTitle.GetText();
+				if (obfv_m_BroadcastsRuleBreakerMessage)
 				{
-					m_BroadcastsRuleBreakerMessage.GetText(messageText);
+					obfv_m_BroadcastsRuleBreakerMessage.GetText(messageText);
 					config.Broadcasts.RuleBreaker.Message = messageText;
 				}
-				if (m_BroadcastsRuleBreakerIconPath) config.Broadcasts.RuleBreaker.IconPath = m_BroadcastsRuleBreakerIconPath.GetText();
+				if (obfv_m_BroadcastsRuleBreakerIconPath) config.Broadcasts.RuleBreaker.IconPath = obfv_m_BroadcastsRuleBreakerIconPath.GetText();
 			}
 			else if (config.Broadcasts.RuleBreaker)
 			{
@@ -1695,7 +1695,7 @@ class BountyAdminMenu extends UIScriptedMenu
 		super.OnHide();
 		PlayerBase player;
 		player = PlayerBase.Cast(g_Game.GetPlayer());
-		ForceDisableInputs(false);
+		obfm_ForceDisableInputs(false);
 		PPEffects.SetBlurMenu(0);
 		g_Game.GetInput().ResetGameFocus();
 		g_Game.GetUIManager().ShowUICursor(false);

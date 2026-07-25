@@ -1,136 +1,136 @@
-class BountyUtils
+class obfc_BountyUtils
 {
-	static int screenWidth;
-	static int screenHeight;
-	static float widthScale;
-	static float heightScale;
-	static void UpdateScreenSize()
+	static int obfv_screenWidth;
+	static int obfv_screenHeight;
+	static float obfv_widthScale;
+	static float obfv_heightScale;
+	static void obfm_UpdateScreenSize()
 	{
-		GetScreenSize(screenWidth, screenHeight);
-		widthScale = screenWidth / 1920.0;
-		heightScale = screenHeight / 1080.0;
+		GetScreenSize(obfv_screenWidth, obfv_screenHeight);
+		obfv_widthScale = obfv_screenWidth / 1920.0;
+		obfv_heightScale = obfv_screenHeight / 1080.0;
 	}
 }
-class BountyMapWrapper
+class obfc_BountyMapWrapper
 {
-	protected vector position;
-	protected vector lastPosition;
-	protected int lastColor;
-	protected bool changed = false;
-	protected CanvasWidget drawCanvas;
+	protected vector obfv_position;
+	protected vector obfv_lastPosition;
+	protected int obfv_lastColor;
+	protected bool obfv_changed = false;
+	protected CanvasWidget obfv_drawCanvas;
 	void SetDrawCanvas(CanvasWidget canvas)
 	{
-		drawCanvas = canvas;
+		obfv_drawCanvas = canvas;
 	}
 	bool SetPosition(vector pos)
 	{
-		if (vector.DistanceSq(lastPosition, pos) > 0.01)
+		if (vector.DistanceSq(obfv_lastPosition, pos) > 0.01)
 		{
-			position = pos;
-			lastPosition = pos;
-			changed = true;
+			obfv_position = pos;
+			obfv_lastPosition = pos;
+			obfv_changed = true;
 			return true;
 		}
 		return false;
 	}
 	bool SetColor(int color)
 	{
-		if (lastColor != color)
+		if (obfv_lastColor != color)
 		{
-			lastColor = color;
-			changed = true;
+			obfv_lastColor = color;
+			obfv_changed = true;
 			return true;
 		}
 		return false;
 	}
-	void Update(float mapScale, vector mapPos, MapWidget mapWidget, float xOffset, float yOffset)
+	void Update(float mapScale, vector mapPos, MapWidget obfv_mapWidget, float obfv_xOffset, float obfv_yOffset)
 	{
 	}
 	vector GetPosition()
 	{
-		return position;
+		return obfv_position;
 	}
-	int GetColor()
+	int obfm_GetColor()
 	{
-		return lastColor;
+		return obfv_lastColor;
 	}
 }
-class BountyCircle : BountyMapWrapper
+class obfc_BountyCircle : obfc_BountyMapWrapper
 {
-	const float EPS = 0.01;
-	int circleWidth = 2;
-	int m_Priority = 1;
-	bool m_HideWhenNested = false;
-	float radius = 100.0;
-	ref array<ref BountyCircle> circleCheckList = new array<ref BountyCircle>();
-	ref array<ref Param2<float, float>> intersecangles = new array<ref Param2<float, float>>();
-	bool needUpdate = true;
-	bool isCircleNested = false;
-	float lastcircumf = -1;
-	ref array<ref Param4<bool, bool, float, bool>> drawStepsPrepared = new array<ref Param4<bool, bool, float, bool>>();
+	const float obfv_EPS = 0.01;
+	int obfv_circleWidth = 2;
+	int obfv_m_Priority = 1;
+	bool obfv_m_HideWhenNested = false;
+	float obfv_radius = 100.0;
+	ref array<ref obfc_BountyCircle> obfv_circleCheckList = new array<ref obfc_BountyCircle>();
+	ref array<ref Param2<float, float>> obfv_intersecangles = new array<ref Param2<float, float>>();
+	bool obfv_needUpdate = true;
+	bool obfv_isCircleNested = false;
+	float obfv_lastcircumf = -1;
+	ref array<ref Param4<bool, bool, float, bool>> obfv_drawStepsPrepared = new array<ref Param4<bool, bool, float, bool>>();
 	void Init(vector center, float radius_, int color, int prio)
 	{
-		this.position = center;
-		this.radius = radius_;
-		this.lastColor = color;
-		this.m_Priority = prio;
-		BountyUtils.UpdateScreenSize();
-		if (g_BountyConfig && g_BountyConfig.Map && g_BountyConfig.Map.BountyCircleDrawingWidth > 0)
+		this.obfv_position = center;
+		this.obfv_radius = radius_;
+		this.obfv_lastColor = color;
+		this.obfv_m_Priority = prio;
+		obfc_BountyUtils.obfm_UpdateScreenSize();
+		if (obfv_g_BountyConfig && obfv_g_BountyConfig.Map && obfv_g_BountyConfig.Map.BountyCircleDrawingWidth > 0)
 		{
-			circleWidth = g_BountyConfig.Map.BountyCircleDrawingWidth;
+			obfv_circleWidth = obfv_g_BountyConfig.Map.BountyCircleDrawingWidth;
 		}
 		else
 		{
-			circleWidth = 2;
+			obfv_circleWidth = 2;
 		}
 	}
-	void SetHideWhenNested(bool hide)
+	void obfm_SetHideWhenNested(bool hide)
 	{
-		m_HideWhenNested = hide;
+		obfv_m_HideWhenNested = hide;
 	}
-	override void Update(float mapScale, vector mapPos, MapWidget mapWidget, float xOffset, float yOffset)
+	override void Update(float mapScale, vector mapPos, MapWidget obfv_mapWidget, float obfv_xOffset, float obfv_yOffset)
 	{
-		if (m_HideWhenNested)
+		if (obfv_m_HideWhenNested)
 			return;
-		if (!drawCanvas)
+		if (!obfv_drawCanvas)
 			return;
-		vector screenPos = mapWidget.MapToScreen(position) + Vector(-xOffset, -yOffset, 0);
-		float height = BountyUtils.screenHeight * 1.33333333;
-		if (height > BountyUtils.screenWidth)
-			height = BountyUtils.screenWidth;
+		vector screenPos = obfv_mapWidget.MapToScreen(obfv_position) + Vector(-obfv_xOffset, -obfv_yOffset, 0);
+		float height = obfc_BountyUtils.obfv_screenHeight * 1.33333333;
+		if (height > obfc_BountyUtils.obfv_screenWidth)
+			height = obfc_BountyUtils.obfv_screenWidth;
 		float screenScale = height / g_Game.GetWorld().GetWorldSize();
 		float mapToScreen = mapScale / screenScale;
-		float radiusScreen = radius / mapToScreen;
+		float radiusScreen = obfv_radius / mapToScreen;
 		if (radiusScreen <= 0)
 			return;
-		float radiusRoot = Math.Sqrt(radius);
+		float radiusRoot = Math.Sqrt(obfv_radius);
 		float circumf = 2.0 * Math.PI * radiusRoot;
 		float part = 1.0 / radiusRoot;
-		if (needUpdate)
-			CalcEveryCircleIntersection();
-		if (needUpdate || lastcircumf != circumf)
+		if (obfv_needUpdate)
+			obfm_CalcEveryCircleIntersection();
+		if (obfv_needUpdate || obfv_lastcircumf != circumf)
 		{
-			MathForCircleIntersections(circumf, part);
-			lastcircumf = circumf;
+			obfm_MathForCircleIntersections(circumf, part);
+			obfv_lastcircumf = circumf;
 		}
-		needUpdate = false;
+		obfv_needUpdate = false;
 		float angle2 = 0.0;
-		float rawX2 = radius;
+		float rawX2 = obfv_radius;
 		float rawY2 = 0.0;
-		float newX2 = screenPos[0] + radius / mapToScreen;
+		float newX2 = screenPos[0] + obfv_radius / mapToScreen;
 		float newY2 = screenPos[1];
 		int i = 0;
 		Param4<bool, bool, float, bool> param;
-		for (i = 0; i < drawStepsPrepared.Count(); i++)
+		for (i = 0; i < obfv_drawStepsPrepared.Count(); i++)
 		{
-			param = drawStepsPrepared.Get(i);
+			param = obfv_drawStepsPrepared.Get(i);
 			int stepIndex = i + 1; 
 			float angle1 = angle2;
 			angle2 = part * stepIndex;
 			float rawX1 = rawX2;
-			rawX2 = radius * Math.Cos(angle2);
+			rawX2 = obfv_radius * Math.Cos(angle2);
 			float rawY1 = rawY2;
-			rawY2 = -radius * Math.Sin(angle2);
+			rawY2 = -obfv_radius * Math.Sin(angle2);
 			float newX1 = newX2;
 			newX2 = screenPos[0] + rawX2 / mapToScreen;
 			float newY1 = newY2;
@@ -145,45 +145,45 @@ class BountyCircle : BountyMapWrapper
 					edgeAngle += offset;
 				else
 					edgeAngle -= offset;
-				float newX3 = screenPos[0] + radius * Math.Cos(edgeAngle) / mapToScreen;
-				float newY3 = screenPos[1] - radius * Math.Sin(edgeAngle) / mapToScreen;
+				float newX3 = screenPos[0] + obfv_radius * Math.Cos(edgeAngle) / mapToScreen;
+				float newY3 = screenPos[1] - obfv_radius * Math.Sin(edgeAngle) / mapToScreen;
 				if (param.param4)
-					drawCanvas.DrawLine(newX3, newY3, newX2, newY2, circleWidth, lastColor);
+					obfv_drawCanvas.DrawLine(newX3, newY3, newX2, newY2, obfv_circleWidth, obfv_lastColor);
 				else
-					drawCanvas.DrawLine(newX3, newY3, newX1, newY1, circleWidth, lastColor);
+					obfv_drawCanvas.DrawLine(newX3, newY3, newX1, newY1, obfv_circleWidth, obfv_lastColor);
 				continue;
 			}
-			drawCanvas.DrawLine(newX1, newY1, newX2, newY2, circleWidth, lastColor);
+			obfv_drawCanvas.DrawLine(newX1, newY1, newX2, newY2, obfv_circleWidth, obfv_lastColor);
 		}
 	}
-	void CalcEveryCircleIntersection()
+	void obfm_CalcEveryCircleIntersection()
 	{
-		intersecangles.Clear();
-		if (!circleCheckList)
+		obfv_intersecangles.Clear();
+		if (!obfv_circleCheckList)
 			return;
 		int i;
-		BountyCircle circ;
-		for (i = 0; i < circleCheckList.Count(); i++)
+		obfc_BountyCircle circ;
+		for (i = 0; i < obfv_circleCheckList.Count(); i++)
 		{
-			circ = circleCheckList.Get(i);
+			circ = obfv_circleCheckList.Get(i);
 			if (circ == this)
 				continue;
-			if (circ.m_Priority < m_Priority)
+			if (circ.obfv_m_Priority < obfv_m_Priority)
 				continue;
-			float dx = circ.position[0] - position[0];
-			float dz = circ.position[2] - position[2];
+			float dx = circ.obfv_position[0] - obfv_position[0];
+			float dz = circ.obfv_position[2] - obfv_position[2];
 			float d = Math.Sqrt(dx * dx + dz * dz);
-			if (d >= radius + circ.radius || d <= 0)
+			if (d >= obfv_radius + circ.obfv_radius || d <= 0)
 				continue;
-			float a = (radius * radius - circ.radius * circ.radius + d * d) / (2.0 * d);
-			float h = Math.Sqrt(radius * radius - a * a);
+			float a = (obfv_radius * obfv_radius - circ.obfv_radius * circ.obfv_radius + d * d) / (2.0 * d);
+			float h = Math.Sqrt(obfv_radius * obfv_radius - a * a);
 			float hd = h / d;
-			float px = position[0] + dx * a / d;
-			float pz = position[2] + dz * a / d;
-			float x1 = (px + hd * (circ.position[2] - position[2])) - position[0];
-			float z1 = (pz - hd * (circ.position[0] - position[0])) - position[2];
-			float x2 = (px - hd * (circ.position[2] - position[2])) - position[0];
-			float z2 = (pz + hd * (circ.position[0] - position[0])) - position[2];
+			float px = obfv_position[0] + dx * a / d;
+			float pz = obfv_position[2] + dz * a / d;
+			float x1 = (px + hd * (circ.obfv_position[2] - obfv_position[2])) - obfv_position[0];
+			float z1 = (pz - hd * (circ.obfv_position[0] - obfv_position[0])) - obfv_position[2];
+			float x2 = (px - hd * (circ.obfv_position[2] - obfv_position[2])) - obfv_position[0];
+			float z2 = (pz + hd * (circ.obfv_position[0] - obfv_position[0])) - obfv_position[2];
 			float dist1 = Math.Sqrt(x1 * x1 + z1 * z1);
 			float dist2 = Math.Sqrt(x2 * x2 + z2 * z2);
 			if (dist1 <= 0 || dist2 <= 0)
@@ -193,38 +193,38 @@ class BountyCircle : BountyMapWrapper
 			float ang2 = Math.Acos(x2 / dist2);
 			if (z2 < 0) ang2 = Math.PI2 - ang2;
 			if (ang1 < ang2)
-				intersecangles.Insert(new Param2<float, float>(ang1, ang2));
+				obfv_intersecangles.Insert(new Param2<float, float>(ang1, ang2));
 			else
 			{
-				intersecangles.Insert(new Param2<float, float>(-1, ang2));
-				intersecangles.Insert(new Param2<float, float>(ang1, Math.PI2 + 1));
+				obfv_intersecangles.Insert(new Param2<float, float>(-1, ang2));
+				obfv_intersecangles.Insert(new Param2<float, float>(ang1, Math.PI2 + 1));
 			}
 		}
 	}
-	void CalculateInsideCircle()
+	void obfm_CalculateInsideCircle()
 	{
-		isCircleNested = false;
+		obfv_isCircleNested = false;
 		int i;
-		BountyCircle circ;
-		for (i = 0; i < circleCheckList.Count(); i++)
+		obfc_BountyCircle circ;
+		for (i = 0; i < obfv_circleCheckList.Count(); i++)
 		{
-			circ = circleCheckList.Get(i);
+			circ = obfv_circleCheckList.Get(i);
 			if (circ == this)
 				continue;
-			if (!m_HideWhenNested && (circ.m_Priority < m_Priority))
+			if (!obfv_m_HideWhenNested && (circ.obfv_m_Priority < obfv_m_Priority))
 				continue;
-			float dx = circ.position[0] - position[0];
-			float dz = circ.position[2] - position[2];
+			float dx = circ.obfv_position[0] - obfv_position[0];
+			float dz = circ.obfv_position[2] - obfv_position[2];
 			float d = Math.Sqrt(dx * dx + dz * dz);
-			if (d + radius <= circ.radius + EPS)
+			if (d + obfv_radius <= circ.obfv_radius + obfv_EPS)
 			{
-				isCircleNested = true;
+				obfv_isCircleNested = true;
 			}
 		}
 	}
-	void MathForCircleIntersections(float circumf, float part)
+	void obfm_MathForCircleIntersections(float circumf, float part)
 	{
-		drawStepsPrepared.Clear();
+		obfv_drawStepsPrepared.Clear();
 		float ang2 = 0.0;
 		int i;
 		for (i = 1; i <= circumf + 1; i++)
@@ -237,9 +237,9 @@ class BountyCircle : BountyMapWrapper
 			bool clipDirectionForward = false;
 			Param2<float, float> span;
 			int j;
-			for (j = 0; j < intersecangles.Count(); j++)
+			for (j = 0; j < obfv_intersecangles.Count(); j++)
 			{
-				span = intersecangles.Get(j);
+				span = obfv_intersecangles.Get(j);
 				if (ang2 > span.param1 && ang1 < span.param2)
 				{
 					if (span.param1 < ang1)
@@ -261,261 +261,261 @@ class BountyCircle : BountyMapWrapper
 				}
 			}
 			Param4<bool, bool, float, bool> drawStep = new Param4<bool, bool, float, bool>(intersecting, edge, edgeAngle, clipDirectionForward);
-			drawStepsPrepared.Insert(drawStep);
+			obfv_drawStepsPrepared.Insert(drawStep);
 		}
 	}
-	void CirclesOthers(array<ref BountyCircle> circles)
+	void obfm_CirclesOthers(array<ref obfc_BountyCircle> obfv_circles)
 	{
-		circleCheckList.Clear();
+		obfv_circleCheckList.Clear();
 		int i;
-		BountyCircle circ;
-		for (i = 0; i < circles.Count(); i++)
+		obfc_BountyCircle circ;
+		for (i = 0; i < obfv_circles.Count(); i++)
 		{
-			circ = circles.Get(i);
-			circleCheckList.Insert(circ);
+			circ = obfv_circles.Get(i);
+			obfv_circleCheckList.Insert(circ);
 		}
-		needUpdate = true;
-		CalculateInsideCircle();
+		obfv_needUpdate = true;
+		obfm_CalculateInsideCircle();
 	}
 }
-class BountyMapManager
+class obfc_BountyMapManager
 {
-	private MapWidget mapWidget;
-	private CanvasWidget drawCanvas;
-	private ref array<ref BountyMapWrapper> markers = new array<ref BountyMapWrapper>();
-	private ref array<ref BountyCircle> circles = new array<ref BountyCircle>();
-	private float lastMapScale;
-	private vector lastMapPos;
-	private float xOffset;
-	private float yOffset;
-	void BountyMapManager(MapWidget mapW, CanvasWidget canvas)
+	private MapWidget obfv_mapWidget;
+	private CanvasWidget obfv_drawCanvas;
+	private ref array<ref obfc_BountyMapWrapper> obfv_markers = new array<ref obfc_BountyMapWrapper>();
+	private ref array<ref obfc_BountyCircle> obfv_circles = new array<ref obfc_BountyCircle>();
+	private float obfv_lastMapScale;
+	private vector obfv_lastMapPos;
+	private float obfv_xOffset;
+	private float obfv_yOffset;
+	void obfc_BountyMapManager(MapWidget mapW, CanvasWidget canvas)
 	{
-		mapWidget = mapW;
-		drawCanvas = canvas;
-		mapWidget.GetScreenPos(xOffset, yOffset);
+		obfv_mapWidget = mapW;
+		obfv_drawCanvas = canvas;
+		obfv_mapWidget.GetScreenPos(obfv_xOffset, obfv_yOffset);
 	}
-	void UpdateOffsets()
+	void obfm_UpdateOffsets()
 	{
-		mapWidget.GetScreenPos(xOffset, yOffset);
+		obfv_mapWidget.GetScreenPos(obfv_xOffset, obfv_yOffset);
 	}
-	BountyCircle AddCircle(vector pos, float radius, int color, bool hideWhenNested = false, int priority = 1)
+	obfc_BountyCircle obfm_AddCircle(vector pos, float obfv_radius, int color, bool hideWhenNested = false, int priority = 1)
 	{
-		BountyCircle circle = new BountyCircle();
-		circle.SetDrawCanvas(drawCanvas);
-		circle.Init(pos, radius, color, priority);
-		circle.SetHideWhenNested(hideWhenNested);
-		markers.Insert(circle);
-		circles.Insert(circle);
+		obfc_BountyCircle circle = new obfc_BountyCircle();
+		circle.SetDrawCanvas(obfv_drawCanvas);
+		circle.Init(pos, obfv_radius, color, priority);
+		circle.obfm_SetHideWhenNested(hideWhenNested);
+		obfv_markers.Insert(circle);
+		obfv_circles.Insert(circle);
 		return circle;
 	}
 	void Update()
 	{
-		if (!mapWidget || !drawCanvas)
+		if (!obfv_mapWidget || !obfv_drawCanvas)
 			return;
-		float scale = mapWidget.GetScale();
-		vector pos = mapWidget.GetMapPos();
-		UpdateOffsets();
-		drawCanvas.Clear();
+		float scale = obfv_mapWidget.GetScale();
+		vector pos = obfv_mapWidget.GetMapPos();
+		obfm_UpdateOffsets();
+		obfv_drawCanvas.Clear();
 		int i;
-		BountyCircle c;
-		for (i = 0; i < circles.Count(); i++)
+		obfc_BountyCircle c;
+		for (i = 0; i < obfv_circles.Count(); i++)
 		{
-			c = circles.Get(i);
-			c.CirclesOthers(circles);
+			c = obfv_circles.Get(i);
+			c.obfm_CirclesOthers(obfv_circles);
 		}
-		BountyMapWrapper marker;
-		for (i = 0; i < markers.Count(); i++)
+		obfc_BountyMapWrapper marker;
+		for (i = 0; i < obfv_markers.Count(); i++)
 		{
-			marker = markers.Get(i);
-			marker.Update(scale, pos, mapWidget, xOffset, yOffset);
+			marker = obfv_markers.Get(i);
+			marker.Update(scale, pos, obfv_mapWidget, obfv_xOffset, obfv_yOffset);
 		}
-		lastMapScale = scale;
-		lastMapPos = pos;
+		obfv_lastMapScale = scale;
+		obfv_lastMapPos = pos;
 	}
-	void ClearMarkers()
+	void obfm_ClearMarkers()
 	{
-		if (drawCanvas)
+		if (obfv_drawCanvas)
 		{
-			drawCanvas.Clear();
+			obfv_drawCanvas.Clear();
 		}
-		markers.Clear();
-		circles.Clear();
+		obfv_markers.Clear();
+		obfv_circles.Clear();
 	}
-	bool HasMarkers()
+	bool obfm_HasMarkers()
 	{
-		return markers && markers.Count() > 0;
+		return obfv_markers && obfv_markers.Count() > 0;
 	}
 }
-class BountyMapDrawer
+class obfc_BountyMapDrawer
 {
-	private MapWidget m_MapWidget;
-	private CanvasWidget m_DrawCanvas;
-	private ref BountyMapManager m_MarkerManager;
-	private static ref map<int, ref BountyMapDrawer> s_Instances = new map<int, ref BountyMapDrawer>();
-	void BountyMapDrawer(MapWidget mapWidget, CanvasWidget canvas)
+	private MapWidget obfv_m_MapWidget;
+	private CanvasWidget obfv_m_DrawCanvas;
+	private ref obfc_BountyMapManager obfv_m_MarkerManager;
+	private static ref map<int, ref obfc_BountyMapDrawer> obfv_s_Instances = new map<int, ref obfc_BountyMapDrawer>();
+	void obfc_BountyMapDrawer(MapWidget obfv_mapWidget, CanvasWidget canvas)
 	{
-		BountyUtils.UpdateScreenSize();
-		m_MapWidget = mapWidget;
-		m_DrawCanvas = canvas;
-		if (!m_MapWidget || !m_DrawCanvas)
+		obfc_BountyUtils.obfm_UpdateScreenSize();
+		obfv_m_MapWidget = obfv_mapWidget;
+		obfv_m_DrawCanvas = canvas;
+		if (!obfv_m_MapWidget || !obfv_m_DrawCanvas)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyMapDrawer] ERROR: mapWidget or drawCanvas is NULL!");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyMapDrawer] ERROR: mapWidget or drawCanvas is NULL!");
 			return;
 		}
-		m_MarkerManager = new BountyMapManager(m_MapWidget, m_DrawCanvas);
+		obfv_m_MarkerManager = new obfc_BountyMapManager(obfv_m_MapWidget, obfv_m_DrawCanvas);
 	}
-	static BountyMapDrawer GetInstance(MapWidget mapWidget, CanvasWidget canvas)
+	static obfc_BountyMapDrawer GetInstance(MapWidget obfv_mapWidget, CanvasWidget canvas)
 	{
-		if (!mapWidget || !canvas)
+		if (!obfv_mapWidget || !canvas)
 			return null;
-		int key = mapWidget.ToString().Hash();
-		if (!s_Instances.Contains(key))
+		int key = obfv_mapWidget.ToString().Hash();
+		if (!obfv_s_Instances.Contains(key))
 		{
-			s_Instances.Set(key, new BountyMapDrawer(mapWidget, canvas));
+			obfv_s_Instances.Set(key, new obfc_BountyMapDrawer(obfv_mapWidget, canvas));
 		}
-		return s_Instances.Get(key);
+		return obfv_s_Instances.Get(key);
 	}
-	static void ResetInstance(MapWidget mapWidget = null)
+	static void obfm_ResetInstance(MapWidget obfv_mapWidget = null)
 	{
-		if (mapWidget)
+		if (obfv_mapWidget)
 		{
-			int key = mapWidget.ToString().Hash();
-			if (s_Instances.Contains(key))
+			int key = obfv_mapWidget.ToString().Hash();
+			if (obfv_s_Instances.Contains(key))
 			{
-				s_Instances.Get(key).ClearMap();
-				s_Instances.Remove(key);
+				obfv_s_Instances.Get(key).obfm_ClearMap();
+				obfv_s_Instances.Remove(key);
 			}
 		}
 		else
 		{
 			int id;
-			BountyMapDrawer drawer;
-			array<int> keys = s_Instances.GetKeyArray();
+			obfc_BountyMapDrawer drawer;
+			array<int> keys = obfv_s_Instances.GetKeyArray();
 			int i;
 			for (i = 0; i < keys.Count(); i++)
 			{
 				id = keys.Get(i);
-				drawer = s_Instances.Get(id);
+				drawer = obfv_s_Instances.Get(id);
 				if (drawer)
 				{
-					drawer.ClearMap();
+					drawer.obfm_ClearMap();
 				}
 			}
-			s_Instances.Clear();
+			obfv_s_Instances.Clear();
 		}
 	}
-	MapWidget GetMapWidget()
+	MapWidget obfm_GetMapWidget()
 	{
-		return m_MapWidget;
+		return obfv_m_MapWidget;
 	}
-	bool HasValidWidget()
+	bool obfm_HasValidWidget()
 	{
-		return m_MapWidget && m_MapWidget.IsVisible();
+		return obfv_m_MapWidget && obfv_m_MapWidget.IsVisible();
 	}
-	CanvasWidget GetDrawCanvas()
+	CanvasWidget obfm_GetDrawCanvas()
 	{
-		return m_DrawCanvas;
+		return obfv_m_DrawCanvas;
 	}
 	void Update()
 	{
-		if (m_MarkerManager)
+		if (obfv_m_MarkerManager)
 		{
-			m_MarkerManager.Update();
+			obfv_m_MarkerManager.Update();
 		}
 	}
-	void UpdateBountiedPlayers()
+	void obfm_UpdateBountiedPlayers()
 	{
-		if (!m_DrawCanvas || !m_MarkerManager || !m_MapWidget)
+		if (!obfv_m_DrawCanvas || !obfv_m_MarkerManager || !obfv_m_MapWidget)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyMapDrawer] UpdateBountiedPlayers: Missing canvas, manager, or map widget");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyMapDrawer] UpdateBountiedPlayers: Missing canvas, manager, or map widget");
 			return;
 		}
 		bool enableDrawing = true; 
-		m_MarkerManager.ClearMarkers();
-		m_DrawCanvas.Clear();
-		array<ref BountyPlayerData> bountiedPlayers = BountyMapBridge.GetBountiedPlayers();
+		obfv_m_MarkerManager.obfm_ClearMarkers();
+		obfv_m_DrawCanvas.Clear();
+		array<ref obfc_BountyPlayerData> bountiedPlayers = obfc_BountyMapBridge.obfm_GetBountiedPlayers();
 		if (!bountiedPlayers || bountiedPlayers.Count() == 0)
 		{
 			return;
 		}
-		GetNinjins_Bounty_SystemLogger().LogInfo("[BountyMapDrawer] Updating " + bountiedPlayers.Count().ToString() + " bountied players");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyMapDrawer] Updating " + bountiedPlayers.Count().ToString() + " bountied players");
 		bool hideWhenNested = false;
 		int priority = 1;
 		int i;
-		BountyPlayerData playerData;
+		obfc_BountyPlayerData playerData;
 		for (i = 0; i < bountiedPlayers.Count(); i++)
 		{
 			playerData = bountiedPlayers.Get(i);
 			if (!playerData)
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BountyMapDrawer] Player data is null at index " + i.ToString());
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyMapDrawer] Player data is null at index " + i.ToString());
 				continue;
 			}
 			if (playerData.Position[0] == 0 && playerData.Position[1] == 0 && playerData.Position[2] == 0)
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BountyMapDrawer] Player " + playerData.PlayerName + " has invalid position");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyMapDrawer] Player " + playerData.obfv_PlayerName + " has invalid position");
 				continue;
 			}
 			float circleRadius = 100.0;
-			if (playerData.CircleRadius > 0.0)
+			if (playerData.obfv_CircleRadius > 0.0)
 			{
-				circleRadius = playerData.CircleRadius;
+				circleRadius = playerData.obfv_CircleRadius;
 			}
 			int circleColor = ARGB(255, 255, 0, 0);
-			if (playerData.CircleColor != 0)
+			if (playerData.obfv_CircleColor != 0)
 			{
-				circleColor = playerData.CircleColor;
+				circleColor = playerData.obfv_CircleColor;
 			}
-			GetNinjins_Bounty_SystemLogger().LogInfo("[BountyMapDrawer] Drawing circle for " + playerData.PlayerName + " at " + playerData.Position.ToString() + " with radius " + circleRadius.ToString());
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyMapDrawer] Drawing circle for " + playerData.obfv_PlayerName + " at " + playerData.Position.ToString() + " with radius " + circleRadius.ToString());
 			float currentRadius = circleRadius;
 			float maxTime = playerData.BountyDurationSeconds;
-			if (maxTime > 0.0 && playerData.TimeRemaining > 0.0)
+			if (maxTime > 0.0 && playerData.obfv_TimeRemaining > 0.0)
 			{
-				float timeRatio = playerData.TimeRemaining / maxTime;
-				float minRadius = playerData.CircleMinRadius;
+				float timeRatio = playerData.obfv_TimeRemaining / maxTime;
+				float minRadius = playerData.obfv_CircleMinRadius;
 				if (minRadius <= 0.0)
 				{
 					minRadius = circleRadius * 0.1; 
 				}
-				if (playerData.ReduceRadiusOverTime)
+				if (playerData.obfv_ReduceRadiusOverTime)
 				{
 					currentRadius = minRadius + (circleRadius - minRadius) * timeRatio;
 				}
-				else if (playerData.IncreaseRadiusOverTime)
+				else if (playerData.obfv_IncreaseRadiusOverTime)
 				{
 					float invertedRatio = 1.0 - timeRatio;
 					currentRadius = minRadius + (circleRadius - minRadius) * invertedRatio;
 				}
 			}
-			vector circleCenter = CalculateCircleCenterWithOffset(playerData.Position, currentRadius, playerData.CachedOffsetMultiplier, playerData.CachedOffsetAngle);
-			m_MarkerManager.AddCircle(circleCenter, currentRadius, circleColor, hideWhenNested, priority);
+			vector circleCenter = obfm_CalculateCircleCenterWithOffset(playerData.Position, currentRadius, playerData.obfv_CachedOffsetMultiplier, playerData.obfv_CachedOffsetAngle);
+			obfv_m_MarkerManager.obfm_AddCircle(circleCenter, currentRadius, circleColor, hideWhenNested, priority);
 		}
-		m_MarkerManager.Update();
+		obfv_m_MarkerManager.Update();
 	}
-	void TriggerUpdate()
+	void obfm_TriggerUpdate()
 	{
-		if (!m_MapWidget || !m_MarkerManager)
+		if (!obfv_m_MapWidget || !obfv_m_MarkerManager)
 			return;
-		m_MarkerManager.UpdateOffsets();
-		m_MarkerManager.Update();
+		obfv_m_MarkerManager.obfm_UpdateOffsets();
+		obfv_m_MarkerManager.Update();
 	}
-	void UpdateOffsets()
+	void obfm_UpdateOffsets()
 	{
-		if (m_MarkerManager)
-			m_MarkerManager.UpdateOffsets();
+		if (obfv_m_MarkerManager)
+			obfv_m_MarkerManager.obfm_UpdateOffsets();
 	}
-	void ClearMap()
+	void obfm_ClearMap()
 	{
-		if (m_DrawCanvas)
+		if (obfv_m_DrawCanvas)
 		{
-			m_DrawCanvas.Clear();
-			m_DrawCanvas.Unlink();
-			m_DrawCanvas = null;
+			obfv_m_DrawCanvas.Clear();
+			obfv_m_DrawCanvas.Unlink();
+			obfv_m_DrawCanvas = null;
 		}
-		if (m_MarkerManager)
-			m_MarkerManager.ClearMarkers();
+		if (obfv_m_MarkerManager)
+			obfv_m_MarkerManager.obfm_ClearMarkers();
 	}
-	private vector CalculateCircleCenterWithOffset(vector playerPosition, float currentRadius, float cachedMultiplier, float cachedAngle)
+	private vector obfm_CalculateCircleCenterWithOffset(vector playerPosition, float currentRadius, float cachedMultiplier, float cachedAngle)
 	{
 		vector circleCenter = playerPosition;
 		if (cachedMultiplier > 0.0 && currentRadius > 0.0)
@@ -529,24 +529,24 @@ class BountyMapDrawer
 		}
 		return circleCenter;
 	}
-	void DrawBountyCircle(vector center, float radius, int color, bool hideWhenNested = false, int priority = 1)
+	void obfm_DrawBountyCircle(vector center, float obfv_radius, int color, bool hideWhenNested = false, int priority = 1)
 	{
-		if (!m_MarkerManager)
+		if (!obfv_m_MarkerManager)
 			return;
-		m_MarkerManager.AddCircle(center, radius, color, hideWhenNested, priority);
+		obfv_m_MarkerManager.obfm_AddCircle(center, obfv_radius, color, hideWhenNested, priority);
 	}
-	void ClearAll()
+	void obfm_ClearAll()
 	{
-		if (m_MarkerManager)
+		if (obfv_m_MarkerManager)
 		{
-			m_MarkerManager.ClearMarkers();
+			obfv_m_MarkerManager.obfm_ClearMarkers();
 		}
 	}
-	bool HasMarkers()
+	bool obfm_HasMarkers()
 	{
-		if (m_MarkerManager)
+		if (obfv_m_MarkerManager)
 		{
-			return m_MarkerManager.HasMarkers();
+			return obfv_m_MarkerManager.obfm_HasMarkers();
 		}
 		return false;
 	}

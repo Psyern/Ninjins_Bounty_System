@@ -1,59 +1,59 @@
-[CF_RegisterModule(BountyModule)]
-class BountyModule : CF_ModuleWorld
+[CF_RegisterModule(obfc_BountyModule)]
+class obfc_BountyModule : CF_ModuleWorld
 {
-	static BountyModule s_Instance;
-	ref BountyManager m_BountyManager;
-	ref BountyAdminConfig m_BountyAdminConfig;
-	ref BountyBlacklistConfig m_BountyBlacklistConfig;
-	ref BountyBoardPlacementConfig m_BountyBoardPlacementConfig;
-	ref array<Object> m_ConfigSpawnedBountyBoards;
+	static obfc_BountyModule obfv_s_Instance;
+	ref obfc_BountyManager obfv_m_BountyManager;
+	ref obfc_BountyAdminConfig obfv_m_BountyAdminConfig;
+	ref obfc_BountyBlacklistConfig obfv_m_BountyBlacklistConfig;
+	ref obfc_BountyBoardPlacementConfig obfv_m_BountyBoardPlacementConfig;
+	ref array<Object> obfv_m_ConfigSpawnedBountyBoards;
 	override void OnInit()
 	{
 		super.OnInit();
-		s_Instance = this;
-		m_ConfigSpawnedBountyBoards = new array<Object>();
+		obfv_s_Instance = this;
+		obfv_m_ConfigSpawnedBountyBoards = new array<Object>();
 		EnableInvokeConnect();
 		EnableUpdate();
 		EnableMissionStart();
-		GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Module initialized");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Module initialized");
 	}
-	static BountyModule GetInstance()
+	static obfc_BountyModule GetInstance()
 	{
-		return s_Instance;
+		return obfv_s_Instance;
 	}
 	override void OnMissionStart(Class sender, CF_EventArgs args)
 	{
 		super.OnMissionStart(sender, args);
 		if (!IsMissionHost())
 			return;
-		GetNinjins_Bounty_SystemLogger().LogInfo("Ninjins_Bounty_System mod has started !");
-		GetNinjins_Bounty_SystemLogger().LogInfo("Ninjins_Bounty_System mod has started!");
-		InitBountyAdminConfig();
-		InitBountyBlacklistConfig();
-		g_BountyConfig = BountyConfig.LoadConfig();
-		if (g_BountyConfig)
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("Ninjins_Bounty_System mod has started !");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("Ninjins_Bounty_System mod has started!");
+		obfm_InitBountyAdminConfig();
+		obfm_InitBountyBlacklistConfig();
+		obfv_g_BountyConfig = obfc_BountyConfig.obfm_LoadConfig();
+		if (obfv_g_BountyConfig)
 		{
-			GetNinjins_Bounty_SystemLogger().LogInfo("BountyConfig loaded. EnableBountySystem: " + g_BountyConfig.Core.EnableBountySystem.ToString() + ", Duration: " + g_BountyConfig.PlacedBounty.BountyDurationSeconds.ToString() + " seconds");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("BountyConfig loaded. EnableBountySystem: " + obfv_g_BountyConfig.Core.EnableBountySystem.ToString() + ", Duration: " + obfv_g_BountyConfig.PlacedBounty.BountyDurationSeconds.ToString() + " seconds");
 		}
 		else
 		{
-			GetNinjins_Bounty_SystemLogger().LogError("Failed to load BountyConfig!");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("Failed to load BountyConfig!");
 		}
-		g_BountySuccessRewardConfig = BountySuccessRewardConfig.LoadConfig();
-		if (g_BountySuccessRewardConfig)
+		obfv_g_BountySuccessRewardConfig = obfc_BountySuccessRewardConfig.obfm_LoadConfig();
+		if (obfv_g_BountySuccessRewardConfig)
 		{
 			int sectionCount = 0;
-			if (g_BountySuccessRewardConfig.BountyRewardItems)
-				sectionCount = g_BountySuccessRewardConfig.BountyRewardItems.Count();
-			GetNinjins_Bounty_SystemLogger().LogInfo("BountySuccessRewardConfig loaded. RewardSections: " + sectionCount.ToString());
+			if (obfv_g_BountySuccessRewardConfig.BountyRewardItems)
+				sectionCount = obfv_g_BountySuccessRewardConfig.BountyRewardItems.Count();
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("BountySuccessRewardConfig loaded. RewardSections: " + sectionCount.ToString());
 		}
 		else
 		{
-			GetNinjins_Bounty_SystemLogger().LogError("Failed to load BountySuccessRewardConfig!");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("Failed to load BountySuccessRewardConfig!");
 		}
-		InitBountyBoardPlacementConfig();
-		SpawnConfiguredBountyBoards();
-		m_BountyManager = BountyManager.GetInstance();
+		obfm_InitBountyBoardPlacementConfig();
+		obfm_SpawnConfiguredBountyBoards();
+		obfv_m_BountyManager = obfc_BountyManager.GetInstance();
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "RequestBountiedPlayers", this, SingleplayerExecutionType.Server);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyAdminAction", this, SingleplayerExecutionType.Server);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyAdminUpdateConfig", this, SingleplayerExecutionType.Server);
@@ -63,36 +63,36 @@ class BountyModule : CF_ModuleWorld
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyAdminRequestPlayers", this, SingleplayerExecutionType.Server);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyRequestClaimAmount", this, SingleplayerExecutionType.Server);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyAdminRequestBlacklist", this, SingleplayerExecutionType.Server);
-		GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Registered all RPC handlers");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Registered all RPC handlers");
 	}
-	void InitBountyAdminConfig()
+	void obfm_InitBountyAdminConfig()
 	{
-		m_BountyAdminConfig = BountyAdminConfig.LoadConfig();
-		g_BountyAdminConfig = m_BountyAdminConfig;
-		if (!m_BountyAdminConfig)
+		obfv_m_BountyAdminConfig = obfc_BountyAdminConfig.obfm_LoadConfig();
+		obfv_g_BountyAdminConfig = obfv_m_BountyAdminConfig;
+		if (!obfv_m_BountyAdminConfig)
 		{
-			GetNinjins_Bounty_SystemLogger().LogError("[ERROR] Failed to load BountyAdminConfig.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("[ERROR] Failed to load BountyAdminConfig.");
 		}
 	}
-	void InitBountyBlacklistConfig()
+	void obfm_InitBountyBlacklistConfig()
 	{
-		m_BountyBlacklistConfig = BountyBlacklistConfig.LoadConfig();
-		g_BountyBlacklistConfig = m_BountyBlacklistConfig;
-		if (!m_BountyBlacklistConfig)
+		obfv_m_BountyBlacklistConfig = obfc_BountyBlacklistConfig.obfm_LoadConfig();
+		obfv_g_BountyBlacklistConfig = obfv_m_BountyBlacklistConfig;
+		if (!obfv_m_BountyBlacklistConfig)
 		{
-			GetNinjins_Bounty_SystemLogger().LogError("[ERROR] Failed to load BountyBlacklistConfig.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("[ERROR] Failed to load BountyBlacklistConfig.");
 		}
 	}
-	void InitBountyBoardPlacementConfig()
+	void obfm_InitBountyBoardPlacementConfig()
 	{
-		m_BountyBoardPlacementConfig = BountyBoardPlacementConfig.LoadConfig();
-		g_BountyBoardPlacementConfig = m_BountyBoardPlacementConfig;
-		if (!m_BountyBoardPlacementConfig)
+		obfv_m_BountyBoardPlacementConfig = obfc_BountyBoardPlacementConfig.obfm_LoadConfig();
+		obfv_g_BountyBoardPlacementConfig = obfv_m_BountyBoardPlacementConfig;
+		if (!obfv_m_BountyBoardPlacementConfig)
 		{
-			GetNinjins_Bounty_SystemLogger().LogError("[ERROR] Failed to load BountyBoardPlacementConfig.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("[ERROR] Failed to load BountyBoardPlacementConfig.");
 		}
 	}
-	vector BuildBoardVector(array<float> values)
+	vector obfm_BuildBoardVector(array<float> values)
 	{
 		string vectorString = "0 0 0";
 		if (values && values.Count() >= 3)
@@ -101,76 +101,76 @@ class BountyModule : CF_ModuleWorld
 		}
 			return vectorString.ToVector();
 	}
-	bool IsPlaceholderBoardPlacement(BountyBoardPlacement placement)
+	bool obfm_IsPlaceholderBoardPlacement(obfc_BountyBoardPlacement placement)
 	{
 		if (!placement || !placement.Position || placement.Position.Count() < 3)
 			return true;
 		return placement.Position.Get(0) == 0.0 && placement.Position.Get(1) == 0.0 && placement.Position.Get(2) == 0.0;
 	}
-	void ClearConfiguredBountyBoards()
+	void obfm_ClearConfiguredBountyBoards()
 	{
 		int i;
 		Object boardObject;
-		if (!m_ConfigSpawnedBountyBoards)
+		if (!obfv_m_ConfigSpawnedBountyBoards)
 			return;
-		for (i = m_ConfigSpawnedBountyBoards.Count() - 1; i >= 0; i--)
+		for (i = obfv_m_ConfigSpawnedBountyBoards.Count() - 1; i >= 0; i--)
 		{
-			boardObject = m_ConfigSpawnedBountyBoards.Get(i);
+			boardObject = obfv_m_ConfigSpawnedBountyBoards.Get(i);
 			if (boardObject)
 			{
 				g_Game.ObjectDelete(boardObject);
 			}
-			m_ConfigSpawnedBountyBoards.Remove(i);
+			obfv_m_ConfigSpawnedBountyBoards.Remove(i);
 		}
 	}
-	void SpawnConfiguredBountyBoards()
+	void obfm_SpawnConfiguredBountyBoards()
 	{
 		int i;
-		BountyBoardPlacement placement;
+		obfc_BountyBoardPlacement placement;
 		vector boardPosition;
 		vector boardRotation;
 		Object boardObject;
 		if (!IsMissionHost())
 			return;
-		if (!m_ConfigSpawnedBountyBoards)
+		if (!obfv_m_ConfigSpawnedBountyBoards)
 		{
-			m_ConfigSpawnedBountyBoards = new array<Object>();
+			obfv_m_ConfigSpawnedBountyBoards = new array<Object>();
 		}
-		ClearConfiguredBountyBoards();
-		if (!g_BountyBoardPlacementConfig || !g_BountyBoardPlacementConfig.BoardPlacements)
+		obfm_ClearConfiguredBountyBoards();
+		if (!obfv_g_BountyBoardPlacementConfig || !obfv_g_BountyBoardPlacementConfig.BoardPlacements)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] No board placement config loaded - skipping configured board spawn.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] No board placement config loaded - skipping configured board spawn.");
 			return;
 		}
-		for (i = 0; i < g_BountyBoardPlacementConfig.BoardPlacements.Count(); i++)
+		for (i = 0; i < obfv_g_BountyBoardPlacementConfig.BoardPlacements.Count(); i++)
 		{
-			placement = g_BountyBoardPlacementConfig.BoardPlacements.Get(i);
+			placement = obfv_g_BountyBoardPlacementConfig.BoardPlacements.Get(i);
 			if (!placement)
 				continue;
-			if (IsPlaceholderBoardPlacement(placement))
+			if (obfm_IsPlaceholderBoardPlacement(placement))
 			{
-				GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Skipping placeholder board placement entry at index " + i.ToString());
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Skipping placeholder board placement entry at index " + i.ToString());
 				continue;
 			}
-			boardPosition = BuildBoardVector(placement.Position);
-			boardRotation = BuildBoardVector(placement.Rotation);
+			boardPosition = obfm_BuildBoardVector(placement.Position);
+			boardRotation = obfm_BuildBoardVector(placement.Rotation);
 			boardObject = g_Game.CreateObjectEx("Ninjins_Bounty_Board_Static", boardPosition, ECE_PLACE_ON_SURFACE);
 			if (!boardObject)
 			{
-				GetNinjins_Bounty_SystemLogger().LogError("[BountyModule] Failed to spawn configured bounty board at index " + i.ToString());
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("[BountyModule] Failed to spawn configured bounty board at index " + i.ToString());
 				continue;
 			}
 			boardObject.SetOrientation(boardRotation);
-			m_ConfigSpawnedBountyBoards.Insert(boardObject);
-			GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Spawned configured bounty board #" + i.ToString() + " at " + boardPosition.ToString() + " with rotation " + boardRotation.ToString());
+			obfv_m_ConfigSpawnedBountyBoards.Insert(boardObject);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Spawned configured bounty board #" + i.ToString() + " at " + boardPosition.ToString() + " with rotation " + boardRotation.ToString());
 		}
-		GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Configured bounty board spawn complete. Spawned: " + m_ConfigSpawnedBountyBoards.Count().ToString());
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Configured bounty board spawn complete. Spawned: " + obfv_m_ConfigSpawnedBountyBoards.Count().ToString());
 	}
-	string BuildPlayerListEntry(string displayName, string playerId)
+	string obfm_BuildPlayerListEntry(string displayName, string playerId)
 	{
 		return displayName + "||" + playerId;
 	}
-	PlayerBase FindOnlinePlayerByIdentifier(string identifier)
+	PlayerBase obfm_FindOnlinePlayerByIdentifier(string identifier)
 	{
 		array<Man> players = new array<Man>();
 		g_Game.GetPlayers(players);
@@ -189,12 +189,12 @@ class BountyModule : CF_ModuleWorld
 			identity = playerBase.GetIdentity();
 			if (!identity)
 				continue;
-			if (identity.GetId() == identifier || identity.GetName() == identifier)
+			if (identity.GetId() == identifier || identity.GetPlainId() == identifier || identity.GetName() == identifier)
 				return playerBase;
 		}
 		return null;
 	}
-	int GetPlayerTokenCount(PlayerBase player, out array<ItemBase> foundTokens)
+	int obfm_GetPlayerTokenCount(PlayerBase player, out array<ItemBase> foundTokens)
 	{
 		array<string> tokenClassNames;
 		GameInventory inventory;
@@ -210,9 +210,9 @@ class BountyModule : CF_ModuleWorld
 		if (!player)
 			return 0;
 		totalTokenQuantity = 0;
-		if (g_BountyConfig && g_BountyConfig.Core && g_BountyConfig.Core.BountyTokenClassNames)
+		if (obfv_g_BountyConfig && obfv_g_BountyConfig.Core && obfv_g_BountyConfig.Core.BountyTokenClassNames)
 		{
-			tokenClassNames = g_BountyConfig.Core.BountyTokenClassNames;
+			tokenClassNames = obfv_g_BountyConfig.Core.BountyTokenClassNames;
 		}
 		else
 		{
@@ -259,7 +259,7 @@ class BountyModule : CF_ModuleWorld
 		}
 		return totalTokenQuantity;
 	}
-	bool ConsumePlayerTokens(PlayerBase player, int tokensRequired, out int tokensRemoved)
+	bool obfm_ConsumePlayerTokens(PlayerBase player, int tokensRequired, out int tokensRemoved)
 	{
 		array<ItemBase> foundTokens;
 		ItemBase item;
@@ -270,7 +270,7 @@ class BountyModule : CF_ModuleWorld
 		tokensRemoved = 0;
 		if (tokensRequired <= 0)
 			return true;
-		if (GetPlayerTokenCount(player, foundTokens) < tokensRequired)
+		if (obfm_GetPlayerTokenCount(player, foundTokens) < tokensRequired)
 			return false;
 		for (j = 0; j < foundTokens.Count() && tokensRemoved < tokensRequired; j++)
 		{
@@ -322,67 +322,67 @@ class BountyModule : CF_ModuleWorld
 		identity = player.GetIdentity();
 		if (!identity)
 			return;
-		if (!m_BountyAdminConfig)
+		if (!obfv_m_BountyAdminConfig)
 		{
-			InitBountyAdminConfig();
+			obfm_InitBountyAdminConfig();
 		}
-		if (!m_BountyBlacklistConfig)
+		if (!obfv_m_BountyBlacklistConfig)
 		{
-			InitBountyBlacklistConfig();
+			obfm_InitBountyBlacklistConfig();
 		}
 		playerGUID = identity.GetId();
 		playerName = identity.GetName();
-		if (g_BountyBlacklistConfig && g_BountyBlacklistConfig.BlacklistedGUIDs)
+		if (obfv_g_BountyBlacklistConfig && obfv_g_BountyBlacklistConfig.BlacklistedGUIDs)
 		{
 			updated = false;
-			for (i = 0; i < g_BountyBlacklistConfig.BlacklistedGUIDs.Count(); i++)
+			for (i = 0; i < obfv_g_BountyBlacklistConfig.BlacklistedGUIDs.Count(); i++)
 			{
-				entry = g_BountyBlacklistConfig.BlacklistedGUIDs.Get(i);
+				entry = obfv_g_BountyBlacklistConfig.BlacklistedGUIDs.Get(i);
 				colonIndex = entry.IndexOf(":");
 				if (colonIndex < 0)
 				{
 					if (entry == playerGUID)
 					{
 						newEntry = playerName + ":" + playerGUID;
-						g_BountyBlacklistConfig.BlacklistedGUIDs.Set(i, newEntry);
+						obfv_g_BountyBlacklistConfig.BlacklistedGUIDs.Set(i, newEntry);
 						updated = true;
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyBlacklist] Updated blacklist entry from old format to new format: " + entry + " -> " + newEntry);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyBlacklist] Updated blacklist entry from old format to new format: " + entry + " -> " + newEntry);
 					}
 				}
 			}
 			if (updated)
 			{
-				g_BountyBlacklistConfig.SaveConfig();
-				GetNinjins_Bounty_SystemLogger().LogInfo("[BountyBlacklist] Saved blacklist config after updating format for player: " + playerName);
+				obfv_g_BountyBlacklistConfig.obfm_SaveConfig();
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyBlacklist] Saved blacklist config after updating format for player: " + playerName);
 			}
 		}
 		isAdmin = false;
-		if (m_BountyAdminConfig && m_BountyAdminConfig.IsAdmin(playerGUID))
+		if (obfv_m_BountyAdminConfig && obfv_m_BountyAdminConfig.obfm_IsAdminIdentity(identity))
 		{
 			isAdmin = true;
-			GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdmin] Player " + identity.GetName() + " (" + playerGUID + ") is a bounty system admin.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdmin] Player " + identity.GetName() + " (GUID: " + playerGUID + " | SteamID64: " + identity.GetPlainId() + ") is a bounty system admin.");
 		}
 		else
 		{
-			GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdmin] Player " + identity.GetName() + " (" + playerGUID + ") is NOT a bounty system admin.");
-			if (m_BountyAdminConfig && m_BountyAdminConfig.AdminGUIDs)
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdmin] Player " + identity.GetName() + " (GUID: " + playerGUID + " | SteamID64: " + identity.GetPlainId() + ") is NOT a bounty system admin. Admins.json accepts either value.");
+			if (obfv_m_BountyAdminConfig && obfv_m_BountyAdminConfig.AdminGUIDs)
 			{
-				GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdmin] AdminGUIDs in config: " + m_BountyAdminConfig.AdminGUIDs.Count().ToString());
-				for (i = 0; i < m_BountyAdminConfig.AdminGUIDs.Count(); i++)
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdmin] AdminGUIDs in config: " + obfv_m_BountyAdminConfig.AdminGUIDs.Count().ToString());
+				for (i = 0; i < obfv_m_BountyAdminConfig.AdminGUIDs.Count(); i++)
 				{
-					GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdmin] Config GUID " + i.ToString() + ": " + m_BountyAdminConfig.AdminGUIDs.Get(i));
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdmin] Config GUID " + i.ToString() + ": " + obfv_m_BountyAdminConfig.AdminGUIDs.Get(i));
 				}
 			}
 		}
-		player.SetBountyAdminStatus(isAdmin);
+		player.obfm_SetBountyAdminStatus(isAdmin);
 		Param1<bool> adminParam = new Param1<bool>(isAdmin);
 		g_Game.RPCSingleParam(player, BountyRPC.SYNC_ADMIN_STATUS, adminParam, true, identity);
-		GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdmin] Sent admin status RPC to client: " + isAdmin.ToString());
-		if (player.HasBounty())
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdmin] Sent admin status RPC to client: " + isAdmin.ToString());
+		if (player.obfm_HasBounty())
 		{
 			Param1<bool> paramBounty = new Param1<bool>(true);
 			g_Game.RPCSingleParam(player, BountyRPC.UPDATE_BOUNTY_STATE, paramBounty, true, identity);
-			GetNinjins_Bounty_SystemLogger().LogInfo("[Bounty] Restored bounty state on connect for " + identity.GetName());
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Restored bounty state on connect for " + identity.GetName());
 		}
 	}
 	override void OnUpdate(Class sender, CF_EventArgs args)
@@ -393,20 +393,20 @@ class BountyModule : CF_ModuleWorld
 		CF_EventUpdateArgs updateArgs = CF_EventUpdateArgs.Cast(args);
 		if (!updateArgs)
 			return;
-		if (m_BountyManager)
+		if (obfv_m_BountyManager)
 		{
-			m_BountyManager.Update(updateArgs.DeltaTime);
+			obfv_m_BountyManager.Update(updateArgs.DeltaTime);
 		}
 	}
 	void RequestBountiedPlayers(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
 	{
-		array<ref BountyPlayerData> bountiedPlayersData;
+		array<ref obfc_BountyPlayerData> bountiedPlayersData;
 		array<Man> players;
 		int i;
 		Man man;
 		PlayerBase player;
 		PlayerIdentity identity;
-		BountyPlayerData playerData;
+		obfc_BountyPlayerData playerData;
 		float currentTime;
 		float minMult;
 		float maxMult;
@@ -418,61 +418,61 @@ class BountyModule : CF_ModuleWorld
 		float height;
 		int bgColor;
 		int textColor;
-		BountyUISettingsData uiData;
-		Param1<BountyUISettingsData> uiParam;
-		Param1<array<ref BountyPlayerData>> data;
+		obfc_BountyUISettingsData uiData;
+		Param1<obfc_BountyUISettingsData> uiParam;
+		Param1<array<ref obfc_BountyPlayerData>> data;
 		if (type != CallType.Server || !sender)
 			return;
-		if (!BountyConfig.IsSystemActive())
+		if (!obfc_BountyConfig.obfm_IsSystemActive())
 			return;
-		if (!g_BountyConfig || !g_BountyConfig.Map || !g_BountyConfig.Map.BountyEnableMapDrawing)
+		if (!obfv_g_BountyConfig || !obfv_g_BountyConfig.Map || !obfv_g_BountyConfig.Map.BountyEnableMapDrawing)
 			return;
-		bountiedPlayersData = new array<ref BountyPlayerData>();
+		bountiedPlayersData = new array<ref obfc_BountyPlayerData>();
 		players = new array<Man>();
 		g_Game.GetPlayers(players);
 		for (i = 0; i < players.Count(); i++)
 		{
 			man = players.Get(i);
 			player = PlayerBase.Cast(man);
-			if (player && player.HasBounty() && player.IsAlive())
+			if (player && player.obfm_HasBounty() && player.IsAlive())
 			{
 				identity = player.GetIdentity();
 				if (!identity)
 					continue;
-				playerData = new BountyPlayerData();
-				playerData.PlayerID = identity.GetId();
-				playerData.PlayerName = identity.GetName();
+				playerData = new obfc_BountyPlayerData();
+				playerData.obfv_PlayerID = identity.GetId();
+				playerData.obfv_PlayerName = identity.GetName();
 				playerData.Position = player.GetPosition();
 				currentTime = g_Game.GetTime();
-				if (player.m_BountyExpireTime > 0.0)
+				if (player.obfv_m_BountyExpireTime > 0.0)
 				{
-					playerData.TimeRemaining = (player.m_BountyExpireTime - currentTime) / 1000.0;
-					if (playerData.TimeRemaining < 0.0)
-						playerData.TimeRemaining = 0.0;
+					playerData.obfv_TimeRemaining = (player.obfv_m_BountyExpireTime - currentTime) / 1000.0;
+					if (playerData.obfv_TimeRemaining < 0.0)
+						playerData.obfv_TimeRemaining = 0.0;
 				}
 				else
 				{
-					playerData.TimeRemaining = 0.0;
+					playerData.obfv_TimeRemaining = 0.0;
 				}
-				if (g_BountyConfig)
+				if (obfv_g_BountyConfig)
 				{
-					playerData.CircleRadius = g_BountyConfig.Map.BountyCircleRadius;
-					playerData.CircleColor = g_BountyConfig.Map.BountyCircleColor;
-					playerData.ReduceRadiusOverTime = g_BountyConfig.Map.BountyCircleReduceRadiusOverTime;
-					playerData.IncreaseRadiusOverTime = g_BountyConfig.Map.BountyCircleIncreaseRadiusOverTime;
-					playerData.CircleMinRadius = g_BountyConfig.Map.BountyCircleMinRadius;
-					if (player.IsRuleBreakerBounty())
+					playerData.obfv_CircleRadius = obfv_g_BountyConfig.Map.BountyCircleRadius;
+					playerData.obfv_CircleColor = obfv_g_BountyConfig.Map.BountyCircleColor;
+					playerData.obfv_ReduceRadiusOverTime = obfv_g_BountyConfig.Map.BountyCircleReduceRadiusOverTime;
+					playerData.obfv_IncreaseRadiusOverTime = obfv_g_BountyConfig.Map.BountyCircleIncreaseRadiusOverTime;
+					playerData.obfv_CircleMinRadius = obfv_g_BountyConfig.Map.BountyCircleMinRadius;
+					if (player.obfm_IsRuleBreakerBounty())
 					{
-						playerData.BountyDurationSeconds = g_BountyConfig.RuleBreaker.BountyRuleBreakerDurationSeconds;
+						playerData.BountyDurationSeconds = obfv_g_BountyConfig.RuleBreaker.BountyRuleBreakerDurationSeconds;
 					}
 					else
 					{
-						playerData.BountyDurationSeconds = g_BountyConfig.PlacedBounty.BountyDurationSeconds;
+						playerData.BountyDurationSeconds = obfv_g_BountyConfig.PlacedBounty.BountyDurationSeconds;
 					}
-					playerData.CircleOffsetMinMultiplier = g_BountyConfig.Map.BountyCircleOffsetMinMultiplier;
-					playerData.CircleOffsetMaxMultiplier = g_BountyConfig.Map.BountyCircleOffsetMaxMultiplier;
-					minMult = playerData.CircleOffsetMinMultiplier;
-					maxMult = playerData.CircleOffsetMaxMultiplier;
+					playerData.obfv_CircleOffsetMinMultiplier = obfv_g_BountyConfig.Map.BountyCircleOffsetMinMultiplier;
+					playerData.obfv_CircleOffsetMaxMultiplier = obfv_g_BountyConfig.Map.BountyCircleOffsetMaxMultiplier;
+					minMult = playerData.obfv_CircleOffsetMinMultiplier;
+					maxMult = playerData.obfv_CircleOffsetMaxMultiplier;
 					if (minMult > maxMult)
 					{
 						temp = minMult;
@@ -485,13 +485,13 @@ class BountyModule : CF_ModuleWorld
 					if (maxMult < 0.0) maxMult = 0.0;
 					if (maxMult > 0.0)
 					{
-						playerData.CachedOffsetMultiplier = Math.RandomFloat(minMult, maxMult);
-						playerData.CachedOffsetAngle = Math.RandomFloat(0.0, Math.PI2);
+						playerData.obfv_CachedOffsetMultiplier = Math.RandomFloat(minMult, maxMult);
+						playerData.obfv_CachedOffsetAngle = Math.RandomFloat(0.0, Math.PI2);
 					}
 					else
 					{
-						playerData.CachedOffsetMultiplier = 0.0;
-						playerData.CachedOffsetAngle = 0.0;
+						playerData.obfv_CachedOffsetMultiplier = 0.0;
+						playerData.obfv_CachedOffsetAngle = 0.0;
 					}
 				}
 				bountiedPlayersData.Insert(playerData);
@@ -500,21 +500,21 @@ class BountyModule : CF_ModuleWorld
 		requestingPlayer = PlayerBase.Cast(sender.GetPlayer());
 		if (requestingPlayer)
 		{
-			data = new Param1<array<ref BountyPlayerData>>(bountiedPlayersData);
+			data = new Param1<array<ref obfc_BountyPlayerData>>(bountiedPlayersData);
 			GetRPCManager().SendRPC("Ninjins_Bounty_System", "ReceiveBountiedPlayers", data, true, sender);
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionServer] Sent " + bountiedPlayersData.Count().ToString() + " bountied players to " + sender.GetName());
-			if (g_BountyConfig && g_BountyConfig.UI)
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionServer] Sent " + bountiedPlayersData.Count().ToString() + " bountied players to " + sender.GetName());
+			if (obfv_g_BountyConfig && obfv_g_BountyConfig.UI)
 			{
-				posX = g_BountyConfig.UI.CountdownWidgetPositionX;
-				posY = g_BountyConfig.UI.CountdownWidgetPositionY;
-				width = g_BountyConfig.UI.CountdownWidgetWidth;
-				height = g_BountyConfig.UI.CountdownWidgetHeight;
-				bgColor = g_BountyConfig.UI.CountdownWidgetBackgroundColor;
-				textColor = g_BountyConfig.UI.CountdownWidgetTextColor;
-				uiData = new BountyUISettingsData(posX, posY, width, height, bgColor, textColor);
-				uiParam = new Param1<BountyUISettingsData>(uiData);
+				posX = obfv_g_BountyConfig.UI.CountdownWidgetPositionX;
+				posY = obfv_g_BountyConfig.UI.CountdownWidgetPositionY;
+				width = obfv_g_BountyConfig.UI.CountdownWidgetWidth;
+				height = obfv_g_BountyConfig.UI.CountdownWidgetHeight;
+				bgColor = obfv_g_BountyConfig.UI.CountdownWidgetBackgroundColor;
+				textColor = obfv_g_BountyConfig.UI.CountdownWidgetTextColor;
+				uiData = new obfc_BountyUISettingsData(posX, posY, width, height, bgColor, textColor);
+				uiParam = new Param1<obfc_BountyUISettingsData>(uiData);
 				GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyConfigReloaded", uiParam, true, sender);
-				GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Sent UI settings to client: X=" + posX.ToString() + ", Y=" + posY.ToString() + ", Width=" + width.ToString() + ", Height=" + height.ToString() + ", BGColor=" + bgColor.ToString() + ", TextColor=" + textColor.ToString());
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Sent UI settings to client: X=" + posX.ToString() + ", Y=" + posY.ToString() + ", Width=" + width.ToString() + ", Height=" + height.ToString() + ", BGColor=" + bgColor.ToString() + ", TextColor=" + textColor.ToString());
 			}
 		}
 	}
@@ -527,20 +527,20 @@ class BountyModule : CF_ModuleWorld
 		PlayerBase player;
 		if (!ctx.Read(actionParam))
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BountyAdminAction: Failed to read action parameter.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminAction: Failed to read action parameter.");
 			return;
 		}
 		action = actionParam.param1;
 		player = PlayerBase.Cast(sender.GetPlayer());
 		if (!player)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BountyAdminAction: Player not found for identity: " + sender.GetName());
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminAction: Player not found for identity: " + sender.GetName());
 			return;
 		}
-		if (!player.IsBountyAdmin())
+		if (!player.obfm_IsBountyAdmin())
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BountyAdminAction: Access denied for non-admin player: " + sender.GetName());
-			BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminAction: Access denied for non-admin player: " + sender.GetName());
+			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender);
 			return;
 		}
 		bool success;
@@ -572,27 +572,27 @@ class BountyModule : CF_ModuleWorld
 			targetPlayerName.Replace("ApplyTestRuleBreakerBounty:", "");
 			if (targetPlayerName != "")
 			{
-				targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
+				targetPlayer = obfm_FindOnlinePlayerByIdentifier(targetPlayerName);
 				if (targetPlayer)
 				{
-					success = BountyManager.ApplyBountyToPlayer(targetPlayer, player, 0.0, "Admin test rule breaker bounty", BountyType.RULE_BREAKER);
+					success = obfc_BountyManager.obfm_ApplyBountyToPlayer(targetPlayer, player, 0.0, "Admin test rule breaker bounty", BountyType.RULE_BREAKER);
 					if (success)
 					{
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Applied rule breaker bounty to " + targetPlayerName + " by admin " + sender.GetName());
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Applied rule breaker bounty to " + targetPlayerName + " by admin " + sender.GetName());
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Failed to apply rule breaker bounty to " + targetPlayerName + " (system may be disabled or player lifetime not reached)");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Failed to apply rule breaker bounty to " + targetPlayerName + " (system may be disabled or player lifetime not reached)");
 					}
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
 				}
 			}
 			else
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] No player name provided for ApplyTestRuleBreakerBounty");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] No player name provided for ApplyTestRuleBreakerBounty");
 			}
 		}
 		else if (action.IndexOf("AddBountySelectedPlayer:") == 0)
@@ -601,35 +601,35 @@ class BountyModule : CF_ModuleWorld
 			targetPlayerName.Replace("AddBountySelectedPlayer:", "");
 			if (targetPlayerName != "")
 			{
-				targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
+				targetPlayer = obfm_FindOnlinePlayerByIdentifier(targetPlayerName);
 				if (targetPlayer)
 				{
-					success = BountyManager.ApplyBountyToPlayer(targetPlayer, player, 0.0, "Admin placed bounty", BountyType.PLACED);
+					success = obfc_BountyManager.obfm_ApplyBountyToPlayer(targetPlayer, player, 0.0, "Admin placed bounty", BountyType.PLACED);
 					if (success)
 					{
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Applied normal placed bounty to " + targetPlayerName + " by admin " + sender.GetName());
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Applied normal placed bounty to " + targetPlayerName + " by admin " + sender.GetName());
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Failed to apply normal placed bounty to " + targetPlayerName + " (system may be disabled or player lifetime not reached)");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Failed to apply normal placed bounty to " + targetPlayerName + " (system may be disabled or player lifetime not reached)");
 					}
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
 				}
 			}
 			else
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] No player name provided for AddBountySelectedPlayer");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] No player name provided for AddBountySelectedPlayer");
 			}
 		}
 		else if (action == "ClearBounty")
 		{
-			success = BountyManager.ClearBountyFromPlayer(player, player, "Admin cleared");
+			success = obfc_BountyManager.obfm_ClearBountyFromPlayer(player, player, "Admin cleared");
 			if (success)
 			{
-				GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Cleared bounty for " + sender.GetName());
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Cleared bounty for " + sender.GetName());
 			}
 		}
 		else if (action.IndexOf("ClearBountySelectedPlayer:") == 0)
@@ -638,33 +638,33 @@ class BountyModule : CF_ModuleWorld
 			targetPlayerName.Replace("ClearBountySelectedPlayer:", "");
 			if (targetPlayerName != "")
 			{
-				targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
+				targetPlayer = obfm_FindOnlinePlayerByIdentifier(targetPlayerName);
 				if (targetPlayer)
 				{
-					success = BountyManager.ClearBountyFromPlayer(targetPlayer, player, "Admin cleared selected player");
+					success = obfc_BountyManager.obfm_ClearBountyFromPlayer(targetPlayer, player, "Admin cleared selected player");
 					if (success)
 					{
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Cleared bounty for " + targetPlayerName + " by admin " + sender.GetName());
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Cleared bounty for " + targetPlayerName + " by admin " + sender.GetName());
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Failed to clear bounty for " + targetPlayerName + " (player may not have a bounty)");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Failed to clear bounty for " + targetPlayerName + " (player may not have a bounty)");
 					}
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
 				}
 			}
 			else
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] No player name provided for ClearBountySelectedPlayer");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] No player name provided for ClearBountySelectedPlayer");
 			}
 		}
 		else if (action == "ReloadConfigs")
 		{
-			BountyManager.ReloadAllConfigs(player);
-			GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Reloaded configs for " + sender.GetName());
+			obfc_BountyManager.obfm_ReloadAllConfigs(player);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Reloaded configs for " + sender.GetName());
 		}
 		else if (action.IndexOf("ClearAllCooldowns:") == 0)
 		{
@@ -672,27 +672,27 @@ class BountyModule : CF_ModuleWorld
 			targetPlayerName.Replace("ClearAllCooldowns:", "");
 			if (targetPlayerName != "")
 			{
-				targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
+				targetPlayer = obfm_FindOnlinePlayerByIdentifier(targetPlayerName);
 				if (targetPlayer)
 				{
-					if (targetPlayer.IsBountyOnCooldown())
+					if (targetPlayer.obfm_IsBountyOnCooldown())
 					{
-						targetPlayer.ClearBountyCooldown();
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Cleared cooldown for player " + targetPlayerName + " by admin " + sender.GetName());
+						targetPlayer.obfm_ClearBountyCooldown();
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Cleared cooldown for player " + targetPlayerName + " by admin " + sender.GetName());
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Player " + targetPlayerName + " is not on cooldown (nothing to clear)");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Player " + targetPlayerName + " is not on cooldown (nothing to clear)");
 					}
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
 				}
 			}
 			else
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] No player name provided for ClearAllCooldowns");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] No player name provided for ClearAllCooldowns");
 			}
 		}
 		else if (action == "ClearAllCooldowns")
@@ -708,19 +708,19 @@ class BountyModule : CF_ModuleWorld
 				if (man && man.IsAlive())
 				{
 					onlinePlayer = PlayerBase.Cast(man);
-					if (onlinePlayer && onlinePlayer.IsBountyOnCooldown())
+					if (onlinePlayer && onlinePlayer.obfm_IsBountyOnCooldown())
 					{
-						onlinePlayer.ClearBountyCooldown();
+						onlinePlayer.obfm_ClearBountyCooldown();
 						clearedCount = clearedCount + 1;
 						onlineIdentity = onlinePlayer.GetIdentity();
 						if (onlineIdentity)
 						{
-							GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Cleared cooldown for online player: " + onlineIdentity.GetName());
+							obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Cleared cooldown for online player: " + onlineIdentity.GetName());
 						}
 					}
 				}
 			}
-			GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Cleared cooldowns for " + clearedCount.ToString() + " online player(s) by admin " + sender.GetName());
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Cleared cooldowns for " + clearedCount.ToString() + " online player(s) by admin " + sender.GetName());
 		}
 		else if (action.IndexOf("ClearPlayerCooldown:") == 0)
 		{
@@ -728,22 +728,22 @@ class BountyModule : CF_ModuleWorld
 			targetPlayerName.Replace("ClearPlayerCooldown:", "");
 			if (targetPlayerName != "")
 			{
-				targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
+				targetPlayer = obfm_FindOnlinePlayerByIdentifier(targetPlayerName);
 				if (targetPlayer)
 				{
-					if (targetPlayer.IsBountyOnCooldown())
+					if (targetPlayer.obfm_IsBountyOnCooldown())
 					{
-						targetPlayer.ClearBountyCooldown();
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Cleared cooldown for player " + targetPlayerName + " by admin " + sender.GetName());
+						targetPlayer.obfm_ClearBountyCooldown();
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Cleared cooldown for player " + targetPlayerName + " by admin " + sender.GetName());
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Player " + targetPlayerName + " is not on cooldown (nothing to clear)");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Player " + targetPlayerName + " is not on cooldown (nothing to clear)");
 					}
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] Player not found: " + targetPlayerName);
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] Player not found: " + targetPlayerName);
 				}
 			}
 		}
@@ -753,20 +753,20 @@ class BountyModule : CF_ModuleWorld
 			targetPlayerName.Replace("AddRewardPoint:", "");
 			if (targetPlayerName != "")
 			{
-				targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
+				targetPlayer = obfm_FindOnlinePlayerByIdentifier(targetPlayerName);
 				if (targetPlayer && targetPlayer.GetIdentity())
 				{
-					targetPlayer.AddPendingSuccessReward(1);
-					GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Added reward point to " + targetPlayer.GetIdentity().GetName() + " by admin " + sender.GetName() + " (total pending: " + targetPlayer.GetTotalPendingRewardCount().ToString() + ")");
+					targetPlayer.obfm_AddPendingSuccessReward(1);
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Added reward point to " + targetPlayer.GetIdentity().GetName() + " by admin " + sender.GetName() + " (total pending: " + targetPlayer.obfm_GetTotalPendingRewardCount().ToString() + ")");
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
 				}
 			}
 			else
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] No player name provided for AddRewardPoint");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] No player name provided for AddRewardPoint");
 			}
 		}
 		else if (action.IndexOf("RemoveRewardPoint:") == 0)
@@ -775,27 +775,27 @@ class BountyModule : CF_ModuleWorld
 			targetPlayerName.Replace("RemoveRewardPoint:", "");
 			if (targetPlayerName != "")
 			{
-				targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
+				targetPlayer = obfm_FindOnlinePlayerByIdentifier(targetPlayerName);
 				if (targetPlayer && targetPlayer.GetIdentity())
 				{
-					if (targetPlayer.HasPendingRewards())
+					if (targetPlayer.obfm_HasPendingRewards())
 					{
-						targetPlayer.RemovePendingSuccessReward(1);
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Removed success reward point from " + targetPlayer.GetIdentity().GetName() + " by admin " + sender.GetName() + " (remaining: " + targetPlayer.GetTotalPendingRewardCount().ToString() + ")");
+						targetPlayer.obfm_RemovePendingSuccessReward(1);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Removed success reward point from " + targetPlayer.GetIdentity().GetName() + " by admin " + sender.GetName() + " (remaining: " + targetPlayer.obfm_GetTotalPendingRewardCount().ToString() + ")");
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Player " + targetPlayer.GetIdentity().GetName() + " has no pending rewards to remove");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Player " + targetPlayer.GetIdentity().GetName() + " has no pending rewards to remove");
 					}
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
 				}
 			}
 			else
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] No player name provided for RemoveRewardPoint");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] No player name provided for RemoveRewardPoint");
 			}
 		}
 		else if (action.IndexOf("AddToBlacklist:") == 0)
@@ -804,41 +804,41 @@ class BountyModule : CF_ModuleWorld
 			targetPlayerName.Replace("AddToBlacklist:", "");
 			if (targetPlayerName != "")
 			{
-				targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerName);
+				targetPlayer = obfm_FindOnlinePlayerByIdentifier(targetPlayerName);
 				if (targetPlayer && targetPlayer.GetIdentity())
 				{
 					playerGUID = targetPlayer.GetIdentity().GetId();
 					playerName = targetPlayer.GetIdentity().GetName();
 					entry = playerName + ":" + playerGUID;
 					alreadyBlacklisted = false;
-					if (g_BountyBlacklistConfig)
+					if (obfv_g_BountyBlacklistConfig)
 					{
-						alreadyBlacklisted = g_BountyBlacklistConfig.IsBlacklisted(playerGUID);
+						alreadyBlacklisted = obfv_g_BountyBlacklistConfig.obfm_IsBlacklistedIdentity(targetPlayer.GetIdentity());
 					}
 					if (!alreadyBlacklisted)
 					{
-						g_BountyBlacklistConfig.BlacklistedGUIDs.Insert(entry);
-						g_BountyBlacklistConfig.SaveConfig();
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Added " + playerName + " (" + playerGUID + ") to blacklist by admin " + sender.GetName());
-						blacklistResult = new Param1<array<string>>(g_BountyBlacklistConfig.BlacklistedGUIDs);
+						obfv_g_BountyBlacklistConfig.BlacklistedGUIDs.Insert(entry);
+						obfv_g_BountyBlacklistConfig.obfm_SaveConfig();
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Added " + playerName + " (" + playerGUID + ") to blacklist by admin " + sender.GetName());
+						blacklistResult = new Param1<array<string>>(obfv_g_BountyBlacklistConfig.BlacklistedGUIDs);
 						GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminReceiveBlacklist", blacklistResult, true, sender);
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] Player " + playerName + " is already blacklisted");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] Player " + playerName + " is already blacklisted");
 					}
 				}
 			}
 			else
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] Player not found: " + actualPlayerName);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] Player not found: " + actualPlayerName);
 			}
 		}
 		else if (action.IndexOf("RemoveFromBlacklist:") == 0)
 		{
 			entry = action;
 			entry.Replace("RemoveFromBlacklist:", "");
-			if (entry != "" && g_BountyBlacklistConfig && g_BountyBlacklistConfig.BlacklistedGUIDs)
+			if (entry != "" && obfv_g_BountyBlacklistConfig && obfv_g_BountyBlacklistConfig.BlacklistedGUIDs)
 			{
 				colonIndex = entry.IndexOf(":");
 				guidToRemove = "";
@@ -851,303 +851,303 @@ class BountyModule : CF_ModuleWorld
 					guidToRemove = entry;
 				}
 				removed = false;
-				for (i = g_BountyBlacklistConfig.BlacklistedGUIDs.Count() - 1; i >= 0; i--)
+				for (i = obfv_g_BountyBlacklistConfig.BlacklistedGUIDs.Count() - 1; i >= 0; i--)
 				{
-					existingEntry = g_BountyBlacklistConfig.BlacklistedGUIDs.Get(i);
+					existingEntry = obfv_g_BountyBlacklistConfig.BlacklistedGUIDs.Get(i);
 					if (existingEntry.IndexOf(guidToRemove) >= 0)
 					{
-						g_BountyBlacklistConfig.BlacklistedGUIDs.Remove(i);
+						obfv_g_BountyBlacklistConfig.BlacklistedGUIDs.Remove(i);
 						removed = true;
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminAction] Removed " + existingEntry + " from blacklist by admin " + sender.GetName());
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Removed " + existingEntry + " from blacklist by admin " + sender.GetName());
 						break;
 					}
 				}
 				if (removed)
 				{
-					g_BountyBlacklistConfig.SaveConfig();
-					blacklistResult = new Param1<array<string>>(g_BountyBlacklistConfig.BlacklistedGUIDs);
+					obfv_g_BountyBlacklistConfig.obfm_SaveConfig();
+					blacklistResult = new Param1<array<string>>(obfv_g_BountyBlacklistConfig.BlacklistedGUIDs);
 					GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminReceiveBlacklist", blacklistResult, true, sender);
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminAction] Entry not found in blacklist: " + entry);
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] Entry not found in blacklist: " + entry);
 				}
 			}
 		}
 		else
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BountyAdminAction: Unknown action: " + action);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminAction: Unknown action: " + action);
 		}
 	}
 	void BountyAdminUpdateConfig(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
 	{
-		Param1<ref BountyConfig> configParam;
-		BountyConfig updatedConfig;
+		Param1<ref obfc_BountyConfig> configParam;
+		obfc_BountyConfig updatedConfig;
 		PlayerBase player;
 		if (type != CallType.Server || !sender)
 			return;
 		if (!ctx.Read(configParam))
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BountyAdminUpdateConfig: Failed to read config parameter.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminUpdateConfig: Failed to read config parameter.");
 			return;
 		}
 		updatedConfig = configParam.param1;
 		if (!updatedConfig)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BountyAdminUpdateConfig: Config parameter is null.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminUpdateConfig: Config parameter is null.");
 			return;
 		}
 		player = PlayerBase.Cast(sender.GetPlayer());
 		if (!player)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BountyAdminUpdateConfig: Player not found for identity: " + sender.GetName());
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminUpdateConfig: Player not found for identity: " + sender.GetName());
 			return;
 		}
-		if (!player.IsBountyAdmin())
+		if (!player.obfm_IsBountyAdmin())
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BountyAdminUpdateConfig: Access denied for non-admin player: " + sender.GetName());
-			BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminUpdateConfig: Access denied for non-admin player: " + sender.GetName());
+			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender);
 			return;
 		}
-		if (g_BountyConfig)
+		if (obfv_g_BountyConfig)
 		{
-			if (updatedConfig.Core && g_BountyConfig.Core)
+			if (updatedConfig.Core && obfv_g_BountyConfig.Core)
 			{
-				g_BountyConfig.Core.EnableBountySystem = updatedConfig.Core.EnableBountySystem;
-				g_BountyConfig.Core.DisableSelfBounty = updatedConfig.Core.DisableSelfBounty;
-				g_BountyConfig.Core.TeleportOutOfOwnTerritory = updatedConfig.Core.TeleportOutOfOwnTerritory;
-				g_BountyConfig.Core.PauseBountyInTerritory = updatedConfig.Core.PauseBountyInTerritory;
-				g_BountyConfig.Core.TeleportOutOfSafeZone = updatedConfig.Core.TeleportOutOfSafeZone;
-				g_BountyConfig.Core.EnableAutomatedBountyPlacement = updatedConfig.Core.EnableAutomatedBountyPlacement;
-				g_BountyConfig.Core.BountyCooldownSeconds = updatedConfig.Core.BountyCooldownSeconds;
-				g_BountyConfig.Core.MaxBountiedPlayers = updatedConfig.Core.MaxBountiedPlayers;
-				g_BountyConfig.Core.MinOnlinePlayersRequired = updatedConfig.Core.MinOnlinePlayersRequired;
-				g_BountyConfig.Core.SkipBountyTokenRequired = updatedConfig.Core.SkipBountyTokenRequired;
-				g_BountyConfig.Core.PlaceBountyTokenRequired = updatedConfig.Core.PlaceBountyTokenRequired;
-				g_BountyConfig.Core.ResumeBountyDistanceFromTerritory = updatedConfig.Core.ResumeBountyDistanceFromTerritory;
-				g_BountyConfig.Core.PausedBountyResumeCheckInterval = updatedConfig.Core.PausedBountyResumeCheckInterval;
-				g_BountyConfig.Core.TeleportOutOfSafeZoneDistance = updatedConfig.Core.TeleportOutOfSafeZoneDistance;
-				g_BountyConfig.Core.MinimumPlayerLifetimeSeconds = updatedConfig.Core.MinimumPlayerLifetimeSeconds;
-				g_BountyConfig.Core.AutomatedBountyPlacementIntervalSeconds = updatedConfig.Core.AutomatedBountyPlacementIntervalSeconds;
+				obfv_g_BountyConfig.Core.EnableBountySystem = updatedConfig.Core.EnableBountySystem;
+				obfv_g_BountyConfig.Core.DisableSelfBounty = updatedConfig.Core.DisableSelfBounty;
+				obfv_g_BountyConfig.Core.obfm_TeleportOutOfOwnTerritory = updatedConfig.Core.obfm_TeleportOutOfOwnTerritory;
+				obfv_g_BountyConfig.Core.PauseBountyInTerritory = updatedConfig.Core.PauseBountyInTerritory;
+				obfv_g_BountyConfig.Core.obfm_TeleportOutOfSafeZone = updatedConfig.Core.obfm_TeleportOutOfSafeZone;
+				obfv_g_BountyConfig.Core.EnableAutomatedBountyPlacement = updatedConfig.Core.EnableAutomatedBountyPlacement;
+				obfv_g_BountyConfig.Core.BountyCooldownSeconds = updatedConfig.Core.BountyCooldownSeconds;
+				obfv_g_BountyConfig.Core.MaxBountiedPlayers = updatedConfig.Core.MaxBountiedPlayers;
+				obfv_g_BountyConfig.Core.MinOnlinePlayersRequired = updatedConfig.Core.MinOnlinePlayersRequired;
+				obfv_g_BountyConfig.Core.SkipBountyTokenRequired = updatedConfig.Core.SkipBountyTokenRequired;
+				obfv_g_BountyConfig.Core.PlaceBountyTokenRequired = updatedConfig.Core.PlaceBountyTokenRequired;
+				obfv_g_BountyConfig.Core.ResumeBountyDistanceFromTerritory = updatedConfig.Core.ResumeBountyDistanceFromTerritory;
+				obfv_g_BountyConfig.Core.PausedBountyResumeCheckInterval = updatedConfig.Core.PausedBountyResumeCheckInterval;
+				obfv_g_BountyConfig.Core.TeleportOutOfSafeZoneDistance = updatedConfig.Core.TeleportOutOfSafeZoneDistance;
+				obfv_g_BountyConfig.Core.MinimumPlayerLifetimeSeconds = updatedConfig.Core.MinimumPlayerLifetimeSeconds;
+				obfv_g_BountyConfig.Core.AutomatedBountyPlacementIntervalSeconds = updatedConfig.Core.AutomatedBountyPlacementIntervalSeconds;
 			}
-			if (updatedConfig.RuleBreaker && g_BountyConfig.RuleBreaker)
+			if (updatedConfig.RuleBreaker && obfv_g_BountyConfig.RuleBreaker)
 			{
-				g_BountyConfig.RuleBreaker.EnableRuleBreakerHitThreshold = updatedConfig.RuleBreaker.EnableRuleBreakerHitThreshold;
-				g_BountyConfig.RuleBreaker.EnablePvEToPvPRuleBreaker = updatedConfig.RuleBreaker.EnablePvEToPvPRuleBreaker;
-				g_BountyConfig.RuleBreaker.ClearPendingRewardsOnRuleBreakerBounty = updatedConfig.RuleBreaker.ClearPendingRewardsOnRuleBreakerBounty;
-				g_BountyConfig.RuleBreaker.AllowPvEToPvEVictimKill = updatedConfig.RuleBreaker.AllowPvEToPvEVictimKill;
-				g_BountyConfig.RuleBreaker.BountyRuleBreakerDurationSeconds = updatedConfig.RuleBreaker.BountyRuleBreakerDurationSeconds;
-				g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdTime = updatedConfig.RuleBreaker.RuleBreakerHitThresholdTime;
-				g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdWarningHits = updatedConfig.RuleBreaker.RuleBreakerHitThresholdWarningHits;
-				g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits = updatedConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits;
-				g_BountyConfig.RuleBreaker.PvEToPvPInstantRuleBreakerHits = updatedConfig.RuleBreaker.PvEToPvPInstantRuleBreakerHits;
-				g_BountyConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease = updatedConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease;
-				g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount = updatedConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount;
+				obfv_g_BountyConfig.RuleBreaker.EnableRuleBreakerHitThreshold = updatedConfig.RuleBreaker.EnableRuleBreakerHitThreshold;
+				obfv_g_BountyConfig.RuleBreaker.EnablePvEToPvPRuleBreaker = updatedConfig.RuleBreaker.EnablePvEToPvPRuleBreaker;
+				obfv_g_BountyConfig.RuleBreaker.ClearPendingRewardsOnRuleBreakerBounty = updatedConfig.RuleBreaker.ClearPendingRewardsOnRuleBreakerBounty;
+				obfv_g_BountyConfig.RuleBreaker.AllowPvEToPvEVictimKill = updatedConfig.RuleBreaker.AllowPvEToPvEVictimKill;
+				obfv_g_BountyConfig.RuleBreaker.BountyRuleBreakerDurationSeconds = updatedConfig.RuleBreaker.BountyRuleBreakerDurationSeconds;
+				obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdTime = updatedConfig.RuleBreaker.RuleBreakerHitThresholdTime;
+				obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdWarningHits = updatedConfig.RuleBreaker.RuleBreakerHitThresholdWarningHits;
+				obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits = updatedConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits;
+				obfv_g_BountyConfig.RuleBreaker.PvEToPvPInstantRuleBreakerHits = updatedConfig.RuleBreaker.PvEToPvPInstantRuleBreakerHits;
+				obfv_g_BountyConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease = updatedConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease;
+				obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount = updatedConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount;
 			}
-			if (updatedConfig.PlacedBounty && g_BountyConfig.PlacedBounty)
+			if (updatedConfig.PlacedBounty && obfv_g_BountyConfig.PlacedBounty)
 			{
-				g_BountyConfig.PlacedBounty.BountyDurationSeconds = updatedConfig.PlacedBounty.BountyDurationSeconds;
+				obfv_g_BountyConfig.PlacedBounty.BountyDurationSeconds = updatedConfig.PlacedBounty.BountyDurationSeconds;
 			}
-			if (updatedConfig.Reward && g_BountyConfig.Reward)
+			if (updatedConfig.Reward && obfv_g_BountyConfig.Reward)
 			{
-				g_BountyConfig.Reward.EnableSurvivalReward = updatedConfig.Reward.EnableSurvivalReward;
-				g_BountyConfig.Reward.PvERuleBreakerGiveRewards = updatedConfig.Reward.PvERuleBreakerGiveRewards;
+				obfv_g_BountyConfig.Reward.EnableSurvivalReward = updatedConfig.Reward.EnableSurvivalReward;
+				obfv_g_BountyConfig.Reward.PvERuleBreakerGiveRewards = updatedConfig.Reward.PvERuleBreakerGiveRewards;
 			}
-			if (updatedConfig.Map && g_BountyConfig.Map)
+			if (updatedConfig.Map && obfv_g_BountyConfig.Map)
 			{
-				g_BountyConfig.Map.BountyEnableMapDrawing = updatedConfig.Map.BountyEnableMapDrawing;
-				g_BountyConfig.Map.BountyCircleReduceRadiusOverTime = updatedConfig.Map.BountyCircleReduceRadiusOverTime;
-				g_BountyConfig.Map.BountyCircleIncreaseRadiusOverTime = updatedConfig.Map.BountyCircleIncreaseRadiusOverTime;
-				g_BountyConfig.Map.BountyCircleRadius = updatedConfig.Map.BountyCircleRadius;
-				g_BountyConfig.Map.BountyCircleMinRadius = updatedConfig.Map.BountyCircleMinRadius;
-				g_BountyConfig.Map.BountyCircleColor = updatedConfig.Map.BountyCircleColor;
-				g_BountyConfig.Map.BountyCircleDrawingWidth = updatedConfig.Map.BountyCircleDrawingWidth;
-				g_BountyConfig.Map.BountyMapUpdateIntervalSeconds = updatedConfig.Map.BountyMapUpdateIntervalSeconds;
-				g_BountyConfig.Map.BountyMapRequestCooldownSeconds = updatedConfig.Map.BountyMapRequestCooldownSeconds;
-				g_BountyConfig.Map.BountyMapSyncIntervalSeconds = updatedConfig.Map.BountyMapSyncIntervalSeconds;
-				g_BountyConfig.Map.BountyMapSyncIntervalNoBountiesSeconds = updatedConfig.Map.BountyMapSyncIntervalNoBountiesSeconds;
-				g_BountyConfig.Map.BountyCircleOffsetMinMultiplier = updatedConfig.Map.BountyCircleOffsetMinMultiplier;
-				g_BountyConfig.Map.BountyCircleOffsetMaxMultiplier = updatedConfig.Map.BountyCircleOffsetMaxMultiplier;
+				obfv_g_BountyConfig.Map.BountyEnableMapDrawing = updatedConfig.Map.BountyEnableMapDrawing;
+				obfv_g_BountyConfig.Map.BountyCircleReduceRadiusOverTime = updatedConfig.Map.BountyCircleReduceRadiusOverTime;
+				obfv_g_BountyConfig.Map.BountyCircleIncreaseRadiusOverTime = updatedConfig.Map.BountyCircleIncreaseRadiusOverTime;
+				obfv_g_BountyConfig.Map.BountyCircleRadius = updatedConfig.Map.BountyCircleRadius;
+				obfv_g_BountyConfig.Map.BountyCircleMinRadius = updatedConfig.Map.BountyCircleMinRadius;
+				obfv_g_BountyConfig.Map.BountyCircleColor = updatedConfig.Map.BountyCircleColor;
+				obfv_g_BountyConfig.Map.BountyCircleDrawingWidth = updatedConfig.Map.BountyCircleDrawingWidth;
+				obfv_g_BountyConfig.Map.BountyMapUpdateIntervalSeconds = updatedConfig.Map.BountyMapUpdateIntervalSeconds;
+				obfv_g_BountyConfig.Map.BountyMapRequestCooldownSeconds = updatedConfig.Map.BountyMapRequestCooldownSeconds;
+				obfv_g_BountyConfig.Map.BountyMapSyncIntervalSeconds = updatedConfig.Map.BountyMapSyncIntervalSeconds;
+				obfv_g_BountyConfig.Map.BountyMapSyncIntervalNoBountiesSeconds = updatedConfig.Map.BountyMapSyncIntervalNoBountiesSeconds;
+				obfv_g_BountyConfig.Map.BountyCircleOffsetMinMultiplier = updatedConfig.Map.BountyCircleOffsetMinMultiplier;
+				obfv_g_BountyConfig.Map.BountyCircleOffsetMaxMultiplier = updatedConfig.Map.BountyCircleOffsetMaxMultiplier;
 			}
-			if (updatedConfig.UI && g_BountyConfig.UI)
+			if (updatedConfig.UI && obfv_g_BountyConfig.UI)
 			{
-				g_BountyConfig.UI.CountdownWidgetPositionX = updatedConfig.UI.CountdownWidgetPositionX;
-				g_BountyConfig.UI.CountdownWidgetPositionY = updatedConfig.UI.CountdownWidgetPositionY;
-				g_BountyConfig.UI.CountdownWidgetWidth = updatedConfig.UI.CountdownWidgetWidth;
-				g_BountyConfig.UI.CountdownWidgetHeight = updatedConfig.UI.CountdownWidgetHeight;
-				g_BountyConfig.UI.CountdownWidgetBackgroundColor = updatedConfig.UI.CountdownWidgetBackgroundColor;
-				g_BountyConfig.UI.CountdownWidgetTextColor = updatedConfig.UI.CountdownWidgetTextColor;
+				obfv_g_BountyConfig.UI.CountdownWidgetPositionX = updatedConfig.UI.CountdownWidgetPositionX;
+				obfv_g_BountyConfig.UI.CountdownWidgetPositionY = updatedConfig.UI.CountdownWidgetPositionY;
+				obfv_g_BountyConfig.UI.CountdownWidgetWidth = updatedConfig.UI.CountdownWidgetWidth;
+				obfv_g_BountyConfig.UI.CountdownWidgetHeight = updatedConfig.UI.CountdownWidgetHeight;
+				obfv_g_BountyConfig.UI.CountdownWidgetBackgroundColor = updatedConfig.UI.CountdownWidgetBackgroundColor;
+				obfv_g_BountyConfig.UI.CountdownWidgetTextColor = updatedConfig.UI.CountdownWidgetTextColor;
 			}
-			if (updatedConfig.Notifications && g_BountyConfig.Notifications)
+			if (updatedConfig.Notifications && obfv_g_BountyConfig.Notifications)
 			{
-				if (updatedConfig.Notifications.PlacedBounty && g_BountyConfig.Notifications.PlacedBounty)
+				if (updatedConfig.Notifications.PlacedBounty && obfv_g_BountyConfig.Notifications.PlacedBounty)
 				{
-					if (updatedConfig.Notifications.PlacedBounty.Hunted && g_BountyConfig.Notifications.PlacedBounty.Hunted)
+					if (updatedConfig.Notifications.PlacedBounty.Hunted && obfv_g_BountyConfig.Notifications.PlacedBounty.Hunted)
 					{
-						g_BountyConfig.Notifications.PlacedBounty.Hunted.Enabled = updatedConfig.Notifications.PlacedBounty.Hunted.Enabled;
-						g_BountyConfig.Notifications.PlacedBounty.Hunted.Title = updatedConfig.Notifications.PlacedBounty.Hunted.Title;
-						g_BountyConfig.Notifications.PlacedBounty.Hunted.Message = updatedConfig.Notifications.PlacedBounty.Hunted.Message;
-						g_BountyConfig.Notifications.PlacedBounty.Hunted.IconPath = updatedConfig.Notifications.PlacedBounty.Hunted.IconPath;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.Hunted.Enabled = updatedConfig.Notifications.PlacedBounty.Hunted.Enabled;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.Hunted.Title = updatedConfig.Notifications.PlacedBounty.Hunted.Title;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.Hunted.Message = updatedConfig.Notifications.PlacedBounty.Hunted.Message;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.Hunted.IconPath = updatedConfig.Notifications.PlacedBounty.Hunted.IconPath;
 					}
-					if (updatedConfig.Notifications.PlacedBounty.Expired && g_BountyConfig.Notifications.PlacedBounty.Expired)
+					if (updatedConfig.Notifications.PlacedBounty.Expired && obfv_g_BountyConfig.Notifications.PlacedBounty.Expired)
 					{
-						g_BountyConfig.Notifications.PlacedBounty.Expired.Enabled = updatedConfig.Notifications.PlacedBounty.Expired.Enabled;
-						g_BountyConfig.Notifications.PlacedBounty.Expired.Title = updatedConfig.Notifications.PlacedBounty.Expired.Title;
-						g_BountyConfig.Notifications.PlacedBounty.Expired.Message = updatedConfig.Notifications.PlacedBounty.Expired.Message;
-						g_BountyConfig.Notifications.PlacedBounty.Expired.IconPath = updatedConfig.Notifications.PlacedBounty.Expired.IconPath;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.Expired.Enabled = updatedConfig.Notifications.PlacedBounty.Expired.Enabled;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.Expired.Title = updatedConfig.Notifications.PlacedBounty.Expired.Title;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.Expired.Message = updatedConfig.Notifications.PlacedBounty.Expired.Message;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.Expired.IconPath = updatedConfig.Notifications.PlacedBounty.Expired.IconPath;
 					}
-					if (updatedConfig.Notifications.PlacedBounty.SurvivalReward && g_BountyConfig.Notifications.PlacedBounty.SurvivalReward)
+					if (updatedConfig.Notifications.PlacedBounty.SurvivalReward && obfv_g_BountyConfig.Notifications.PlacedBounty.SurvivalReward)
 					{
-						g_BountyConfig.Notifications.PlacedBounty.SurvivalReward.Enabled = updatedConfig.Notifications.PlacedBounty.SurvivalReward.Enabled;
-						g_BountyConfig.Notifications.PlacedBounty.SurvivalReward.Title = updatedConfig.Notifications.PlacedBounty.SurvivalReward.Title;
-						g_BountyConfig.Notifications.PlacedBounty.SurvivalReward.Message = updatedConfig.Notifications.PlacedBounty.SurvivalReward.Message;
-						g_BountyConfig.Notifications.PlacedBounty.SurvivalReward.IconPath = updatedConfig.Notifications.PlacedBounty.SurvivalReward.IconPath;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.SurvivalReward.Enabled = updatedConfig.Notifications.PlacedBounty.SurvivalReward.Enabled;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.SurvivalReward.Title = updatedConfig.Notifications.PlacedBounty.SurvivalReward.Title;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.SurvivalReward.Message = updatedConfig.Notifications.PlacedBounty.SurvivalReward.Message;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.SurvivalReward.IconPath = updatedConfig.Notifications.PlacedBounty.SurvivalReward.IconPath;
 					}
-					if (updatedConfig.Notifications.PlacedBounty.KilledReward && g_BountyConfig.Notifications.PlacedBounty.KilledReward)
+					if (updatedConfig.Notifications.PlacedBounty.KilledReward && obfv_g_BountyConfig.Notifications.PlacedBounty.KilledReward)
 					{
-						g_BountyConfig.Notifications.PlacedBounty.KilledReward.Enabled = updatedConfig.Notifications.PlacedBounty.KilledReward.Enabled;
-						g_BountyConfig.Notifications.PlacedBounty.KilledReward.Title = updatedConfig.Notifications.PlacedBounty.KilledReward.Title;
-						g_BountyConfig.Notifications.PlacedBounty.KilledReward.Message = updatedConfig.Notifications.PlacedBounty.KilledReward.Message;
-						g_BountyConfig.Notifications.PlacedBounty.KilledReward.IconPath = updatedConfig.Notifications.PlacedBounty.KilledReward.IconPath;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.KilledReward.Enabled = updatedConfig.Notifications.PlacedBounty.KilledReward.Enabled;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.KilledReward.Title = updatedConfig.Notifications.PlacedBounty.KilledReward.Title;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.KilledReward.Message = updatedConfig.Notifications.PlacedBounty.KilledReward.Message;
+						obfv_g_BountyConfig.Notifications.PlacedBounty.KilledReward.IconPath = updatedConfig.Notifications.PlacedBounty.KilledReward.IconPath;
 					}
 				}
-				if (updatedConfig.Notifications.RuleBreaker && g_BountyConfig.Notifications.RuleBreaker)
+				if (updatedConfig.Notifications.RuleBreaker && obfv_g_BountyConfig.Notifications.RuleBreaker)
 				{
-					if (updatedConfig.Notifications.RuleBreaker.Hunted && g_BountyConfig.Notifications.RuleBreaker.Hunted)
+					if (updatedConfig.Notifications.RuleBreaker.Hunted && obfv_g_BountyConfig.Notifications.RuleBreaker.Hunted)
 					{
-						g_BountyConfig.Notifications.RuleBreaker.Hunted.Enabled = updatedConfig.Notifications.RuleBreaker.Hunted.Enabled;
-						g_BountyConfig.Notifications.RuleBreaker.Hunted.Title = updatedConfig.Notifications.RuleBreaker.Hunted.Title;
-						g_BountyConfig.Notifications.RuleBreaker.Hunted.Message = updatedConfig.Notifications.RuleBreaker.Hunted.Message;
-						g_BountyConfig.Notifications.RuleBreaker.Hunted.IconPath = updatedConfig.Notifications.RuleBreaker.Hunted.IconPath;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.Hunted.Enabled = updatedConfig.Notifications.RuleBreaker.Hunted.Enabled;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.Hunted.Title = updatedConfig.Notifications.RuleBreaker.Hunted.Title;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.Hunted.Message = updatedConfig.Notifications.RuleBreaker.Hunted.Message;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.Hunted.IconPath = updatedConfig.Notifications.RuleBreaker.Hunted.IconPath;
 					}
-					if (updatedConfig.Notifications.RuleBreaker.HitWarning && g_BountyConfig.Notifications.RuleBreaker.HitWarning)
+					if (updatedConfig.Notifications.RuleBreaker.HitWarning && obfv_g_BountyConfig.Notifications.RuleBreaker.HitWarning)
 					{
-						g_BountyConfig.Notifications.RuleBreaker.HitWarning.Enabled = updatedConfig.Notifications.RuleBreaker.HitWarning.Enabled;
-						g_BountyConfig.Notifications.RuleBreaker.HitWarning.Title = updatedConfig.Notifications.RuleBreaker.HitWarning.Title;
-						g_BountyConfig.Notifications.RuleBreaker.HitWarning.Message = updatedConfig.Notifications.RuleBreaker.HitWarning.Message;
-						g_BountyConfig.Notifications.RuleBreaker.HitWarning.IconPath = updatedConfig.Notifications.RuleBreaker.HitWarning.IconPath;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.HitWarning.Enabled = updatedConfig.Notifications.RuleBreaker.HitWarning.Enabled;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.HitWarning.Title = updatedConfig.Notifications.RuleBreaker.HitWarning.Title;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.HitWarning.Message = updatedConfig.Notifications.RuleBreaker.HitWarning.Message;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.HitWarning.IconPath = updatedConfig.Notifications.RuleBreaker.HitWarning.IconPath;
 					}
-					if (updatedConfig.Notifications.RuleBreaker.Expired && g_BountyConfig.Notifications.RuleBreaker.Expired)
+					if (updatedConfig.Notifications.RuleBreaker.Expired && obfv_g_BountyConfig.Notifications.RuleBreaker.Expired)
 					{
-						g_BountyConfig.Notifications.RuleBreaker.Expired.Enabled = updatedConfig.Notifications.RuleBreaker.Expired.Enabled;
-						g_BountyConfig.Notifications.RuleBreaker.Expired.Title = updatedConfig.Notifications.RuleBreaker.Expired.Title;
-						g_BountyConfig.Notifications.RuleBreaker.Expired.Message = updatedConfig.Notifications.RuleBreaker.Expired.Message;
-						g_BountyConfig.Notifications.RuleBreaker.Expired.IconPath = updatedConfig.Notifications.RuleBreaker.Expired.IconPath;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.Expired.Enabled = updatedConfig.Notifications.RuleBreaker.Expired.Enabled;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.Expired.Title = updatedConfig.Notifications.RuleBreaker.Expired.Title;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.Expired.Message = updatedConfig.Notifications.RuleBreaker.Expired.Message;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.Expired.IconPath = updatedConfig.Notifications.RuleBreaker.Expired.IconPath;
 					}
-					if (updatedConfig.Notifications.RuleBreaker.SurvivalReward && g_BountyConfig.Notifications.RuleBreaker.SurvivalReward)
+					if (updatedConfig.Notifications.RuleBreaker.SurvivalReward && obfv_g_BountyConfig.Notifications.RuleBreaker.SurvivalReward)
 					{
-						g_BountyConfig.Notifications.RuleBreaker.SurvivalReward.Enabled = updatedConfig.Notifications.RuleBreaker.SurvivalReward.Enabled;
-						g_BountyConfig.Notifications.RuleBreaker.SurvivalReward.Title = updatedConfig.Notifications.RuleBreaker.SurvivalReward.Title;
-						g_BountyConfig.Notifications.RuleBreaker.SurvivalReward.Message = updatedConfig.Notifications.RuleBreaker.SurvivalReward.Message;
-						g_BountyConfig.Notifications.RuleBreaker.SurvivalReward.IconPath = updatedConfig.Notifications.RuleBreaker.SurvivalReward.IconPath;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.SurvivalReward.Enabled = updatedConfig.Notifications.RuleBreaker.SurvivalReward.Enabled;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.SurvivalReward.Title = updatedConfig.Notifications.RuleBreaker.SurvivalReward.Title;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.SurvivalReward.Message = updatedConfig.Notifications.RuleBreaker.SurvivalReward.Message;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.SurvivalReward.IconPath = updatedConfig.Notifications.RuleBreaker.SurvivalReward.IconPath;
 					}
-					if (updatedConfig.Notifications.RuleBreaker.KilledReward && g_BountyConfig.Notifications.RuleBreaker.KilledReward)
+					if (updatedConfig.Notifications.RuleBreaker.KilledReward && obfv_g_BountyConfig.Notifications.RuleBreaker.KilledReward)
 					{
-						g_BountyConfig.Notifications.RuleBreaker.KilledReward.Enabled = updatedConfig.Notifications.RuleBreaker.KilledReward.Enabled;
-						g_BountyConfig.Notifications.RuleBreaker.KilledReward.Title = updatedConfig.Notifications.RuleBreaker.KilledReward.Title;
-						g_BountyConfig.Notifications.RuleBreaker.KilledReward.Message = updatedConfig.Notifications.RuleBreaker.KilledReward.Message;
-						g_BountyConfig.Notifications.RuleBreaker.KilledReward.IconPath = updatedConfig.Notifications.RuleBreaker.KilledReward.IconPath;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.KilledReward.Enabled = updatedConfig.Notifications.RuleBreaker.KilledReward.Enabled;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.KilledReward.Title = updatedConfig.Notifications.RuleBreaker.KilledReward.Title;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.KilledReward.Message = updatedConfig.Notifications.RuleBreaker.KilledReward.Message;
+						obfv_g_BountyConfig.Notifications.RuleBreaker.KilledReward.IconPath = updatedConfig.Notifications.RuleBreaker.KilledReward.IconPath;
 					}
 				}
-				if (updatedConfig.Notifications.Other && g_BountyConfig.Notifications.Other)
+				if (updatedConfig.Notifications.Other && obfv_g_BountyConfig.Notifications.Other)
 				{
-					if (updatedConfig.Notifications.Other.InsufficientTokens && g_BountyConfig.Notifications.Other.InsufficientTokens)
+					if (updatedConfig.Notifications.Other.InsufficientTokens && obfv_g_BountyConfig.Notifications.Other.InsufficientTokens)
 					{
-						g_BountyConfig.Notifications.Other.InsufficientTokens.Enabled = updatedConfig.Notifications.Other.InsufficientTokens.Enabled;
-						g_BountyConfig.Notifications.Other.InsufficientTokens.Title = updatedConfig.Notifications.Other.InsufficientTokens.Title;
-						g_BountyConfig.Notifications.Other.InsufficientTokens.Message = updatedConfig.Notifications.Other.InsufficientTokens.Message;
-						g_BountyConfig.Notifications.Other.InsufficientTokens.IconPath = updatedConfig.Notifications.Other.InsufficientTokens.IconPath;
+						obfv_g_BountyConfig.Notifications.Other.InsufficientTokens.Enabled = updatedConfig.Notifications.Other.InsufficientTokens.Enabled;
+						obfv_g_BountyConfig.Notifications.Other.InsufficientTokens.Title = updatedConfig.Notifications.Other.InsufficientTokens.Title;
+						obfv_g_BountyConfig.Notifications.Other.InsufficientTokens.Message = updatedConfig.Notifications.Other.InsufficientTokens.Message;
+						obfv_g_BountyConfig.Notifications.Other.InsufficientTokens.IconPath = updatedConfig.Notifications.Other.InsufficientTokens.IconPath;
 					}
-					if (updatedConfig.Notifications.Other.SkipBountyNoPlayers && g_BountyConfig.Notifications.Other.SkipBountyNoPlayers)
+					if (updatedConfig.Notifications.Other.SkipBountyNoPlayers && obfv_g_BountyConfig.Notifications.Other.SkipBountyNoPlayers)
 					{
-						g_BountyConfig.Notifications.Other.SkipBountyNoPlayers.Enabled = updatedConfig.Notifications.Other.SkipBountyNoPlayers.Enabled;
-						g_BountyConfig.Notifications.Other.SkipBountyNoPlayers.Title = updatedConfig.Notifications.Other.SkipBountyNoPlayers.Title;
-						g_BountyConfig.Notifications.Other.SkipBountyNoPlayers.Message = updatedConfig.Notifications.Other.SkipBountyNoPlayers.Message;
-						g_BountyConfig.Notifications.Other.SkipBountyNoPlayers.IconPath = updatedConfig.Notifications.Other.SkipBountyNoPlayers.IconPath;
+						obfv_g_BountyConfig.Notifications.Other.SkipBountyNoPlayers.Enabled = updatedConfig.Notifications.Other.SkipBountyNoPlayers.Enabled;
+						obfv_g_BountyConfig.Notifications.Other.SkipBountyNoPlayers.Title = updatedConfig.Notifications.Other.SkipBountyNoPlayers.Title;
+						obfv_g_BountyConfig.Notifications.Other.SkipBountyNoPlayers.Message = updatedConfig.Notifications.Other.SkipBountyNoPlayers.Message;
+						obfv_g_BountyConfig.Notifications.Other.SkipBountyNoPlayers.IconPath = updatedConfig.Notifications.Other.SkipBountyNoPlayers.IconPath;
 					}
-					if (updatedConfig.Notifications.Other.SkipBountySuccess && g_BountyConfig.Notifications.Other.SkipBountySuccess)
+					if (updatedConfig.Notifications.Other.SkipBountySuccess && obfv_g_BountyConfig.Notifications.Other.SkipBountySuccess)
 					{
-						g_BountyConfig.Notifications.Other.SkipBountySuccess.Enabled = updatedConfig.Notifications.Other.SkipBountySuccess.Enabled;
-						g_BountyConfig.Notifications.Other.SkipBountySuccess.Title = updatedConfig.Notifications.Other.SkipBountySuccess.Title;
-						g_BountyConfig.Notifications.Other.SkipBountySuccess.Message = updatedConfig.Notifications.Other.SkipBountySuccess.Message;
-						g_BountyConfig.Notifications.Other.SkipBountySuccess.IconPath = updatedConfig.Notifications.Other.SkipBountySuccess.IconPath;
+						obfv_g_BountyConfig.Notifications.Other.SkipBountySuccess.Enabled = updatedConfig.Notifications.Other.SkipBountySuccess.Enabled;
+						obfv_g_BountyConfig.Notifications.Other.SkipBountySuccess.Title = updatedConfig.Notifications.Other.SkipBountySuccess.Title;
+						obfv_g_BountyConfig.Notifications.Other.SkipBountySuccess.Message = updatedConfig.Notifications.Other.SkipBountySuccess.Message;
+						obfv_g_BountyConfig.Notifications.Other.SkipBountySuccess.IconPath = updatedConfig.Notifications.Other.SkipBountySuccess.IconPath;
 					}
-					if (updatedConfig.Notifications.Other.BountySkipped && g_BountyConfig.Notifications.Other.BountySkipped)
+					if (updatedConfig.Notifications.Other.BountySkipped && obfv_g_BountyConfig.Notifications.Other.BountySkipped)
 					{
-						g_BountyConfig.Notifications.Other.BountySkipped.Enabled = updatedConfig.Notifications.Other.BountySkipped.Enabled;
-						g_BountyConfig.Notifications.Other.BountySkipped.Title = updatedConfig.Notifications.Other.BountySkipped.Title;
-						g_BountyConfig.Notifications.Other.BountySkipped.Message = updatedConfig.Notifications.Other.BountySkipped.Message;
-						g_BountyConfig.Notifications.Other.BountySkipped.IconPath = updatedConfig.Notifications.Other.BountySkipped.IconPath;
+						obfv_g_BountyConfig.Notifications.Other.BountySkipped.Enabled = updatedConfig.Notifications.Other.BountySkipped.Enabled;
+						obfv_g_BountyConfig.Notifications.Other.BountySkipped.Title = updatedConfig.Notifications.Other.BountySkipped.Title;
+						obfv_g_BountyConfig.Notifications.Other.BountySkipped.Message = updatedConfig.Notifications.Other.BountySkipped.Message;
+						obfv_g_BountyConfig.Notifications.Other.BountySkipped.IconPath = updatedConfig.Notifications.Other.BountySkipped.IconPath;
 					}
-					if (updatedConfig.Notifications.Other.RewardHandsNotFree && g_BountyConfig.Notifications.Other.RewardHandsNotFree)
+					if (updatedConfig.Notifications.Other.RewardHandsNotFree && obfv_g_BountyConfig.Notifications.Other.RewardHandsNotFree)
 					{
-						g_BountyConfig.Notifications.Other.RewardHandsNotFree.Enabled = updatedConfig.Notifications.Other.RewardHandsNotFree.Enabled;
-						g_BountyConfig.Notifications.Other.RewardHandsNotFree.Title = updatedConfig.Notifications.Other.RewardHandsNotFree.Title;
-						g_BountyConfig.Notifications.Other.RewardHandsNotFree.Message = updatedConfig.Notifications.Other.RewardHandsNotFree.Message;
-						g_BountyConfig.Notifications.Other.RewardHandsNotFree.IconPath = updatedConfig.Notifications.Other.RewardHandsNotFree.IconPath;
+						obfv_g_BountyConfig.Notifications.Other.RewardHandsNotFree.Enabled = updatedConfig.Notifications.Other.RewardHandsNotFree.Enabled;
+						obfv_g_BountyConfig.Notifications.Other.RewardHandsNotFree.Title = updatedConfig.Notifications.Other.RewardHandsNotFree.Title;
+						obfv_g_BountyConfig.Notifications.Other.RewardHandsNotFree.Message = updatedConfig.Notifications.Other.RewardHandsNotFree.Message;
+						obfv_g_BountyConfig.Notifications.Other.RewardHandsNotFree.IconPath = updatedConfig.Notifications.Other.RewardHandsNotFree.IconPath;
 					}
-					if (updatedConfig.Notifications.Other.PlayerOnCooldown && g_BountyConfig.Notifications.Other.PlayerOnCooldown)
+					if (updatedConfig.Notifications.Other.PlayerOnCooldown && obfv_g_BountyConfig.Notifications.Other.PlayerOnCooldown)
 					{
-						g_BountyConfig.Notifications.Other.PlayerOnCooldown.Enabled = updatedConfig.Notifications.Other.PlayerOnCooldown.Enabled;
-						g_BountyConfig.Notifications.Other.PlayerOnCooldown.Title = updatedConfig.Notifications.Other.PlayerOnCooldown.Title;
-						g_BountyConfig.Notifications.Other.PlayerOnCooldown.Message = updatedConfig.Notifications.Other.PlayerOnCooldown.Message;
-						g_BountyConfig.Notifications.Other.PlayerOnCooldown.IconPath = updatedConfig.Notifications.Other.PlayerOnCooldown.IconPath;
+						obfv_g_BountyConfig.Notifications.Other.PlayerOnCooldown.Enabled = updatedConfig.Notifications.Other.PlayerOnCooldown.Enabled;
+						obfv_g_BountyConfig.Notifications.Other.PlayerOnCooldown.Title = updatedConfig.Notifications.Other.PlayerOnCooldown.Title;
+						obfv_g_BountyConfig.Notifications.Other.PlayerOnCooldown.Message = updatedConfig.Notifications.Other.PlayerOnCooldown.Message;
+						obfv_g_BountyConfig.Notifications.Other.PlayerOnCooldown.IconPath = updatedConfig.Notifications.Other.PlayerOnCooldown.IconPath;
 					}
-					if (updatedConfig.Notifications.Other.PlayerInSafeZone && g_BountyConfig.Notifications.Other.PlayerInSafeZone)
+					if (updatedConfig.Notifications.Other.PlayerInSafeZone && obfv_g_BountyConfig.Notifications.Other.PlayerInSafeZone)
 					{
-						g_BountyConfig.Notifications.Other.PlayerInSafeZone.Enabled = updatedConfig.Notifications.Other.PlayerInSafeZone.Enabled;
-						g_BountyConfig.Notifications.Other.PlayerInSafeZone.Title = updatedConfig.Notifications.Other.PlayerInSafeZone.Title;
-						g_BountyConfig.Notifications.Other.PlayerInSafeZone.Message = updatedConfig.Notifications.Other.PlayerInSafeZone.Message;
-						g_BountyConfig.Notifications.Other.PlayerInSafeZone.IconPath = updatedConfig.Notifications.Other.PlayerInSafeZone.IconPath;
+						obfv_g_BountyConfig.Notifications.Other.PlayerInSafeZone.Enabled = updatedConfig.Notifications.Other.PlayerInSafeZone.Enabled;
+						obfv_g_BountyConfig.Notifications.Other.PlayerInSafeZone.Title = updatedConfig.Notifications.Other.PlayerInSafeZone.Title;
+						obfv_g_BountyConfig.Notifications.Other.PlayerInSafeZone.Message = updatedConfig.Notifications.Other.PlayerInSafeZone.Message;
+						obfv_g_BountyConfig.Notifications.Other.PlayerInSafeZone.IconPath = updatedConfig.Notifications.Other.PlayerInSafeZone.IconPath;
 					}
-					if (updatedConfig.Notifications.Other.BountyPersisted && g_BountyConfig.Notifications.Other.BountyPersisted)
+					if (updatedConfig.Notifications.Other.BountyPersisted && obfv_g_BountyConfig.Notifications.Other.BountyPersisted)
 					{
-						g_BountyConfig.Notifications.Other.BountyPersisted.Enabled = updatedConfig.Notifications.Other.BountyPersisted.Enabled;
-						g_BountyConfig.Notifications.Other.BountyPersisted.Title = updatedConfig.Notifications.Other.BountyPersisted.Title;
-						g_BountyConfig.Notifications.Other.BountyPersisted.Message = updatedConfig.Notifications.Other.BountyPersisted.Message;
-						g_BountyConfig.Notifications.Other.BountyPersisted.IconPath = updatedConfig.Notifications.Other.BountyPersisted.IconPath;
+						obfv_g_BountyConfig.Notifications.Other.BountyPersisted.Enabled = updatedConfig.Notifications.Other.BountyPersisted.Enabled;
+						obfv_g_BountyConfig.Notifications.Other.BountyPersisted.Title = updatedConfig.Notifications.Other.BountyPersisted.Title;
+						obfv_g_BountyConfig.Notifications.Other.BountyPersisted.Message = updatedConfig.Notifications.Other.BountyPersisted.Message;
+						obfv_g_BountyConfig.Notifications.Other.BountyPersisted.IconPath = updatedConfig.Notifications.Other.BountyPersisted.IconPath;
 					}
-					if (updatedConfig.Notifications.Other.TeleportedOutOfTerritory && g_BountyConfig.Notifications.Other.TeleportedOutOfTerritory)
+					if (updatedConfig.Notifications.Other.TeleportedOutOfTerritory && obfv_g_BountyConfig.Notifications.Other.TeleportedOutOfTerritory)
 					{
-						g_BountyConfig.Notifications.Other.TeleportedOutOfTerritory.Enabled = updatedConfig.Notifications.Other.TeleportedOutOfTerritory.Enabled;
-						g_BountyConfig.Notifications.Other.TeleportedOutOfTerritory.Title = updatedConfig.Notifications.Other.TeleportedOutOfTerritory.Title;
-						g_BountyConfig.Notifications.Other.TeleportedOutOfTerritory.Message = updatedConfig.Notifications.Other.TeleportedOutOfTerritory.Message;
-						g_BountyConfig.Notifications.Other.TeleportedOutOfTerritory.IconPath = updatedConfig.Notifications.Other.TeleportedOutOfTerritory.IconPath;
+						obfv_g_BountyConfig.Notifications.Other.TeleportedOutOfTerritory.Enabled = updatedConfig.Notifications.Other.TeleportedOutOfTerritory.Enabled;
+						obfv_g_BountyConfig.Notifications.Other.TeleportedOutOfTerritory.Title = updatedConfig.Notifications.Other.TeleportedOutOfTerritory.Title;
+						obfv_g_BountyConfig.Notifications.Other.TeleportedOutOfTerritory.Message = updatedConfig.Notifications.Other.TeleportedOutOfTerritory.Message;
+						obfv_g_BountyConfig.Notifications.Other.TeleportedOutOfTerritory.IconPath = updatedConfig.Notifications.Other.TeleportedOutOfTerritory.IconPath;
 					}
-					if (updatedConfig.Notifications.Other.BountyPausedInTerritory && g_BountyConfig.Notifications.Other.BountyPausedInTerritory)
+					if (updatedConfig.Notifications.Other.BountyPausedInTerritory && obfv_g_BountyConfig.Notifications.Other.BountyPausedInTerritory)
 					{
-						g_BountyConfig.Notifications.Other.BountyPausedInTerritory.Enabled = updatedConfig.Notifications.Other.BountyPausedInTerritory.Enabled;
-						g_BountyConfig.Notifications.Other.BountyPausedInTerritory.Title = updatedConfig.Notifications.Other.BountyPausedInTerritory.Title;
-						g_BountyConfig.Notifications.Other.BountyPausedInTerritory.Message = updatedConfig.Notifications.Other.BountyPausedInTerritory.Message;
-						g_BountyConfig.Notifications.Other.BountyPausedInTerritory.IconPath = updatedConfig.Notifications.Other.BountyPausedInTerritory.IconPath;
+						obfv_g_BountyConfig.Notifications.Other.BountyPausedInTerritory.Enabled = updatedConfig.Notifications.Other.BountyPausedInTerritory.Enabled;
+						obfv_g_BountyConfig.Notifications.Other.BountyPausedInTerritory.Title = updatedConfig.Notifications.Other.BountyPausedInTerritory.Title;
+						obfv_g_BountyConfig.Notifications.Other.BountyPausedInTerritory.Message = updatedConfig.Notifications.Other.BountyPausedInTerritory.Message;
+						obfv_g_BountyConfig.Notifications.Other.BountyPausedInTerritory.IconPath = updatedConfig.Notifications.Other.BountyPausedInTerritory.IconPath;
 					}
 				}
 			}
-			if (updatedConfig.Broadcasts && g_BountyConfig.Broadcasts)
+			if (updatedConfig.Broadcasts && obfv_g_BountyConfig.Broadcasts)
 			{
-				if (updatedConfig.Broadcasts.PlacedBounty && g_BountyConfig.Broadcasts.PlacedBounty)
+				if (updatedConfig.Broadcasts.PlacedBounty && obfv_g_BountyConfig.Broadcasts.PlacedBounty)
 				{
-					g_BountyConfig.Broadcasts.PlacedBounty.Enabled = updatedConfig.Broadcasts.PlacedBounty.Enabled;
-					g_BountyConfig.Broadcasts.PlacedBounty.Title = updatedConfig.Broadcasts.PlacedBounty.Title;
-					g_BountyConfig.Broadcasts.PlacedBounty.Message = updatedConfig.Broadcasts.PlacedBounty.Message;
-					g_BountyConfig.Broadcasts.PlacedBounty.IconPath = updatedConfig.Broadcasts.PlacedBounty.IconPath;
+					obfv_g_BountyConfig.Broadcasts.PlacedBounty.Enabled = updatedConfig.Broadcasts.PlacedBounty.Enabled;
+					obfv_g_BountyConfig.Broadcasts.PlacedBounty.Title = updatedConfig.Broadcasts.PlacedBounty.Title;
+					obfv_g_BountyConfig.Broadcasts.PlacedBounty.Message = updatedConfig.Broadcasts.PlacedBounty.Message;
+					obfv_g_BountyConfig.Broadcasts.PlacedBounty.IconPath = updatedConfig.Broadcasts.PlacedBounty.IconPath;
 				}
-				if (updatedConfig.Broadcasts.RuleBreaker && g_BountyConfig.Broadcasts.RuleBreaker)
+				if (updatedConfig.Broadcasts.RuleBreaker && obfv_g_BountyConfig.Broadcasts.RuleBreaker)
 				{
-					g_BountyConfig.Broadcasts.RuleBreaker.Enabled = updatedConfig.Broadcasts.RuleBreaker.Enabled;
-					g_BountyConfig.Broadcasts.RuleBreaker.Title = updatedConfig.Broadcasts.RuleBreaker.Title;
-					g_BountyConfig.Broadcasts.RuleBreaker.Message = updatedConfig.Broadcasts.RuleBreaker.Message;
-					g_BountyConfig.Broadcasts.RuleBreaker.IconPath = updatedConfig.Broadcasts.RuleBreaker.IconPath;
+					obfv_g_BountyConfig.Broadcasts.RuleBreaker.Enabled = updatedConfig.Broadcasts.RuleBreaker.Enabled;
+					obfv_g_BountyConfig.Broadcasts.RuleBreaker.Title = updatedConfig.Broadcasts.RuleBreaker.Title;
+					obfv_g_BountyConfig.Broadcasts.RuleBreaker.Message = updatedConfig.Broadcasts.RuleBreaker.Message;
+					obfv_g_BountyConfig.Broadcasts.RuleBreaker.IconPath = updatedConfig.Broadcasts.RuleBreaker.IconPath;
 				}
 			}
-			g_BountyConfig.ValidateConfig();
-			g_BountyConfig.SaveConfig();
-			BountyManager.ReloadAllConfigs(player);
-			GetNinjins_Bounty_SystemLogger().LogInfo("[BountyAdminUpdateConfig] Config updated and reloaded by admin: " + sender.GetName());
+			obfv_g_BountyConfig.obfm_ValidateConfig();
+			obfv_g_BountyConfig.obfm_SaveConfig();
+			obfc_BountyManager.obfm_ReloadAllConfigs(player);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminUpdateConfig] Config updated and reloaded by admin: " + sender.GetName());
 		}
 		else
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyAdminUpdateConfig] g_BountyConfig is null - cannot update config!");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminUpdateConfig] g_BountyConfig is null - cannot update config!");
 		}
 	}
 	void BountyAdminRequestConfig(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
@@ -1158,22 +1158,22 @@ class BountyModule : CF_ModuleWorld
 		player = PlayerBase.Cast(sender.GetPlayer());
 		if (!player)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BountyAdminRequestConfig: Player not found for identity: " + sender.GetName());
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminRequestConfig: Player not found for identity: " + sender.GetName());
 			return;
 		}
-		if (!player.IsBountyAdmin())
+		if (!player.obfm_IsBountyAdmin())
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BountyAdminRequestConfig: Access denied for non-admin player: " + sender.GetName());
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminRequestConfig: Access denied for non-admin player: " + sender.GetName());
 			return;
 		}
-		if (g_BountyConfig)
+		if (obfv_g_BountyConfig)
 		{
-			GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminReceiveConfig", new Param1<ref BountyConfig>(g_BountyConfig), true, sender);
-			GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] BountyAdminRequestConfig: Sent config to admin: " + sender.GetName());
+			GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminReceiveConfig", new Param1<ref obfc_BountyConfig>(obfv_g_BountyConfig), true, sender);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] BountyAdminRequestConfig: Sent config to admin: " + sender.GetName());
 		}
 		else
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BountyAdminRequestConfig: g_BountyConfig is null - cannot send config!");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminRequestConfig: g_BountyConfig is null - cannot send config!");
 		}
 	}
 	void BoardBountyAction(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
@@ -1185,19 +1185,19 @@ class BountyModule : CF_ModuleWorld
 			return;
 		if (!ctx.Read(actionParam))
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BoardBountyAction: Failed to read action parameter.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BoardBountyAction: Failed to read action parameter.");
 			return;
 		}
 		action = actionParam.param1;
 		player = PlayerBase.Cast(sender.GetPlayer());
 		if (!player)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BoardBountyAction: Player not found for identity: " + sender.GetName());
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BoardBountyAction: Player not found for identity: " + sender.GetName());
 			return;
 		}
-		if (g_BountyBlacklistConfig && g_BountyBlacklistConfig.IsBlacklisted(sender.GetId()))
+		if (obfv_g_BountyBlacklistConfig && obfv_g_BountyBlacklistConfig.obfm_IsBlacklistedIdentity(sender))
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BoardBountyAction: Blacklisted player " + sender.GetName() + " tried to use bounty board action: " + action);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BoardBountyAction: Blacklisted player " + sender.GetName() + " tried to use bounty board action: " + action);
 			return;
 		}
 		bool success;
@@ -1241,27 +1241,27 @@ class BountyModule : CF_ModuleWorld
 		int cdIndex;
 		if (action == "SkipBounty")
 		{
-			if (!player.HasBounty())
+			if (!player.obfm_HasBounty())
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to skip bounty but doesn't have one");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to skip bounty but doesn't have one");
 				return;
 			}
-			bountyType = player.GetBountyType();
+			bountyType = player.obfm_GetBountyType();
 			newDuration = 0.0;
-			if (g_BountyConfig)
+			if (obfv_g_BountyConfig)
 			{
 				if (bountyType == BountyType.RULE_BREAKER)
 				{
-					newDuration = g_BountyConfig.RuleBreaker.BountyRuleBreakerDurationSeconds;
+					newDuration = obfv_g_BountyConfig.RuleBreaker.BountyRuleBreakerDurationSeconds;
 				}
 				else
 				{
-					newDuration = g_BountyConfig.PlacedBounty.BountyDurationSeconds;
+					newDuration = obfv_g_BountyConfig.PlacedBounty.BountyDurationSeconds;
 				}
 			}
 			if (newDuration <= 0.0)
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Cannot skip bounty - invalid duration from config");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Cannot skip bounty - invalid duration from config");
 				return;
 			}
 			allPlayers = new array<Man>();
@@ -1285,30 +1285,30 @@ class BountyModule : CF_ModuleWorld
 				candidateName = candidateIdentity.GetName();
 				if (candidateName == "" || candidateName == skippingPlayerName)
 					continue;
-				if (candidatePlayer.HasBounty())
+				if (candidatePlayer.obfm_HasBounty())
 					continue;
-				if (candidatePlayer.IsBountyOnCooldown())
+				if (candidatePlayer.obfm_IsBountyOnCooldown())
 					continue;
 				availablePlayers.Insert(candidatePlayer);
 			}
 			if (availablePlayers.Count() == 0)
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] No available players to transfer bounty to for " + sender.GetName() + " - tokens not consumed");
-				BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_SKIP_NO_PLAYERS, sender);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] No available players to transfer bounty to for " + sender.GetName() + " - tokens not consumed");
+				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_SKIP_NO_PLAYERS, sender);
 				return;
 			}
 			tokensRequired = 0;
-			if (g_BountyConfig)
+			if (obfv_g_BountyConfig)
 			{
-				tokensRequired = g_BountyConfig.Core.SkipBountyTokenRequired;
+				tokensRequired = obfv_g_BountyConfig.Core.SkipBountyTokenRequired;
 			}
 			if (tokensRequired > 0)
 			{
-				totalTokenQuantity = GetPlayerTokenCount(player, foundTokens);
+				totalTokenQuantity = obfm_GetPlayerTokenCount(player, foundTokens);
 				if (totalTokenQuantity < tokensRequired)
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to skip bounty but doesn't have enough tokens. Required: " + tokensRequired.ToString() + ", Found: " + totalTokenQuantity.ToString());
-					BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_INSUFFICIENT_TOKENS, sender, "", "", 0.0, 0, 0, 0, tokensRequired, totalTokenQuantity);
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to skip bounty but doesn't have enough tokens. Required: " + tokensRequired.ToString() + ", Found: " + totalTokenQuantity.ToString());
+					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_INSUFFICIENT_TOKENS, sender, "", "", 0.0, 0, 0, 0, tokensRequired, totalTokenQuantity);
 					return;
 				}
 			}
@@ -1316,50 +1316,50 @@ class BountyModule : CF_ModuleWorld
 			targetPlayer = availablePlayers.Get(randomIndex);
 			if (!targetPlayer || !targetPlayer.GetIdentity())
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Failed to get target player for bounty transfer");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Failed to get target player for bounty transfer");
 				return;
 			}
 			targetPlayerName = targetPlayer.GetIdentity().GetName();
-			BountyManager.ClearBountyFromPlayer(player, player, "Skipped - transferred to " + targetPlayerName, true);
-			success = BountyManager.ApplyBountyToPlayer(targetPlayer, player, newDuration, "Transferred from " + skippingPlayerName + " (skipped)", bountyType, true);
+			obfc_BountyManager.obfm_ClearBountyFromPlayer(player, player, "Skipped - transferred to " + targetPlayerName, true);
+			success = obfc_BountyManager.obfm_ApplyBountyToPlayer(targetPlayer, player, newDuration, "Transferred from " + skippingPlayerName + " (skipped)", bountyType, true);
 			if (success)
 			{
 				if (tokensRequired > 0)
 				{
-					tokensRemoved = ConsumePlayerTokens(player, tokensRequired, totalTokenQuantity);
+					tokensRemoved = obfm_ConsumePlayerTokens(player, tokensRequired, totalTokenQuantity);
 					if (tokensRemoved < tokensRequired)
 					{
-						GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Failed to remove all required skip tokens after transfer. Required: " + tokensRequired.ToString() + ", Removed: " + tokensRemoved.ToString());
-						BountyManager.ClearBountyFromPlayer(targetPlayer, player, "Skip token rollback", true);
-						BountyManager.ApplyBountyToPlayer(player, player, newDuration, "Skip token rollback", bountyType, true);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Failed to remove all required skip tokens after transfer. Required: " + tokensRequired.ToString() + ", Removed: " + tokensRemoved.ToString());
+						obfc_BountyManager.obfm_ClearBountyFromPlayer(targetPlayer, player, "Skip token rollback", true);
+						obfc_BountyManager.obfm_ApplyBountyToPlayer(player, player, newDuration, "Skip token rollback", bountyType, true);
 						return;
 					}
-					GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Removed " + tokensRemoved.ToString() + " tokens from player " + sender.GetName());
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Removed " + tokensRemoved.ToString() + " tokens from player " + sender.GetName());
 				}
-				BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_BOUNTY_SKIPPED, sender);
-				GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Transferred bounty from " + skippingPlayerName + " to " + targetPlayerName + " (skip action). New Duration: " + newDuration.ToString() + "s, BountyType: " + bountyType.ToString());
-				BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_SKIP_SUCCESS, sender, targetPlayerName);
+				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_BOUNTY_SKIPPED, sender);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Transferred bounty from " + skippingPlayerName + " to " + targetPlayerName + " (skip action). New Duration: " + newDuration.ToString() + "s, BountyType: " + bountyType.ToString());
+				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_SKIP_SUCCESS, sender, targetPlayerName);
 			}
 			else
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Failed to transfer bounty to " + targetPlayerName + " (system may be disabled or player lifetime not reached)");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Failed to transfer bounty to " + targetPlayerName + " (system may be disabled or player lifetime not reached)");
 			}
 		}
 		else if (action.IndexOf("PlaceBountyOnPlayer:") == 0)
 		{
 			tokensRequired = 0;
 			tokensRemoved = 0;
-			if (g_BountyConfig)
+			if (obfv_g_BountyConfig)
 			{
-				tokensRequired = g_BountyConfig.Core.PlaceBountyTokenRequired;
+				tokensRequired = obfv_g_BountyConfig.Core.PlaceBountyTokenRequired;
 			}
 			if (tokensRequired > 0)
 			{
-				totalTokenQuantity = GetPlayerTokenCount(player, foundTokens);
+				totalTokenQuantity = obfm_GetPlayerTokenCount(player, foundTokens);
 				if (totalTokenQuantity < tokensRequired)
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to place bounty but doesn't have enough tokens. Required: " + tokensRequired.ToString() + ", Found: " + totalTokenQuantity.ToString());
-					BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_INSUFFICIENT_TOKENS, sender, "", "", 0.0, 0, 0, 0, tokensRequired, totalTokenQuantity);
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to place bounty but doesn't have enough tokens. Required: " + tokensRequired.ToString() + ", Found: " + totalTokenQuantity.ToString());
+					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_INSUFFICIENT_TOKENS, sender, "", "", 0.0, 0, 0, 0, tokensRequired, totalTokenQuantity);
 					return;
 				}
 			}
@@ -1367,127 +1367,127 @@ class BountyModule : CF_ModuleWorld
 			targetPlayerIdentifier.Replace("PlaceBountyOnPlayer:", "");
 			if (targetPlayerIdentifier != "")
 			{
-				targetPlayer = FindOnlinePlayerByIdentifier(targetPlayerIdentifier);
+				targetPlayer = obfm_FindOnlinePlayerByIdentifier(targetPlayerIdentifier);
 				if (targetPlayer && targetPlayer.GetIdentity())
 				{
 					actualPlayerName = targetPlayer.GetIdentity().GetName();
-					if (targetPlayer.IsBountyOnCooldown())
+					if (targetPlayer.obfm_IsBountyOnCooldown())
 					{
-						float cooldownRemaining = targetPlayer.GetBountyCooldownRemaining();
+						float cooldownRemaining = targetPlayer.obfm_GetBountyCooldownRemaining();
 						int cooldownSeconds = Math.Ceil(cooldownRemaining);
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Cannot place bounty on " + actualPlayerName + " - player is on cooldown (" + cooldownSeconds.ToString() + " seconds remaining)");
-						BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_PLAYER_ON_COOLDOWN, sender, actualPlayerName, "", 0.0, 0, 0, 0, 0, 0, cooldownSeconds);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Cannot place bounty on " + actualPlayerName + " - player is on cooldown (" + cooldownSeconds.ToString() + " seconds remaining)");
+						obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLAYER_ON_COOLDOWN, sender, actualPlayerName, "", 0.0, 0, 0, 0, 0, 0, cooldownSeconds);
 						return;
 					}
-					success = BountyManager.ApplyBountyToPlayer(targetPlayer, player, 0.0, "Bounty placed by " + sender.GetName() + " via bounty board", BountyType.PLACED);
+					success = obfc_BountyManager.obfm_ApplyBountyToPlayer(targetPlayer, player, 0.0, "Bounty placed by " + sender.GetName() + " via bounty board", BountyType.PLACED);
 					if (success)
 					{
 						if (tokensRequired > 0)
 						{
-							tokensRemoved = ConsumePlayerTokens(player, tokensRequired, totalTokenQuantity);
+							tokensRemoved = obfm_ConsumePlayerTokens(player, tokensRequired, totalTokenQuantity);
 							if (tokensRemoved < tokensRequired)
 							{
-								GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Failed to remove all required placement tokens after applying bounty. Required: " + tokensRequired.ToString() + ", Removed: " + tokensRemoved.ToString());
-								BountyManager.ClearBountyFromPlayer(targetPlayer, player, "Placement token rollback", true);
+								obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Failed to remove all required placement tokens after applying bounty. Required: " + tokensRequired.ToString() + ", Removed: " + tokensRemoved.ToString());
+								obfc_BountyManager.obfm_ClearBountyFromPlayer(targetPlayer, player, "Placement token rollback", true);
 								return;
 							}
-							GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Removed " + tokensRemoved.ToString() + " tokens from player " + sender.GetName() + " for placing bounty");
+							obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Removed " + tokensRemoved.ToString() + " tokens from player " + sender.GetName() + " for placing bounty");
 						}
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Placed bounty on " + actualPlayerName + " by " + sender.GetName());
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Placed bounty on " + actualPlayerName + " by " + sender.GetName());
 					}
 					else
 					{
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Failed to place bounty on " + actualPlayerName + " (system may be disabled or player lifetime not reached)");
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Failed to place bounty on " + actualPlayerName + " (system may be disabled or player lifetime not reached)");
 					}
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Player not found: " + actualPlayerName);
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Player not found: " + actualPlayerName);
 				}
 			}
 		}
 		else if (action == "ClaimRewards")
 		{
-			if (!player.HasPendingRewards())
+			if (!player.obfm_HasPendingRewards())
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to claim rewards but has no pending rewards");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to claim rewards but has no pending rewards");
 				return;
 			}
-			if (player.IsRuleBreakerBounty() && g_BountyConfig && g_BountyConfig.Reward && !g_BountyConfig.Reward.PvERuleBreakerGiveRewards)
+			if (player.obfm_IsRuleBreakerBounty() && obfv_g_BountyConfig && obfv_g_BountyConfig.Reward && !obfv_g_BountyConfig.Reward.PvERuleBreakerGiveRewards)
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Player " + sender.GetName() + " is a rule breaker and tried to claim rewards, but PvERuleBreakerGiveRewards = 0. Blocking claim.");
-				player.ClearPendingRewards();
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Player " + sender.GetName() + " is a rule breaker and tried to claim rewards, but PvERuleBreakerGiveRewards = 0. Blocking claim.");
+				player.obfm_ClearPendingRewards();
 				return;
 			}
 			bool spawnSuccess = false;
-			if (player.HasPendingRewards())
+			if (player.obfm_HasPendingRewards())
 			{
-				spawnSuccess = BountyManager.SpawnBountyRewardGiftBox(player, false, false);
+				spawnSuccess = obfc_BountyManager.obfm_SpawnBountyRewardGiftBox(player, false, false);
 				if (spawnSuccess)
 				{
-					player.ClaimPendingSuccessReward();
-					GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Successfully claimed 1 success reward (chest only, no currency) for " + sender.GetName() + " (remaining: " + player.GetPendingSuccessRewardCount().ToString() + ")");
+					player.obfm_ClaimPendingSuccessReward();
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Successfully claimed 1 success reward (chest only, no currency) for " + sender.GetName() + " (remaining: " + player.obfm_GetPendingSuccessRewardCount().ToString() + ")");
 					#ifdef EXPANSIONMODHARDLINE
-					if (g_BountySuccessRewardConfig && g_BountySuccessRewardConfig.EnableHardlineReputationReward && g_BountySuccessRewardConfig.HardlineReputationRewardAmount > 0)
+					if (obfv_g_BountySuccessRewardConfig && obfv_g_BountySuccessRewardConfig.EnableHardlineReputationReward && obfv_g_BountySuccessRewardConfig.HardlineReputationRewardAmount > 0)
 					{
-						player.Expansion_AddReputation(g_BountySuccessRewardConfig.HardlineReputationRewardAmount);
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Gave Hardline reputation reward of " + g_BountySuccessRewardConfig.HardlineReputationRewardAmount.ToString() + " to " + sender.GetName() + " for claiming success reward.");
+						player.Expansion_AddReputation(obfv_g_BountySuccessRewardConfig.HardlineReputationRewardAmount);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Gave Hardline reputation reward of " + obfv_g_BountySuccessRewardConfig.HardlineReputationRewardAmount.ToString() + " to " + sender.GetName() + " for claiming success reward.");
 					}
 					#endif
-					updatedClaimAmount = player.GetTotalPendingRewardCount();
+					updatedClaimAmount = player.obfm_GetTotalPendingRewardCount();
 					claimAmountResult = new Param1<int>(updatedClaimAmount);
 					GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyReceiveClaimAmount", claimAmountResult, true, sender);
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Failed to claim success reward for " + sender.GetName() + " (hands not free or spawn failed) - keeping pending reward");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Failed to claim success reward for " + sender.GetName() + " (hands not free or spawn failed) - keeping pending reward");
 				}
 			}
 		}
 		else if (action == "ClaimCurrencyRewards")
 		{
-			if (!player.HasPendingRewards())
+			if (!player.obfm_HasPendingRewards())
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to claim currency rewards but has no pending rewards");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to claim currency rewards but has no pending rewards");
 				return;
 			}
-			if (player.IsRuleBreakerBounty() && g_BountyConfig && g_BountyConfig.Reward && !g_BountyConfig.Reward.PvERuleBreakerGiveRewards)
+			if (player.obfm_IsRuleBreakerBounty() && obfv_g_BountyConfig && obfv_g_BountyConfig.Reward && !obfv_g_BountyConfig.Reward.PvERuleBreakerGiveRewards)
 			{
-				GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Player " + sender.GetName() + " is a rule breaker and tried to claim currency rewards, but PvERuleBreakerGiveRewards = 0. Blocking claim.");
-				player.ClearPendingRewards();
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Player " + sender.GetName() + " is a rule breaker and tried to claim currency rewards, but PvERuleBreakerGiveRewards = 0. Blocking claim.");
+				player.obfm_ClearPendingRewards();
 				return;
 			}
 			bool currencySuccess = false;
-			if (player.HasPendingRewards())
+			if (player.obfm_HasPendingRewards())
 			{
-				currencySuccess = BountyManager.GiveCurrencyRewardsOnly(player, false);
+				currencySuccess = obfc_BountyManager.obfm_GiveCurrencyRewardsOnly(player, false);
 				if (currencySuccess)
 				{
-					player.ClaimPendingSuccessReward();
-					GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Successfully claimed 1 success reward currency for " + sender.GetName() + " (remaining: " + player.GetPendingSuccessRewardCount().ToString() + ")");
+					player.obfm_ClaimPendingSuccessReward();
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Successfully claimed 1 success reward currency for " + sender.GetName() + " (remaining: " + player.obfm_GetPendingSuccessRewardCount().ToString() + ")");
 					#ifdef EXPANSIONMODHARDLINE
-					if (g_BountySuccessRewardConfig && g_BountySuccessRewardConfig.EnableHardlineReputationReward && g_BountySuccessRewardConfig.HardlineReputationRewardAmount > 0)
+					if (obfv_g_BountySuccessRewardConfig && obfv_g_BountySuccessRewardConfig.EnableHardlineReputationReward && obfv_g_BountySuccessRewardConfig.HardlineReputationRewardAmount > 0)
 					{
-						player.Expansion_AddReputation(g_BountySuccessRewardConfig.HardlineReputationRewardAmount);
-						GetNinjins_Bounty_SystemLogger().LogInfo("[BoardBountyAction] Gave Hardline reputation reward of " + g_BountySuccessRewardConfig.HardlineReputationRewardAmount.ToString() + " to " + sender.GetName() + " for claiming success reward currency.");
+						player.Expansion_AddReputation(obfv_g_BountySuccessRewardConfig.HardlineReputationRewardAmount);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Gave Hardline reputation reward of " + obfv_g_BountySuccessRewardConfig.HardlineReputationRewardAmount.ToString() + " to " + sender.GetName() + " for claiming success reward currency.");
 					}
 					#endif
-					updatedClaimAmount = player.GetTotalPendingRewardCount();
+					updatedClaimAmount = player.obfm_GetTotalPendingRewardCount();
 					claimAmountResult = new Param1<int>(updatedClaimAmount);
 					GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyReceiveClaimAmount", claimAmountResult, true, sender);
 				}
 				else
 				{
-					GetNinjins_Bounty_SystemLogger().LogWarning("[BoardBountyAction] Failed to claim success reward currency for " + sender.GetName() + " (no currency configured) - keeping pending reward");
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Failed to claim success reward currency for " + sender.GetName() + " (no currency configured) - keeping pending reward");
 				}
 			}
 		}
 		else
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BoardBountyAction: Unknown action: " + action);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BoardBountyAction: Unknown action: " + action);
 		}
 	}
-	string FormatCooldownTime(int totalSeconds)
+	string obfm_FormatCooldownTime(int totalSeconds)
 	{
 		int days;
 		int hours;
@@ -1543,7 +1543,7 @@ class BountyModule : CF_ModuleWorld
 			return;
 		requestingPlayerName = requestingIdentity.GetName();
 		excludeSelf = false;
-		if (g_BountyConfig && g_BountyConfig.Core && g_BountyConfig.Core.DisableSelfBounty)
+		if (obfv_g_BountyConfig && obfv_g_BountyConfig.Core && obfv_g_BountyConfig.Core.DisableSelfBounty)
 		{
 			excludeSelf = true;
 		}
@@ -1564,22 +1564,22 @@ class BountyModule : CF_ModuleWorld
 				continue;
 			if (excludeSelf && playerName == requestingPlayerName)
 			{
-				GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Excluding requesting player from online list (DisableSelfBounty = true): " + requestingPlayerName);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Excluding requesting player from online list (DisableSelfBounty = true): " + requestingPlayerName);
 				continue;
 			}
 			displayName = playerName;
-			if (player.IsBountyOnCooldown())
+			if (player.obfm_IsBountyOnCooldown())
 			{
-				cooldownRemaining = player.GetBountyCooldownRemaining();
+				cooldownRemaining = player.obfm_GetBountyCooldownRemaining();
 				cooldownSeconds = Math.Ceil(cooldownRemaining);
-				formattedCooldown = FormatCooldownTime(cooldownSeconds);
+				formattedCooldown = obfm_FormatCooldownTime(cooldownSeconds);
 				displayName = playerName + " CD:" + formattedCooldown;
 			}
-			playerList.Insert(BuildPlayerListEntry(displayName, playerId));
+			playerList.Insert(obfm_BuildPlayerListEntry(displayName, playerId));
 		}
 		result = new Param1<array<string>>(playerList);
 		GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyReceiveOnlinePlayers", result, true, sender);
-		GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Sent online players list to " + requestingPlayerName + ": " + playerList.Count().ToString() + " players (excludeSelf: " + excludeSelf.ToString() + ")");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Sent online players list to " + requestingPlayerName + ": " + playerList.Count().ToString() + " players (excludeSelf: " + excludeSelf.ToString() + ")");
 	}
 	void BountyAdminRequestPlayers(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
 	{
@@ -1602,10 +1602,10 @@ class BountyModule : CF_ModuleWorld
 		requestingPlayer = PlayerBase.Cast(sender.GetPlayer());
 		if (!requestingPlayer)
 			return;
-		if (!requestingPlayer.IsBountyAdmin())
+		if (!requestingPlayer.obfm_IsBountyAdmin())
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BountyAdminRequestPlayers: Access denied for non-admin player: " + sender.GetName());
-			BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminRequestPlayers: Access denied for non-admin player: " + sender.GetName());
+			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender);
 			return;
 		}
 		requestingIdentity = requestingPlayer.GetIdentity();
@@ -1628,22 +1628,22 @@ class BountyModule : CF_ModuleWorld
 			if (playerName == "")
 				continue;
 			displayName = playerName;
-			if (player.IsBountyOnCooldown())
+			if (player.obfm_IsBountyOnCooldown())
 			{
-				cooldownRemaining = player.GetBountyCooldownRemaining();
+				cooldownRemaining = player.obfm_GetBountyCooldownRemaining();
 				cooldownSeconds = Math.Ceil(cooldownRemaining);
-				formattedCooldown = FormatCooldownTime(cooldownSeconds);
+				formattedCooldown = obfm_FormatCooldownTime(cooldownSeconds);
 				displayName = playerName + " CD:" + formattedCooldown;
 			}
 			else
 			{
 				displayName = playerName + " (No Cooldown)";
 			}
-			playerList.Insert(BuildPlayerListEntry(displayName, playerId));
+			playerList.Insert(obfm_BuildPlayerListEntry(displayName, playerId));
 		}
 		result = new Param1<array<string>>(playerList);
 		GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminReceivePlayers", result, true, sender);
-		GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Sent admin players list to " + requestingPlayerName + ": " + playerList.Count().ToString() + " players");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Sent admin players list to " + requestingPlayerName + ": " + playerList.Count().ToString() + " players");
 	}
 	void BountyRequestClaimAmount(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
 	{
@@ -1655,10 +1655,10 @@ class BountyModule : CF_ModuleWorld
 		requestingPlayer = PlayerBase.Cast(sender.GetPlayer());
 		if (!requestingPlayer)
 			return;
-		totalClaimAmount = requestingPlayer.GetTotalPendingRewardCount();
+		totalClaimAmount = requestingPlayer.obfm_GetTotalPendingRewardCount();
 		result = new Param1<int>(totalClaimAmount);
 		GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyReceiveClaimAmount", result, true, sender);
-		GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Sent claim amount to " + sender.GetName() + ": " + totalClaimAmount.ToString());
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Sent claim amount to " + sender.GetName() + ": " + totalClaimAmount.ToString());
 	}
 	void BountyAdminRequestBlacklist(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
 	{
@@ -1680,20 +1680,20 @@ class BountyModule : CF_ModuleWorld
 		requestingPlayer = PlayerBase.Cast(sender.GetPlayer());
 		if (!requestingPlayer)
 			return;
-		if (!requestingPlayer.IsBountyAdmin())
+		if (!requestingPlayer.obfm_IsBountyAdmin())
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[BountyModule] BountyAdminRequestBlacklist: Access denied for non-admin player: " + sender.GetName());
-			BountyNotifications.SendNotificationInternal(BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminRequestBlacklist: Access denied for non-admin player: " + sender.GetName());
+			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender);
 			return;
 		}
 		blacklistList = new array<string>();
-		if (g_BountyBlacklistConfig && g_BountyBlacklistConfig.BlacklistedGUIDs)
+		if (obfv_g_BountyBlacklistConfig && obfv_g_BountyBlacklistConfig.BlacklistedGUIDs)
 		{
 			players = new array<Man>();
 			g_Game.GetPlayers(players);
-			for (i = 0; i < g_BountyBlacklistConfig.BlacklistedGUIDs.Count(); i++)
+			for (i = 0; i < obfv_g_BountyBlacklistConfig.BlacklistedGUIDs.Count(); i++)
 			{
-				entry = g_BountyBlacklistConfig.BlacklistedGUIDs.Get(i);
+				entry = obfv_g_BountyBlacklistConfig.BlacklistedGUIDs.Get(i);
 				colonIndex = entry.IndexOf(":");
 				if (colonIndex >= 0 && colonIndex < entry.Length() - 1)
 				{
@@ -1726,6 +1726,6 @@ class BountyModule : CF_ModuleWorld
 		}
 		result = new Param1<array<string>>(blacklistList);
 		GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyAdminReceiveBlacklist", result, true, sender);
-		GetNinjins_Bounty_SystemLogger().LogInfo("[BountyModule] Sent blacklisted players list to " + sender.GetName() + ": " + blacklistList.Count().ToString() + " players");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Sent blacklisted players list to " + sender.GetName() + ": " + blacklistList.Count().ToString() + " players");
 	}
 }

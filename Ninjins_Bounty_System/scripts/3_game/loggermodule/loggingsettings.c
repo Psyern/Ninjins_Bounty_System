@@ -1,32 +1,32 @@
-class Ninjins_Bounty_SystemLoggingSettings 
+class obfc_Ninjins_Bounty_SystemLoggingSettings 
 {
 	int logLevel = 4;
 	int refreshRateInSeconds = 60;
-	void MakeDirectoryIfNotExists()
+	void obfm_MakeDirectoryIfNotExists()
 	{
-		if(!FileExist( Ninjins_Bounty_System_ROOT_FOLDER))
-			MakeDirectory( Ninjins_Bounty_System_ROOT_FOLDER);
-		if(!FileExist( Ninjins_Bounty_System_LOG_FOLDER))
-			MakeDirectory( Ninjins_Bounty_System_LOG_FOLDER);
-		if(!FileExist( Ninjins_Bounty_System_LOGGER_CONFIG_DIR))
-			MakeDirectory( Ninjins_Bounty_System_LOGGER_CONFIG_DIR);
-		if(!FileExist( Ninjins_Bounty_System_LOGGER_LOG_DIR))
-			MakeDirectory( Ninjins_Bounty_System_LOGGER_LOG_DIR);
+		if(!FileExist( obfv_Ninjins_Bounty_System_ROOT_FOLDER))
+			MakeDirectory( obfv_Ninjins_Bounty_System_ROOT_FOLDER);
+		if(!FileExist( obfv_Ninjins_Bounty_System_LOG_FOLDER))
+			MakeDirectory( obfv_Ninjins_Bounty_System_LOG_FOLDER);
+		if(!FileExist( obfv_Ninjins_Bounty_System_LOGGER_CONFIG_DIR))
+			MakeDirectory( obfv_Ninjins_Bounty_System_LOGGER_CONFIG_DIR);
+		if(!FileExist( obfv_Ninjins_Bounty_System_LOGGER_LOG_DIR))
+			MakeDirectory( obfv_Ninjins_Bounty_System_LOGGER_LOG_DIR);
 	}
-	void Save()
+	void obfm_Save()
 	{
-		JsonFileLoader<Ninjins_Bounty_SystemLoggingSettings>.JsonSaveFile( Ninjins_Bounty_System_LOGGER_CONFIG_FILE, this);
+		JsonFileLoader<obfc_Ninjins_Bounty_SystemLoggingSettings>.JsonSaveFile( obfv_Ninjins_Bounty_System_LOGGER_CONFIG_FILE, this);
 	}
-	static Ninjins_Bounty_SystemLoggingSettings Load()
+	static obfc_Ninjins_Bounty_SystemLoggingSettings obfm_Load()
 	{
-		Ninjins_Bounty_SystemLoggingSettings settings = new Ninjins_Bounty_SystemLoggingSettings();
-		settings.MakeDirectoryIfNotExists();
-		if(FileExist( Ninjins_Bounty_System_LOGGER_CONFIG_FILE))
+		obfc_Ninjins_Bounty_SystemLoggingSettings obfv_settings = new obfc_Ninjins_Bounty_SystemLoggingSettings();
+		obfv_settings.obfm_MakeDirectoryIfNotExists();
+		if(FileExist( obfv_Ninjins_Bounty_System_LOGGER_CONFIG_FILE))
 		{
-			JsonFileLoader<Ninjins_Bounty_SystemLoggingSettings>.JsonLoadFile( Ninjins_Bounty_System_LOGGER_CONFIG_FILE, settings);
-			return settings;
+			JsonFileLoader<obfc_Ninjins_Bounty_SystemLoggingSettings>.JsonLoadFile( obfv_Ninjins_Bounty_System_LOGGER_CONFIG_FILE, obfv_settings);
+			return obfv_settings;
 		}
-		settings.Save();
-		return settings;
+		obfv_settings.obfm_Save();
+		return obfv_settings;
 	}
 }

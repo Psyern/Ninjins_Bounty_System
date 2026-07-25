@@ -1,4 +1,4 @@
-class ActionOpenBountyMenu : ActionInteractBase {
+class obfc_ActionOpenBountyMenu : ActionInteractBase {
 	override void CreateConditionComponents() 
 	{
 		m_ConditionItem = new CCINone;

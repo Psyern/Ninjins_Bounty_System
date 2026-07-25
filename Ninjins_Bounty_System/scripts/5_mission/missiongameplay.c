@@ -1,33 +1,33 @@
 modded class MissionGameplay
 {
-	private bool m_RequestedBountiedPlayers = false;
-	ref BountyAdminMenu m_BountyAdminMenu;
-	ref NinjinsBountyBoardMenu m_BountyBoardMenu;
-	private Widget m_RootWidgetBountyCountdown;
-	private RichTextWidget m_BountyCountdownTimer;
-	private float m_BountyLastCountdownUpdateTime = 0.0;
-	private const float BOUNTY_COUNTDOWN_UPDATE_INTERVAL = 1.0; 
-	private float m_BountyLastReceivedDuration = 0.0; 
-	private float m_BountyLastReceivedTime = 0.0; 
-	private float m_BountyLastSyncWarningTime = 0.0;
-	private bool m_BountyPaused = false; 
-	private const float BOUNTY_SYNC_WARNING_INTERVAL = 5.0; 
+	private bool obfv_m_RequestedBountiedPlayers = false;
+	ref obfc_BountyAdminMenu obfv_m_BountyAdminMenu;
+	ref obfc_NinjinsBountyBoardMenu obfv_m_BountyBoardMenu;
+	private Widget obfv_m_RootWidgetBountyCountdown;
+	private RichTextWidget obfv_m_BountyCountdownTimer;
+	private float obfv_m_BountyLastCountdownUpdateTime = 0.0;
+	private const float obfv_BOUNTY_COUNTDOWN_UPDATE_INTERVAL = 1.0; 
+	private float obfv_m_BountyLastReceivedDuration = 0.0; 
+	private float obfv_m_BountyLastReceivedTime = 0.0; 
+	private float obfv_m_BountyLastSyncWarningTime = 0.0;
+	private bool obfv_m_BountyPaused = false; 
+	private const float obfv_BOUNTY_SYNC_WARNING_INTERVAL = 5.0; 
 	void MissionGameplay()
 	{
-		GetNinjins_Bounty_SystemLogger().LogInfo("Ninjins_Bounty_System mod has started!");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("Ninjins_Bounty_System mod has started!");
 	}
 	override void OnInit()
 	{
 		super.OnInit();
-		RegisterBountyRPCs();
-		LoadBountyCountdownLayout();
-		if (m_RootWidgetBountyCountdown)
+		obfm_RegisterBountyRPCs();
+		obfm_LoadBountyCountdownLayout();
+		if (obfv_m_RootWidgetBountyCountdown)
 		{
-			m_RootWidgetBountyCountdown.Show(false);
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] BountyCountdownTimer widget explicitly hidden in OnInit.");
+			obfv_m_RootWidgetBountyCountdown.Show(false);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] BountyCountdownTimer widget explicitly hidden in OnInit.");
 		}
 	}
-	private void RegisterBountyRPCs()
+	private void obfm_RegisterBountyRPCs()
 	{
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "ReceiveBountiedPlayers", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyReceiveOnlinePlayers", this, SingleplayerExecutionType.Client);
@@ -41,45 +41,45 @@ modded class MissionGameplay
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyConfigReloaded", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyAdminReceiveConfig", this, SingleplayerExecutionType.Client);
 	}
-	private void LoadBountyCountdownLayout()
+	private void obfm_LoadBountyCountdownLayout()
 	{
-		m_RootWidgetBountyCountdown = g_Game.GetWorkspace().CreateWidgets("Ninjins_Bounty_System/gui/layouts/BountyCountdownTimer.layout");
-		if (m_RootWidgetBountyCountdown)
+		obfv_m_RootWidgetBountyCountdown = g_Game.GetWorkspace().CreateWidgets("Ninjins_Bounty_System/gui/layouts/BountyCountdownTimer.layout");
+		if (obfv_m_RootWidgetBountyCountdown)
 		{
-			InitializeBountyCountdownWidgets();
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] BountyCountdownTimer UI loaded successfully.");
+			obfm_InitializeBountyCountdownWidgets();
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] BountyCountdownTimer UI loaded successfully.");
 		}
 		else
 		{
-			GetNinjins_Bounty_SystemLogger().LogError("[MissionGameplay][ERROR] Failed to create BountyCountdownTimer layout widget.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("[MissionGameplay][ERROR] Failed to create BountyCountdownTimer layout widget.");
 		}
 	}
-	private void InitializeBountyCountdownWidgets()
+	private void obfm_InitializeBountyCountdownWidgets()
 	{
-		m_BountyCountdownTimer = RichTextWidget.Cast(m_RootWidgetBountyCountdown.FindAnyWidget("BountyCountdownTimer"));
-		if (m_BountyCountdownTimer)
+		obfv_m_BountyCountdownTimer = RichTextWidget.Cast(obfv_m_RootWidgetBountyCountdown.FindAnyWidget("BountyCountdownTimer"));
+		if (obfv_m_BountyCountdownTimer)
 		{
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] BountyCountdownTimer found successfully.");
-			m_RootWidgetBountyCountdown.Show(false);
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] BountyCountdownTimer widget hidden on initialization.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] BountyCountdownTimer found successfully.");
+			obfv_m_RootWidgetBountyCountdown.Show(false);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] BountyCountdownTimer widget hidden on initialization.");
 		}
 		else
 		{
-			GetNinjins_Bounty_SystemLogger().LogError("[MissionGameplay][ERROR] Failed to find BountyCountdownTimer widget.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("[MissionGameplay][ERROR] Failed to find BountyCountdownTimer widget.");
 		}
-		ApplyBountyCountdownPosition(0.0, 0.0, 0.0, 0.0, 0, 0);
+		obfm_ApplyBountyCountdownPosition(0.0, 0.0, 0.0, 0.0, 0, 0);
 	}
-	private void ApplyBountyCountdownPosition(float posX = 0.0, float posY = 0.0, float width = 0.0, float height = 0.0, int bgColor = 0, int textColor = 0)
+	private void obfm_ApplyBountyCountdownPosition(float posX = 0.0, float posY = 0.0, float width = 0.0, float height = 0.0, int bgColor = 0, int textColor = 0)
 	{
-		if (!m_RootWidgetBountyCountdown)
+		if (!obfv_m_RootWidgetBountyCountdown)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] ApplyBountyCountdownPosition: Missing widget");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] ApplyBountyCountdownPosition: Missing widget");
 			return;
 		}
-		Widget countdownWidget = m_RootWidgetBountyCountdown.FindAnyWidget("BountyCountdownWidget");
+		Widget countdownWidget = obfv_m_RootWidgetBountyCountdown.FindAnyWidget("BountyCountdownWidget");
 		if (!countdownWidget)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] ApplyBountyCountdownPosition: BountyCountdownWidget not found");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] ApplyBountyCountdownPosition: BountyCountdownWidget not found");
 			return;
 		}
 		countdownWidget.SetPos(posX, posY);
@@ -93,19 +93,19 @@ modded class MissionGameplay
 			if (height > 0.0)
 				currentHeight = height;
 			countdownWidget.SetSize(currentWidth, currentHeight);
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Applied countdown widget size: Width=" + currentWidth.ToString() + ", Height=" + currentHeight.ToString());
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Applied countdown widget size: Width=" + currentWidth.ToString() + ", Height=" + currentHeight.ToString());
 		}
 		if (bgColor != 0)
 		{
 			countdownWidget.SetColor(bgColor);
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Applied countdown widget background color: " + bgColor.ToString());
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Applied countdown widget background color: " + bgColor.ToString());
 		}
-		if (textColor != 0 && m_BountyCountdownTimer)
+		if (textColor != 0 && obfv_m_BountyCountdownTimer)
 		{
-			m_BountyCountdownTimer.SetColor(textColor);
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Applied countdown timer text color: " + textColor.ToString());
+			obfv_m_BountyCountdownTimer.SetColor(textColor);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Applied countdown timer text color: " + textColor.ToString());
 		}
-		GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Applied countdown widget settings: X=" + posX.ToString() + ", Y=" + posY.ToString() + ", Width=" + width.ToString() + ", Height=" + height.ToString() + ", BGColor=" + bgColor.ToString() + ", TextColor=" + textColor.ToString());
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Applied countdown widget settings: X=" + posX.ToString() + ", Y=" + posY.ToString() + ", Width=" + width.ToString() + ", Height=" + height.ToString() + ", BGColor=" + bgColor.ToString() + ", TextColor=" + textColor.ToString());
 	}
 	override void OnUpdate(float timeslice)
 	{
@@ -114,16 +114,16 @@ modded class MissionGameplay
 		player = PlayerBase.Cast(g_Game.GetPlayer());
 		if (!player)
 			return;
-		ControlBountyInputs();
-		UpdateBountyCountdownTimer();
-		if (!m_RequestedBountiedPlayers && player.GetIdentity())
+		obfm_ControlBountyInputs();
+		obfm_UpdateBountyCountdownTimer();
+		if (!obfv_m_RequestedBountiedPlayers && player.GetIdentity())
 		{
 			GetRPCManager().SendRPC("Ninjins_Bounty_System", "RequestBountiedPlayers", NULL, true, null);
-			m_RequestedBountiedPlayers = true;
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] RequestBountiedPlayers RPC sent from client.");
+			obfv_m_RequestedBountiedPlayers = true;
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] RequestBountiedPlayers RPC sent from client.");
 		}
 	}
-	private void UpdateBountyCountdownTimer()
+	private void obfm_UpdateBountyCountdownTimer()
 	{
 		PlayerBase player;
 		bool hasBounty;
@@ -140,21 +140,21 @@ modded class MissionGameplay
 		string minutesStr;
 		string countdownText;
 		player = PlayerBase.Cast(g_Game.GetPlayer());
-		if (!player || !m_RootWidgetBountyCountdown || !m_BountyCountdownTimer)
+		if (!player || !obfv_m_RootWidgetBountyCountdown || !obfv_m_BountyCountdownTimer)
 			return;
-		hasBounty = player.HasBounty();
+		hasBounty = player.obfm_HasBounty();
 		currentTimeSeconds = g_Game.GetTime() / 1000.0; 
 		remainingDuration = 0.0;
-		if (hasBounty && m_BountyLastReceivedTime > 0.0)
+		if (hasBounty && obfv_m_BountyLastReceivedTime > 0.0)
 		{
-			if (!m_BountyPaused)
+			if (!obfv_m_BountyPaused)
 			{
-				elapsedSinceLastRPC = currentTimeSeconds - m_BountyLastReceivedTime;
-				remainingDuration = m_BountyLastReceivedDuration - elapsedSinceLastRPC;
+				elapsedSinceLastRPC = currentTimeSeconds - obfv_m_BountyLastReceivedTime;
+				remainingDuration = obfv_m_BountyLastReceivedDuration - elapsedSinceLastRPC;
 			}
 			else
 			{
-				remainingDuration = m_BountyLastReceivedDuration;
+				remainingDuration = obfv_m_BountyLastReceivedDuration;
 			}
 			if (remainingDuration < 0.0)
 			{
@@ -165,17 +165,17 @@ modded class MissionGameplay
 		{
 			remainingDuration = player.netSync_BountyRemainingDuration;
 		}
-		shouldUpdate = (currentTimeSeconds - m_BountyLastCountdownUpdateTime >= BOUNTY_COUNTDOWN_UPDATE_INTERVAL);
+		shouldUpdate = (currentTimeSeconds - obfv_m_BountyLastCountdownUpdateTime >= obfv_BOUNTY_COUNTDOWN_UPDATE_INTERVAL);
 		if (hasBounty && remainingDuration > 0.0)
 		{
-			if (!m_RootWidgetBountyCountdown.IsVisible())
+			if (!obfv_m_RootWidgetBountyCountdown.IsVisible())
 			{
-				m_RootWidgetBountyCountdown.Show(true);
-				GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Showing bounty countdown timer (bounty detected). HasBounty: " + hasBounty.ToString() + ", RemainingDuration: " + remainingDuration.ToString() + "s");
+				obfv_m_RootWidgetBountyCountdown.Show(true);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Showing bounty countdown timer (bounty detected). HasBounty: " + hasBounty.ToString() + ", RemainingDuration: " + remainingDuration.ToString() + "s");
 			}
 			if (shouldUpdate)
 			{
-				m_BountyLastCountdownUpdateTime = currentTimeSeconds;
+				obfv_m_BountyLastCountdownUpdateTime = currentTimeSeconds;
 				totalSeconds = Math.Floor(remainingDuration);
 				hours = Math.Floor(totalSeconds / 3600.0);
 				minutes = Math.Floor((totalSeconds - (hours * 3600)) / 60.0);
@@ -199,47 +199,47 @@ modded class MissionGameplay
 					countdownTimeStr = minutes.ToString() + ":" + secondsStr;
 				}
 				countdownText = "You are on Bounty: " + countdownTimeStr;
-				if (m_BountyPaused)
+				if (obfv_m_BountyPaused)
 				{
 					countdownText = countdownText + " (PAUSED)";
 				}
-				m_BountyCountdownTimer.SetText(countdownText);
-				GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Updated bounty countdown: " + countdownText + " (remaining: " + remainingDuration.ToString() + "s, paused: " + m_BountyPaused.ToString() + ")");
+				obfv_m_BountyCountdownTimer.SetText(countdownText);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Updated bounty countdown: " + countdownText + " (remaining: " + remainingDuration.ToString() + "s, paused: " + obfv_m_BountyPaused.ToString() + ")");
 			}
 		}
 		else if (hasBounty && remainingDuration <= 0.0)
 		{
-			if (currentTimeSeconds - m_BountyLastSyncWarningTime >= BOUNTY_SYNC_WARNING_INTERVAL)
+			if (currentTimeSeconds - obfv_m_BountyLastSyncWarningTime >= obfv_BOUNTY_SYNC_WARNING_INTERVAL)
 			{
-				m_BountyLastSyncWarningTime = currentTimeSeconds;
-				GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] Player has bounty but remainingDuration is " + remainingDuration.ToString() + "s - waiting for RPC sync...");
+				obfv_m_BountyLastSyncWarningTime = currentTimeSeconds;
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Player has bounty but remainingDuration is " + remainingDuration.ToString() + "s - waiting for RPC sync...");
 			}
 		}
 		else
 		{
-			if (m_RootWidgetBountyCountdown.IsVisible())
+			if (obfv_m_RootWidgetBountyCountdown.IsVisible())
 			{
-				HideBountyCountdownTimer();
+				obfm_HideBountyCountdownTimer();
 			}
 		}
 	}
-	private void ShowBountyCountdownTimer()
+	private void obfm_ShowBountyCountdownTimer()
 	{
-		if (m_RootWidgetBountyCountdown && m_BountyCountdownTimer)
+		if (obfv_m_RootWidgetBountyCountdown && obfv_m_BountyCountdownTimer)
 		{
-			m_RootWidgetBountyCountdown.Show(true);
-			GetNinjins_Bounty_SystemLogger().LogDebug("[MissionGameplay] Showing bounty countdown timer UI.");
+			obfv_m_RootWidgetBountyCountdown.Show(true);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogDebug("[MissionGameplay] Showing bounty countdown timer UI.");
 		}
 	}
-	private void HideBountyCountdownTimer()
+	private void obfm_HideBountyCountdownTimer()
 	{
-		if (m_RootWidgetBountyCountdown && m_BountyCountdownTimer)
+		if (obfv_m_RootWidgetBountyCountdown && obfv_m_BountyCountdownTimer)
 		{
-			m_BountyCountdownTimer.SetText("");
-			m_RootWidgetBountyCountdown.Show(false);
+			obfv_m_BountyCountdownTimer.SetText("");
+			obfv_m_RootWidgetBountyCountdown.Show(false);
 		}
 	}
-	private void ControlBountyInputs()
+	private void obfm_ControlBountyInputs()
 	{
 		UIScriptedMenu currentMenu = g_Game.GetUIManager().GetMenu();
 		PlayerBase player = PlayerBase.Cast(g_Game.GetPlayer());
@@ -247,40 +247,40 @@ modded class MissionGameplay
 			return;
 		if (GetUApi().GetInputByName("UAUIBack").LocalPress())
 		{
-			if (currentMenu && currentMenu.IsInherited(BountyAdminMenu))
+			if (currentMenu && currentMenu.IsInherited(obfc_BountyAdminMenu))
 			{
 				currentMenu.OnHide();
-				m_BountyAdminMenu = null;
+				obfv_m_BountyAdminMenu = null;
 				return;
 			}
-			if (currentMenu && currentMenu.IsInherited(NinjinsBountyBoardMenu))
+			if (currentMenu && currentMenu.IsInherited(obfc_NinjinsBountyBoardMenu))
 			{
 				currentMenu.OnHide();
-				m_BountyBoardMenu = null;
+				obfv_m_BountyBoardMenu = null;
 				return;
 			}
 		}
 		if (GetUApi().GetInputByName("UABountyAdminMenu").LocalPress())
 		{
-			GetNinjins_Bounty_SystemLogger().LogInfo("[ControlBountyInputs] UABountyAdminMenu hotkey pressed");
-			if (!player.IsBountyAdmin())
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[ControlBountyInputs] UABountyAdminMenu hotkey pressed");
+			if (!player.obfm_IsBountyAdmin())
 			{
-				GetNinjins_Bounty_SystemLogger().LogInfo("[ControlBountyInputs] Player is not admin. GUID: " + player.GetIdentity().GetId());
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[ControlBountyInputs] Player is not admin. GUID: " + player.GetIdentity().GetId());
 				NotificationSystem.Create(new StringLocaliser("Access Denied"), new StringLocaliser("You do not have permission to access the bounty admin menu."), "Ninjins_Bounty_System/gui/icons/bountyerror.edds", ARGB(255, 255, 0, 0), 5.0, player.GetIdentity());
 				return;
 			}
-			GetNinjins_Bounty_SystemLogger().LogInfo("[ControlBountyInputs] Player is admin. GUID: " + player.GetIdentity().GetId() + ". Opening menu.");
-			if (currentMenu && !currentMenu.IsInherited(BountyAdminMenu))
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[ControlBountyInputs] Player is admin. GUID: " + player.GetIdentity().GetId() + ". Opening menu.");
+			if (currentMenu && !currentMenu.IsInherited(obfc_BountyAdminMenu))
 				return;
-			if (currentMenu && currentMenu.IsInherited(BountyAdminMenu))
+			if (currentMenu && currentMenu.IsInherited(obfc_BountyAdminMenu))
 			{
 				g_Game.GetUIManager().HideScriptedMenu(currentMenu);
-				m_BountyAdminMenu = null;
+				obfv_m_BountyAdminMenu = null;
 			}
 			else
 			{
-				m_BountyAdminMenu = new BountyAdminMenu();
-				g_Game.GetUIManager().ShowScriptedMenu(m_BountyAdminMenu, NULL);
+				obfv_m_BountyAdminMenu = new obfc_BountyAdminMenu();
+				g_Game.GetUIManager().ShowScriptedMenu(obfv_m_BountyAdminMenu, NULL);
 			}
 		}
 	}
@@ -288,16 +288,16 @@ modded class MissionGameplay
 	{
 		if (type != CallType.Client)
 			return;
-		Param1<array<ref BountyPlayerData>> data;
+		Param1<array<ref obfc_BountyPlayerData>> data;
 		if (!ctx.Read(data))
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] Failed to read bountied players data from RPC.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Failed to read bountied players data from RPC.");
 			return;
 		}
 		if (data && data.param1)
 		{
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Received " + data.param1.Count().ToString() + " bountied players via RPC.");
-			BountyMapBridge.SetBountiedPlayers(data.param1);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received " + data.param1.Count().ToString() + " bountied players via RPC.");
+			obfc_BountyMapBridge.obfm_SetBountiedPlayers(data.param1);
 		}
 	}
 	void BountyReceiveOnlinePlayers(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
@@ -307,26 +307,26 @@ modded class MissionGameplay
 		Param1<array<string>> data;
 		if (!ctx.Read(data))
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] Failed to read online players data from RPC.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Failed to read online players data from RPC.");
 			return;
 		}
 		UIScriptedMenu menu = g_Game.GetUIManager().GetMenu();
-		if (menu && menu.IsInherited(NinjinsBountyBoardMenu))
+		if (menu && menu.IsInherited(obfc_NinjinsBountyBoardMenu))
 		{
-			NinjinsBountyBoardMenu bountyMenu = NinjinsBountyBoardMenu.Cast(menu);
+			obfc_NinjinsBountyBoardMenu bountyMenu = obfc_NinjinsBountyBoardMenu.Cast(menu);
 			if (bountyMenu && data && data.param1)
 			{
-				bountyMenu.UpdateOnlinePlayersList(data.param1);
-				GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Received " + data.param1.Count().ToString() + " online players via RPC.");
+				bountyMenu.obfm_UpdateOnlinePlayersList(data.param1);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received " + data.param1.Count().ToString() + " online players via RPC.");
 			}
 		}
-		else if (menu && menu.IsInherited(BountyAdminMenu))
+		else if (menu && menu.IsInherited(obfc_BountyAdminMenu))
 		{
-			BountyAdminMenu adminMenu = BountyAdminMenu.Cast(menu);
+			obfc_BountyAdminMenu adminMenu = obfc_BountyAdminMenu.Cast(menu);
 			if (adminMenu && data && data.param1)
 			{
-				adminMenu.UpdateOnlinePlayersList(data.param1);
-				GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Received " + data.param1.Count().ToString() + " online players for admin menu via RPC.");
+				adminMenu.obfm_UpdateOnlinePlayersList(data.param1);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received " + data.param1.Count().ToString() + " online players for admin menu via RPC.");
 			}
 		}
 	}
@@ -337,17 +337,17 @@ modded class MissionGameplay
 		Param1<array<string>> data;
 		if (!ctx.Read(data))
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] Failed to read admin players data from RPC.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Failed to read admin players data from RPC.");
 			return;
 		}
 		UIScriptedMenu menu = g_Game.GetUIManager().GetMenu();
-		if (menu && menu.IsInherited(BountyAdminMenu))
+		if (menu && menu.IsInherited(obfc_BountyAdminMenu))
 		{
-			BountyAdminMenu adminMenu = BountyAdminMenu.Cast(menu);
+			obfc_BountyAdminMenu adminMenu = obfc_BountyAdminMenu.Cast(menu);
 			if (adminMenu && data && data.param1)
 			{
-				adminMenu.UpdatePlayersList(data.param1);
-				GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Received " + data.param1.Count().ToString() + " admin players via RPC.");
+				adminMenu.obfm_UpdatePlayersList(data.param1);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received " + data.param1.Count().ToString() + " admin players via RPC.");
 			}
 		}
 	}
@@ -358,34 +358,34 @@ modded class MissionGameplay
 		Param1<array<string>> data;
 		if (!ctx.Read(data))
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] Failed to read blacklist data from RPC.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Failed to read blacklist data from RPC.");
 			return;
 		}
 		UIScriptedMenu menu = g_Game.GetUIManager().GetMenu();
-		if (menu && menu.IsInherited(BountyAdminMenu))
+		if (menu && menu.IsInherited(obfc_BountyAdminMenu))
 		{
-			BountyAdminMenu adminMenu = BountyAdminMenu.Cast(menu);
+			obfc_BountyAdminMenu adminMenu = obfc_BountyAdminMenu.Cast(menu);
 			if (adminMenu && data && data.param1)
 			{
-				adminMenu.UpdateBlacklistedPlayersList(data.param1);
-				GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Received " + data.param1.Count().ToString() + " blacklisted players via RPC.");
+				adminMenu.obfm_UpdateBlacklistedPlayersList(data.param1);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received " + data.param1.Count().ToString() + " blacklisted players via RPC.");
 			}
 		}
 	}
 	void OpenBountyBoardMenuDirect()
 	{
 		UIScriptedMenu currentMenu = g_Game.GetUIManager().GetMenu();
-		if (currentMenu && !currentMenu.IsInherited(NinjinsBountyBoardMenu))
+		if (currentMenu && !currentMenu.IsInherited(obfc_NinjinsBountyBoardMenu))
 			return;
-		if (currentMenu && currentMenu.IsInherited(NinjinsBountyBoardMenu))
+		if (currentMenu && currentMenu.IsInherited(obfc_NinjinsBountyBoardMenu))
 		{
 			g_Game.GetUIManager().HideScriptedMenu(currentMenu);
-			m_BountyBoardMenu = null;
+			obfv_m_BountyBoardMenu = null;
 		}
 		else
 		{
-			m_BountyBoardMenu = new NinjinsBountyBoardMenu();
-			g_Game.GetUIManager().ShowScriptedMenu(m_BountyBoardMenu, NULL);
+			obfv_m_BountyBoardMenu = new obfc_NinjinsBountyBoardMenu();
+			g_Game.GetUIManager().ShowScriptedMenu(obfv_m_BountyBoardMenu, NULL);
 		}
 	}
 	void BountyCloseBoardMenu(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
@@ -393,13 +393,13 @@ modded class MissionGameplay
 		if (type != CallType.Client)
 			return;
 		UIScriptedMenu menu = g_Game.GetUIManager().GetMenu();
-		if (menu && menu.IsInherited(NinjinsBountyBoardMenu))
+		if (menu && menu.IsInherited(obfc_NinjinsBountyBoardMenu))
 		{
-			NinjinsBountyBoardMenu bountyMenu = NinjinsBountyBoardMenu.Cast(menu);
+			obfc_NinjinsBountyBoardMenu bountyMenu = obfc_NinjinsBountyBoardMenu.Cast(menu);
 			if (bountyMenu)
 			{
 				bountyMenu.OnHide();
-				GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Closed bounty board menu via RPC (inventory full).");
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Closed bounty board menu via RPC (inventory full).");
 			}
 		}
 	}
@@ -410,17 +410,17 @@ modded class MissionGameplay
 		Param1<int> data;
 		if (!ctx.Read(data))
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] Failed to read claim amount data from RPC.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Failed to read claim amount data from RPC.");
 			return;
 		}
 		UIScriptedMenu menu = g_Game.GetUIManager().GetMenu();
-		if (menu && menu.IsInherited(NinjinsBountyBoardMenu))
+		if (menu && menu.IsInherited(obfc_NinjinsBountyBoardMenu))
 		{
-			NinjinsBountyBoardMenu bountyMenu = NinjinsBountyBoardMenu.Cast(menu);
+			obfc_NinjinsBountyBoardMenu bountyMenu = obfc_NinjinsBountyBoardMenu.Cast(menu);
 			if (bountyMenu && data)
 			{
-				bountyMenu.UpdateClaimAmount(data.param1);
-				GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Received claim amount via RPC: " + data.param1.ToString());
+				bountyMenu.obfm_UpdateClaimAmount(data.param1);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received claim amount via RPC: " + data.param1.ToString());
 			}
 		}
 	}
@@ -433,17 +433,17 @@ modded class MissionGameplay
 			return;
 		if (!ctx.Read(data))
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] Failed to read bounty countdown data from RPC.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Failed to read bounty countdown data from RPC.");
 			return;
 		}
 		currentTimeSeconds = g_Game.GetTime() / 1000.0;
-		m_BountyLastReceivedDuration = data.param1;
-		m_BountyLastReceivedTime = currentTimeSeconds;
+		obfv_m_BountyLastReceivedDuration = data.param1;
+		obfv_m_BountyLastReceivedTime = currentTimeSeconds;
 		player = PlayerBase.Cast(g_Game.GetPlayer());
 		if (player)
 		{
 			player.netSync_BountyRemainingDuration = data.param1;
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Received bounty countdown update: " + data.param1.ToString() + " seconds - stored for client-driven countdown");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received bounty countdown update: " + data.param1.ToString() + " seconds - stored for client-driven countdown");
 		}
 	}
 	void UpdateBountyState(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
@@ -454,14 +454,14 @@ modded class MissionGameplay
 			return;
 		if (!ctx.Read(data))
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] Failed to read bounty state data from RPC.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Failed to read bounty state data from RPC.");
 			return;
 		}
 		player = PlayerBase.Cast(g_Game.GetPlayer());
 		if (player)
 		{
 			player.netSync_HasBounty = data.param1;
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Received bounty state update: " + data.param1.ToString() + " via RPC");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received bounty state update: " + data.param1.ToString() + " via RPC");
 		}
 	}
 	void BountyUpdatePaused(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
@@ -472,66 +472,66 @@ modded class MissionGameplay
 			return;
 		if (!ctx.Read(data))
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] Failed to read bounty paused state data from RPC.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Failed to read bounty paused state data from RPC.");
 			return;
 		}
-		m_BountyPaused = data.param1;
-		if (!m_BountyPaused)
+		obfv_m_BountyPaused = data.param1;
+		if (!obfv_m_BountyPaused)
 		{
 			currentTimeSeconds = g_Game.GetTime() / 1000.0;
-			m_BountyLastReceivedTime = currentTimeSeconds;
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Bounty countdown resumed - resyncing timer");
+			obfv_m_BountyLastReceivedTime = currentTimeSeconds;
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Bounty countdown resumed - resyncing timer");
 		}
 		else
 		{
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Bounty countdown paused");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Bounty countdown paused");
 		}
 	}
 	void BountyConfigReloaded(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
 	{
-		Param1<BountyUISettingsData> uiDataParam;
-		BountyUISettingsData uiData;
+		Param1<obfc_BountyUISettingsData> uiDataParam;
+		obfc_BountyUISettingsData uiData;
 		if (type != CallType.Client)
 			return;
 		if (!ctx.Read(uiDataParam))
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] Failed to read UI data from BountyConfigReloaded RPC.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Failed to read UI data from BountyConfigReloaded RPC.");
 			return;
 		}
 		uiData = uiDataParam.param1;
 		if (!uiData)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] UI data is null from BountyConfigReloaded RPC.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] UI data is null from BountyConfigReloaded RPC.");
 			return;
 		}
-		GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Received BountyConfigReloaded RPC - reapplying UI. X=" + uiData.PositionX.ToString() + ", Y=" + uiData.PositionY.ToString() + ", Width=" + uiData.Width.ToString() + ", Height=" + uiData.Height.ToString() + ", BGColor=" + uiData.BackgroundColor.ToString() + ", TextColor=" + uiData.TextColor.ToString());
-		ApplyBountyCountdownPosition(uiData.PositionX, uiData.PositionY, uiData.Width, uiData.Height, uiData.BackgroundColor, uiData.TextColor);
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received BountyConfigReloaded RPC - reapplying UI. X=" + uiData.obfv_PositionX.ToString() + ", Y=" + uiData.obfv_PositionY.ToString() + ", Width=" + uiData.obfv_Width.ToString() + ", Height=" + uiData.obfv_Height.ToString() + ", BGColor=" + uiData.obfv_BackgroundColor.ToString() + ", TextColor=" + uiData.obfv_TextColor.ToString());
+		obfm_ApplyBountyCountdownPosition(uiData.obfv_PositionX, uiData.obfv_PositionY, uiData.obfv_Width, uiData.obfv_Height, uiData.obfv_BackgroundColor, uiData.obfv_TextColor);
 	}
 	void BountyAdminReceiveConfig(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
 	{
-		Param1<ref BountyConfig> configParam;
-		BountyConfig config;
+		Param1<ref obfc_BountyConfig> configParam;
+		obfc_BountyConfig config;
 		if (type != CallType.Client)
 			return;
 		if (!ctx.Read(configParam))
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] Failed to read config from BountyAdminReceiveConfig RPC.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Failed to read config from BountyAdminReceiveConfig RPC.");
 			return;
 		}
 		config = configParam.param1;
 		if (!config)
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] Config is null from BountyAdminReceiveConfig RPC.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Config is null from BountyAdminReceiveConfig RPC.");
 			return;
 		}
-		if (m_BountyAdminMenu)
+		if (obfv_m_BountyAdminMenu)
 		{
-			m_BountyAdminMenu.UpdateConfigFromServer(config);
-			GetNinjins_Bounty_SystemLogger().LogInfo("[MissionGameplay] Received config and updated admin menu UI.");
+			obfv_m_BountyAdminMenu.obfm_UpdateConfigFromServer(config);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received config and updated admin menu UI.");
 		}
 		else
 		{
-			GetNinjins_Bounty_SystemLogger().LogWarning("[MissionGameplay] Admin menu not open - cannot update config.");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Admin menu not open - cannot update config.");
 		}
 	}
 };

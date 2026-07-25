@@ -6,11 +6,11 @@ modded class ExpansionTerritoryModule
 		super.RPC_CreateTerritory(senderRPC, target, ctx);
 		if (g_Game.IsDedicatedServer())
 		{
-			BountyManager bountyManager = BountyManager.GetInstance();
+			obfc_BountyManager bountyManager = obfc_BountyManager.GetInstance();
 			if (bountyManager)
 			{
-				bountyManager.RefreshTerritoryCache();
-				GetNinjins_Bounty_SystemLogger().LogInfo("[Bounty] Territory cache refreshed after territory creation");
+				bountyManager.obfm_RefreshTerritoryCache();
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Territory cache refreshed after territory creation");
 			}
 		}
 	}
@@ -19,11 +19,11 @@ modded class ExpansionTerritoryModule
 		super.RPC_AcceptInvite(senderRPC, target, ctx);
 		if (g_Game.IsDedicatedServer())
 		{
-			BountyManager bountyManager = BountyManager.GetInstance();
+			obfc_BountyManager bountyManager = obfc_BountyManager.GetInstance();
 			if (bountyManager)
 			{
-				bountyManager.RefreshTerritoryCache();
-				GetNinjins_Bounty_SystemLogger().LogInfo("[Bounty] Territory cache refreshed after member accepted invite");
+				bountyManager.obfm_RefreshTerritoryCache();
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Territory cache refreshed after member accepted invite");
 			}
 		}
 	}
@@ -32,11 +32,11 @@ modded class ExpansionTerritoryModule
 		super.RPC_KickMember(senderRPC, target, ctx);
 		if (g_Game.IsDedicatedServer())
 		{
-			BountyManager bountyManager = BountyManager.GetInstance();
+			obfc_BountyManager bountyManager = obfc_BountyManager.GetInstance();
 			if (bountyManager)
 			{
-				bountyManager.RefreshTerritoryCache();
-				GetNinjins_Bounty_SystemLogger().LogInfo("[Bounty] Territory cache refreshed after member was kicked");
+				bountyManager.obfm_RefreshTerritoryCache();
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Territory cache refreshed after member was kicked");
 			}
 		}
 	}
@@ -45,11 +45,11 @@ modded class ExpansionTerritoryModule
 		super.RPC_Leave(senderRPC, target, ctx);
 		if (g_Game.IsDedicatedServer())
 		{
-			BountyManager bountyManager = BountyManager.GetInstance();
+			obfc_BountyManager bountyManager = obfc_BountyManager.GetInstance();
 			if (bountyManager)
 			{
-				bountyManager.RefreshTerritoryCache();
-				GetNinjins_Bounty_SystemLogger().LogInfo("[Bounty] Territory cache refreshed after member left");
+				bountyManager.obfm_RefreshTerritoryCache();
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Territory cache refreshed after member left");
 			}
 		}
 	}
@@ -58,11 +58,11 @@ modded class ExpansionTerritoryModule
 		super.RPC_DeleteTerritoryPlayer(senderRPC, target, ctx);
 		if (g_Game.IsDedicatedServer())
 		{
-			BountyManager bountyManager = BountyManager.GetInstance();
+			obfc_BountyManager bountyManager = obfc_BountyManager.GetInstance();
 			if (bountyManager)
 			{
-				bountyManager.RefreshTerritoryCache();
-				GetNinjins_Bounty_SystemLogger().LogInfo("[Bounty] Territory cache refreshed after territory deletion (player)");
+				bountyManager.obfm_RefreshTerritoryCache();
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Territory cache refreshed after territory deletion (player)");
 			}
 		}
 	}
@@ -71,11 +71,11 @@ modded class ExpansionTerritoryModule
 		super.RPC_DeleteTerritoryAdmin(senderRPC, target, ctx);
 		if (g_Game.IsDedicatedServer())
 		{
-			BountyManager bountyManager = BountyManager.GetInstance();
+			obfc_BountyManager bountyManager = obfc_BountyManager.GetInstance();
 			if (bountyManager)
 			{
-				bountyManager.RefreshTerritoryCache();
-				GetNinjins_Bounty_SystemLogger().LogInfo("[Bounty] Territory cache refreshed after territory deletion (admin)");
+				bountyManager.obfm_RefreshTerritoryCache();
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Territory cache refreshed after territory deletion (admin)");
 			}
 		}
 	}

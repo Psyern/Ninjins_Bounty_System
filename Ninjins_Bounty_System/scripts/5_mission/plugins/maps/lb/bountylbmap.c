@@ -1,18 +1,18 @@
 #ifdef LBmaster_Groups
 modded class LBGroupUI
 {
-	private ref BountyMapDrawer m_BountyMapDrawer;
-	private CanvasWidget m_BountyDrawCanvas;
-	private MapWidget m_BountyMapWidget;
-	private float m_LastBountyUpdateTime = 0;
-	private float m_LastBountyRequestTime = 0;
+	private ref obfc_BountyMapDrawer obfv_m_BountyMapDrawer;
+	private CanvasWidget obfv_m_BountyDrawCanvas;
+	private MapWidget obfv_m_BountyMapWidget;
+	private float obfv_m_LastBountyUpdateTime = 0;
+	private float obfv_m_LastBountyRequestTime = 0;
 	override void OnShow()
 	{
 		super.OnShow();
-		InitializeBountyMapDrawer();
-		RequestBountiedPlayersFromServer();
+		obfm_InitializeBountyMapDrawer();
+		obfm_RequestBountiedPlayersFromServer();
 	}
-	private void InitializeBountyMapDrawer()
+	private void obfm_InitializeBountyMapDrawer()
 	{
 		MapWidget currentMap = MapWidget.Cast(layoutRoot.FindAnyWidget("Map"));
 		if (!currentMap)
@@ -23,62 +23,62 @@ modded class LBGroupUI
 			oldCanvas.Unlink();
 			oldCanvas = null;
 		}
-		if (!m_BountyMapDrawer || m_BountyMapDrawer.GetMapWidget() != currentMap)
+		if (!obfv_m_BountyMapDrawer || obfv_m_BountyMapDrawer.obfm_GetMapWidget() != currentMap)
 		{
-			BountyMapDrawer.ResetInstance(m_BountyMapWidget);
-			m_BountyMapWidget = currentMap;
-			Widget canvasLayout = g_Game.GetWorkspace().CreateWidgets("Ninjins_Bounty_System/gui/layouts/BountyMapCanvasOnly.layout", m_BountyMapWidget);
+			obfc_BountyMapDrawer.obfm_ResetInstance(obfv_m_BountyMapWidget);
+			obfv_m_BountyMapWidget = currentMap;
+			Widget canvasLayout = g_Game.GetWorkspace().CreateWidgets("Ninjins_Bounty_System/gui/layouts/BountyMapCanvasOnly.layout", obfv_m_BountyMapWidget);
 			if (!canvasLayout)
 				return;
-			m_BountyDrawCanvas = CanvasWidget.Cast(canvasLayout.FindAnyWidget("bountydrawCanvas"));
-			if (!m_BountyDrawCanvas)
+			obfv_m_BountyDrawCanvas = CanvasWidget.Cast(canvasLayout.FindAnyWidget("bountydrawCanvas"));
+			if (!obfv_m_BountyDrawCanvas)
 				return;
-			m_BountyMapDrawer = BountyMapDrawer.GetInstance(m_BountyMapWidget, m_BountyDrawCanvas);
+			obfv_m_BountyMapDrawer = obfc_BountyMapDrawer.GetInstance(obfv_m_BountyMapWidget, obfv_m_BountyDrawCanvas);
 		}
 	}
-	private void RequestBountiedPlayersFromServer()
+	private void obfm_RequestBountiedPlayersFromServer()
 	{
 		float currentTime = g_Game.GetTickTime();
 		float requestCooldown = 2.0; 
-		if (g_BountyConfig && g_BountyConfig.Map && g_BountyConfig.Map.BountyMapRequestCooldownSeconds > 0.0)
+		if (obfv_g_BountyConfig && obfv_g_BountyConfig.Map && obfv_g_BountyConfig.Map.BountyMapRequestCooldownSeconds > 0.0)
 		{
-			requestCooldown = g_BountyConfig.Map.BountyMapRequestCooldownSeconds;
+			requestCooldown = obfv_g_BountyConfig.Map.BountyMapRequestCooldownSeconds;
 		}
-		float timeSinceLastRequest = currentTime - m_LastBountyRequestTime;
+		float timeSinceLastRequest = currentTime - obfv_m_LastBountyRequestTime;
 		if (timeSinceLastRequest > requestCooldown)
 		{
 			GetRPCManager().SendRPC("Ninjins_Bounty_System", "RequestBountiedPlayers", NULL, true, null);
-			m_LastBountyRequestTime = currentTime;
+			obfv_m_LastBountyRequestTime = currentTime;
 		}
-		if (!m_BountyMapDrawer)
+		if (!obfv_m_BountyMapDrawer)
 			return;
-		m_BountyMapDrawer.UpdateBountiedPlayers();
+		obfv_m_BountyMapDrawer.obfm_UpdateBountiedPlayers();
 	}
 	override void Update(float timeslice)
 	{
 		super.Update(timeslice);
-		if (m_BountyMapDrawer && m_BountyMapDrawer.HasValidWidget())
+		if (obfv_m_BountyMapDrawer && obfv_m_BountyMapDrawer.obfm_HasValidWidget())
 		{
 			float currentTime = g_Game.GetTickTime();
 			float updateInterval = 1.0; 
-			if (g_BountyConfig && g_BountyConfig.Map && g_BountyConfig.Map.BountyMapUpdateIntervalSeconds > 0.0)
+			if (obfv_g_BountyConfig && obfv_g_BountyConfig.Map && obfv_g_BountyConfig.Map.BountyMapUpdateIntervalSeconds > 0.0)
 			{
-				updateInterval = g_BountyConfig.Map.BountyMapUpdateIntervalSeconds;
+				updateInterval = obfv_g_BountyConfig.Map.BountyMapUpdateIntervalSeconds;
 			}
-			if (currentTime - m_LastBountyUpdateTime >= updateInterval)
+			if (currentTime - obfv_m_LastBountyUpdateTime >= updateInterval)
 			{
-				m_BountyMapDrawer.UpdateBountiedPlayers();
-				m_LastBountyUpdateTime = currentTime;
+				obfv_m_BountyMapDrawer.obfm_UpdateBountiedPlayers();
+				obfv_m_LastBountyUpdateTime = currentTime;
 			}
-			m_BountyMapDrawer.TriggerUpdate();
+			obfv_m_BountyMapDrawer.obfm_TriggerUpdate();
 		}
 	}
 	override void OnHide()
 	{
 		super.OnHide();
-		BountyMapDrawer.ResetInstance(m_BountyMapWidget);
-		m_BountyMapDrawer = null;
-		m_BountyDrawCanvas = null;
+		obfc_BountyMapDrawer.obfm_ResetInstance(obfv_m_BountyMapWidget);
+		obfv_m_BountyMapDrawer = null;
+		obfv_m_BountyDrawCanvas = null;
 	}
 }
 #endif
