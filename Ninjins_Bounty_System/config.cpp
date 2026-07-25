@@ -23,8 +23,8 @@ class CfgMods
 		inputs = "Ninjins_Bounty_System/data/inputs.xml";
 		name="Ninjins_Bounty_System";
 		credits="Naij0";
-		author="Naij0";
-		authorID="0";
+		author="Psyern";
+		authorID="76561198043039918";
 		version="1.0";
 		extra=0;
 		type="mod";
