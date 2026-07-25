@@ -4,7 +4,7 @@
         <actions>
             <input name="UABountyAdminMenu" loc="Bounty Admin Menu" />
         </actions>
-        <sorting name="NinjinsMods" loc="NinjinsMods">
+        <sorting name="Bounty Mod" loc="Bounty Mod">
             <input name="UABountyAdminMenu" />
         </sorting>
     </inputs>
