@@ -88,7 +88,7 @@ class obfc_BountyManager
 		players = new array<Man>();
 		g_Game.GetPlayers(players);
 		shouldCheckPausedBountyResume = false;
-		if (obfv_g_BountyConfig && obfv_g_BountyConfig.Core && obfv_g_BountyConfig.Core.PauseBountyInTerritory)
+		if (obfv_g_BountyConfig && obfv_g_BountyConfig.Core && (obfv_g_BountyConfig.Core.PauseBountyInTerritory || obfv_g_BountyConfig.Core.PauseBountyInSafeZone))
 		{
 			checkInterval = 5.0; 
 			if (obfv_g_BountyConfig.Core.PausedBountyResumeCheckInterval > 0.0)
@@ -171,11 +171,40 @@ class obfc_BountyManager
 					{
 						player.obfm_ResumeBounty();
 					}
-						if (obfv_g_BountyConfig && obfv_g_BountyConfig.Core && obfv_g_BountyConfig.Core.obfm_TeleportOutOfSafeZone)
+						if (obfv_g_BountyConfig && obfv_g_BountyConfig.Core && obfv_g_BountyConfig.Core.PauseBountyInSafeZone)
+						{
+							isInSafeZone = player.obfm_NinjinBountyIsPlayerInSafezone();
+							safezoneIndex = obfv_m_PlayersInSafeZones.Find(player);
+							wasInSafeZone = safezoneIndex >= 0;
+							if (isInSafeZone && !wasInSafeZone)
+							{
+								obfv_m_PlayersInSafeZones.Insert(player);
+								if (!player.obfm_IsBountyPaused())
+								{
+									obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyManager] Bountied player " + playerName + " entered a safezone - pausing bounty timer");
+									player.obfm_PauseBounty();
+									if (identity)
+									{
+										obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_BOUNTY_PAUSED_IN_SAFEZONE, identity);
+									}
+								}
+							}
+							else if (!isInSafeZone && wasInSafeZone)
+							{
+								obfv_m_PlayersInSafeZones.Remove(safezoneIndex);
+								obfv_m_PlayerSafezoneTypes.Remove(player);
+								obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyManager] Bountied player " + playerName + " left the safezone - resuming bounty timer");
+								if (player.obfm_IsBountyPaused())
+								{
+									player.obfm_ResumeBounty();
+								}
+							}
+						}
+						else if (obfv_g_BountyConfig && obfv_g_BountyConfig.Core && obfv_g_BountyConfig.Core.obfm_TeleportOutOfSafeZone)
 						{
 							isNinjinsSafeZone = player.obfm_NinjinBountyIsPlayerInNinjinsSafeZone();
 							isExpansionSafeZone = PlayerBase.obfm_NinjinsBountyExpansionIsInSafezone(player);
-							isInSafeZone = isNinjinsSafeZone || isExpansionSafeZone; 
+							isInSafeZone = isNinjinsSafeZone || isExpansionSafeZone;
 							safezoneIndex = obfv_m_PlayersInSafeZones.Find(player);
 							wasInSafeZone = safezoneIndex >= 0;
 							if (isNinjinsSafeZone)
@@ -415,12 +444,25 @@ class obfc_BountyManager
 		}
 		return null;
 	}
-	static bool obfm_ApplyBountyToPlayer(PlayerBase targetPlayer, PlayerBase sourcePlayer = null, float durationSeconds = 0.0, string reason = "", BountyType bountyType = BountyType.PLACED, bool ignoreMaxBountiedLimit = false)
+	//! Deferred entry point used by the BountyWarningTimeSeconds countdown - re-runs every eligibility
+	//! check (the target may have died, logged out or entered a safezone during the warning).
+	void obfm_ApplyBountyAfterWarning(PlayerBase targetPlayer, PlayerBase sourcePlayer, float durationSeconds, string reason, BountyType bountyType, bool ignoreMaxBountiedLimit)
+	{
+		if (!targetPlayer || !targetPlayer.GetIdentity() || !targetPlayer.IsAlive())
+		{
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyManager] Warned bounty target is no longer available - bounty not applied");
+			return;
+		}
+		obfm_ApplyBountyToPlayer(targetPlayer, sourcePlayer, durationSeconds, reason, bountyType, ignoreMaxBountiedLimit, true);
+	}
+	static bool obfm_ApplyBountyToPlayer(PlayerBase targetPlayer, PlayerBase sourcePlayer = null, float durationSeconds = 0.0, string reason = "", BountyType bountyType = BountyType.PLACED, bool ignoreMaxBountiedLimit = false, bool skipWarning = false)
 	{
 		PlayerIdentity targetIdentity;
 		string targetName;
 		bool isAdminPlacing;
 		int playerLifetime;
+		obfc_BountyManager warningManager;
+		int warningDelayMs;
 		if (!IsMissionHost())
 			return false;
 		if (!targetPlayer || !targetPlayer.GetIdentity())
@@ -506,6 +548,18 @@ class obfc_BountyManager
 			{
 				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("[BountyManager] Cannot apply bounty - config not loaded!");
 				return false;
+			}
+		}
+		if (!skipWarning && bountyType != BountyType.RULE_BREAKER && obfv_g_BountyConfig && obfv_g_BountyConfig.Core && obfv_g_BountyConfig.Core.BountyWarningTimeSeconds > 0.0)
+		{
+			warningManager = obfc_BountyManager.GetInstance();
+			if (warningManager && g_Game && g_Game.GetCallQueue(CALL_CATEGORY_GAMEPLAY))
+			{
+				warningDelayMs = Math.Round(obfv_g_BountyConfig.Core.BountyWarningTimeSeconds * obfv_BOUNTY_MS_TO_SECONDS);
+				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_WARNING_BROADCAST, null, targetName, "", obfv_g_BountyConfig.Core.BountyWarningTimeSeconds);
+				g_Game.GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(warningManager.obfm_ApplyBountyAfterWarning, warningDelayMs, false, targetPlayer, sourcePlayer, durationSeconds, reason, bountyType, ignoreMaxBountiedLimit);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyManager] Bounty on " + targetName + " announced - applying in " + obfv_g_BountyConfig.Core.BountyWarningTimeSeconds.ToString() + "s");
+				return true;
 			}
 		}
 		int clearedRewardCount = 0;
@@ -692,6 +746,28 @@ class obfc_BountyManager
 		else
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("[Reload] Blacklist.json file not found!");
+			allSuccess = false;
+		}
+		obfc_BountyConfig.obfm_CheckDirectories();
+		if (FileExist(obfv_Ninjins_Bounty_System_ZONE_CONFIG_FILE))
+		{
+			obfc_BountyZoneConfig newZoneConfig = new obfc_BountyZoneConfig();
+			JsonFileLoader<obfc_BountyZoneConfig>.JsonLoadFile(obfv_Ninjins_Bounty_System_ZONE_CONFIG_FILE, newZoneConfig);
+			if (newZoneConfig)
+			{
+				newZoneConfig.obfm_ValidateConfig();
+				obfv_g_BountyZoneConfig = newZoneConfig;
+				obfc_BountyZoneConfig.obfm_LogConfig(obfv_g_BountyZoneConfig);
+			}
+			else
+			{
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("[Reload] Failed to reload BountyZoneConfig from disk!");
+				allSuccess = false;
+			}
+		}
+		else
+		{
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("[Reload] BountyZones.json file not found!");
 			allSuccess = false;
 		}
 		obfc_BountyConfig.obfm_CheckDirectories();

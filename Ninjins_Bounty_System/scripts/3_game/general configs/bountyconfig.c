@@ -1,6 +1,8 @@
 const string obfv_Ninjins_Bounty_System_CONFIG_DIR = obfv_Ninjins_Bounty_System_ROOT_FOLDER + "Config\\";
 const string obfv_Ninjins_Bounty_System_CONFIG_FILE = obfv_Ninjins_Bounty_System_CONFIG_DIR + "BountyConfig.json";
+const string obfv_Ninjins_Bounty_System_ZONE_CONFIG_FILE = obfv_Ninjins_Bounty_System_CONFIG_DIR + "BountyZones.json";
 ref obfc_BountyConfig obfv_g_BountyConfig;
+ref obfc_BountyZoneConfig obfv_g_BountyZoneConfig;
 class obfc_BountyNotificationEntry
 {
 	bool Enabled;
@@ -56,7 +58,8 @@ class obfc_BountyOtherNotifications
 	ref obfc_BountyNotificationEntry PlayerInSafeZone; 
 	ref obfc_BountyNotificationEntry BountyPersisted; 
 	ref obfc_BountyNotificationEntry TeleportedOutOfTerritory; 
-	ref obfc_BountyNotificationEntry BountyPausedInTerritory; 
+	ref obfc_BountyNotificationEntry BountyPausedInTerritory;
+	ref obfc_BountyNotificationEntry BountyPausedInSafeZone;
 	void obfc_BountyOtherNotifications()
 	{
 		InsufficientTokens = new obfc_BountyNotificationEntry();
@@ -69,6 +72,7 @@ class obfc_BountyOtherNotifications
 		BountyPersisted = new obfc_BountyNotificationEntry();
 		TeleportedOutOfTerritory = new obfc_BountyNotificationEntry();
 		BountyPausedInTerritory = new obfc_BountyNotificationEntry();
+		BountyPausedInSafeZone = new obfc_BountyNotificationEntry();
 	}
 }
 class obfc_BountyBroadcastEntry
@@ -89,10 +93,71 @@ class obfc_BountyBroadcasts
 {
 	ref obfc_BountyBroadcastEntry PlacedBounty;
 	ref obfc_BountyBroadcastEntry RuleBreaker;
+	ref obfc_BountyBroadcastEntry Expired;
+	ref obfc_BountyBroadcastEntry Win;
+	ref obfc_BountyBroadcastEntry Suicide;
+	ref obfc_BountyBroadcastEntry Logout;
+	ref obfc_BountyBroadcastEntry Warning;
 	void obfc_BountyBroadcasts()
 	{
 		PlacedBounty = new obfc_BountyBroadcastEntry();
 		RuleBreaker = new obfc_BountyBroadcastEntry();
+		Expired = new obfc_BountyBroadcastEntry();
+		Win = new obfc_BountyBroadcastEntry();
+		Suicide = new obfc_BountyBroadcastEntry();
+		Logout = new obfc_BountyBroadcastEntry();
+		Warning = new obfc_BountyBroadcastEntry();
+	}
+}
+//! Mod-agnostic zone definition. Lets server owners cover safezone/territory mods that expose no
+//! script API (Dr Jones Trader, TraderPlus, Rearmed, Basic Territories) by re-entering the same
+//! coordinates they configured in that mod. OwnerGUIDs is only evaluated for territory zones.
+class obfc_BountyStaticZone
+{
+	string Name;
+	ref array<float> Position;
+	float Radius;
+	ref array<string> OwnerGUIDs;
+	void obfc_BountyStaticZone()
+	{
+		Name = "";
+		Position = new array<float>;
+		Position.Insert(0.0);
+		Position.Insert(0.0);
+		Position.Insert(0.0);
+		Radius = obfv_BOUNTY_STATIC_ZONE_DEFAULT_RADIUS;
+		OwnerGUIDs = new array<string>;
+	}
+	bool obfm_ContainsPosition(vector playerPos)
+	{
+		float distSq;
+		float radiusSq;
+		vector zonePos;
+		if (Radius <= 0.0)
+			return false;
+		if (!Position || Position.Count() < 3)
+			return false;
+		zonePos = Vector(Position.Get(0), Position.Get(1), Position.Get(2));
+		distSq = vector.DistanceSq(zonePos, playerPos);
+		radiusSq = Radius * Radius;
+		return distSq <= radiusSq;
+	}
+	//! Distance from the zone edge. Negative while inside the zone.
+	float obfm_GetDistanceFromEdge(vector playerPos)
+	{
+		vector zonePos;
+		if (!Position || Position.Count() < 3)
+			return float.MAX;
+		zonePos = Vector(Position.Get(0), Position.Get(1), Position.Get(2));
+		return vector.Distance(zonePos, playerPos) - Radius;
+	}
+	bool obfm_IsOwner(string guid)
+	{
+		if (!OwnerGUIDs || OwnerGUIDs.Count() == 0)
+			return false;
+		if (guid == "")
+			return false;
+		return OwnerGUIDs.Find(guid) != -1;
 	}
 }
 class obfc_BountyNotificationConfig
@@ -199,9 +264,18 @@ class obfc_BountyCoreSystemSettings
 	float PausedBountyResumeCheckInterval; 
 	bool obfm_TeleportOutOfSafeZone; 
 	float TeleportOutOfSafeZoneDistance; 
-	int MinimumPlayerLifetimeSeconds; 
-	bool EnableAutomatedBountyPlacement; 
-	float AutomatedBountyPlacementIntervalSeconds; 
+	int MinimumPlayerLifetimeSeconds;
+	bool EnableAutomatedBountyPlacement;
+	float AutomatedBountyPlacementIntervalSeconds;
+	bool PersistentBountyAfterLogOut;
+	bool DontCountSuicide;
+	bool DontCountFriendlyFire;
+	bool PauseBountyInSafeZone;
+	float BountyWarningTimeSeconds;
+	int BountyRequestCostPerMinute;
+	int BountyRequestMinMinutes;
+	int BountyRequestMaxMinutes;
+	ref array<string> SuicidePhrases;
 	void obfc_BountyCoreSystemSettings()
 	{
 		EnableBountySystem = true;
@@ -221,9 +295,34 @@ class obfc_BountyCoreSystemSettings
 		PausedBountyResumeCheckInterval = 5.0; 
 		obfm_TeleportOutOfSafeZone = true; 
 		TeleportOutOfSafeZoneDistance = 150.0; 
-		MinimumPlayerLifetimeSeconds = 900; 
-		EnableAutomatedBountyPlacement = false; 
-		AutomatedBountyPlacementIntervalSeconds = 3600.0; 
+		MinimumPlayerLifetimeSeconds = 900;
+		EnableAutomatedBountyPlacement = false;
+		AutomatedBountyPlacementIntervalSeconds = 3600.0;
+		PersistentBountyAfterLogOut = true;
+		DontCountSuicide = true;
+		DontCountFriendlyFire = true;
+		PauseBountyInSafeZone = false;
+		BountyWarningTimeSeconds = 0.0;
+		BountyRequestCostPerMinute = 0;
+		BountyRequestMinMinutes = 1;
+		BountyRequestMaxMinutes = 60;
+		SuicidePhrases = new array<string>;
+		SuicidePhrases.Insert("It appears they've done the job themselves...");
+		SuicidePhrases.Insert("They tripped on a rock and died");
+		SuicidePhrases.Insert("He was curious if he'd get the money for his own kill... he can't");
+		SuicidePhrases.Insert("Seems like they committed scooter ankle");
+		SuicidePhrases.Insert("Seems like they committed toaster bath");
+		SuicidePhrases.Insert("Perhaps he was laser-eye'd by a slightly irate superhero");
+		SuicidePhrases.Insert("They million dollar babied themselves");
+		SuicidePhrases.Insert("He came looking for gold, and only found lead");
+	}
+	string obfm_GetRandomSuicidePhrase()
+	{
+		int index;
+		if (!SuicidePhrases || SuicidePhrases.Count() == 0)
+			return "";
+		index = Math.RandomInt(0, SuicidePhrases.Count());
+		return SuicidePhrases.Get(index);
 	}
 }
 class obfc_BountyRuleBreakerSettings
@@ -413,6 +512,10 @@ class obfc_BountyConfig
 		Notifications.Other.BountyPausedInTerritory.Title = "Bounty Paused";
 		Notifications.Other.BountyPausedInTerritory.Message = "You are in your own territory. Your bounty timer is paused until you leave.";
 		Notifications.Other.BountyPausedInTerritory.IconPath = "Ninjins_Bounty_System/gui/icons/bountyskull.edds";
+		Notifications.Other.BountyPausedInSafeZone.Enabled = true;
+		Notifications.Other.BountyPausedInSafeZone.Title = "Bounty Paused";
+		Notifications.Other.BountyPausedInSafeZone.Message = "You are in a safezone. Your bounty timer is paused until you leave.";
+		Notifications.Other.BountyPausedInSafeZone.IconPath = "Ninjins_Bounty_System/gui/icons/bountyskull.edds";
 		Notifications.Other.TeleportedOutOfTerritory.Enabled = true;
 		Notifications.Other.TeleportedOutOfTerritory.Title = "Teleported Out";
 		Notifications.Other.TeleportedOutOfTerritory.Message = "You were teleported out of your own territory. Bountied players cannot stay in their own territory.";
@@ -426,6 +529,26 @@ class obfc_BountyConfig
 		Broadcasts.RuleBreaker.Title = "Rule Violation";
 		Broadcasts.RuleBreaker.Message = "{PLAYER} has broken the rules! A rule breaker bounty has been placed on them for {DURATION} seconds!";
 		Broadcasts.RuleBreaker.IconPath = "Ninjins_Bounty_System/gui/icons/bountyskull.edds";
+		Broadcasts.Expired.Enabled = true;
+		Broadcasts.Expired.Title = "Bounty Expired";
+		Broadcasts.Expired.Message = "The bounty on {PLAYER} expired.";
+		Broadcasts.Expired.IconPath = "Ninjins_Bounty_System/gui/icons/bountycheckmark.edds";
+		Broadcasts.Win.Enabled = true;
+		Broadcasts.Win.Title = "Bounty Claimed";
+		Broadcasts.Win.Message = "The bounty on {PLAYER} has ended. The winner is {WINNER}.";
+		Broadcasts.Win.IconPath = "Ninjins_Bounty_System/gui/icons/bountycheckmark.edds";
+		Broadcasts.Suicide.Enabled = true;
+		Broadcasts.Suicide.Title = "Bounty Ended";
+		Broadcasts.Suicide.Message = "The bounty on {PLAYER} has ended. {SUICIDE_PHRASE}";
+		Broadcasts.Suicide.IconPath = "Ninjins_Bounty_System/gui/icons/bountyskull.edds";
+		Broadcasts.Logout.Enabled = true;
+		Broadcasts.Logout.Title = "Bounty Suspended";
+		Broadcasts.Logout.Message = "{PLAYER} has logged out with a Bounty! It will return when they do.";
+		Broadcasts.Logout.IconPath = "Ninjins_Bounty_System/gui/icons/bountyskull.edds";
+		Broadcasts.Warning.Enabled = true;
+		Broadcasts.Warning.Title = "Bounty Incoming";
+		Broadcasts.Warning.Message = "A bounty on {PLAYER} will start in {TIME} seconds.";
+		Broadcasts.Warning.IconPath = "Ninjins_Bounty_System/gui/icons/bountyskull.edds";
 	}
 	void obfm_SaveConfig()
 	{
@@ -439,11 +562,30 @@ class obfc_BountyConfig
 	void obfm_ValidateConfig()
 	{
 		float temp;
-		if (!Map)
-			return;
 		if (Core)
 		{
+			//! Existing BountyConfig.json files predate these keys - JsonFileLoader leaves them null.
+			if (!Core.SuicidePhrases)
+				Core.SuicidePhrases = new array<string>;
+			if (Core.BountyWarningTimeSeconds < 0.0)
+				Core.BountyWarningTimeSeconds = 0.0;
+			if (Core.BountyRequestCostPerMinute < 0)
+				Core.BountyRequestCostPerMinute = 0;
+			if (Core.BountyRequestMinMinutes < 1)
+				Core.BountyRequestMinMinutes = 1;
+			if (Core.BountyRequestMaxMinutes < Core.BountyRequestMinMinutes)
+			{
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyConfig] BountyRequestMaxMinutes is below BountyRequestMinMinutes. Raising it to " + Core.BountyRequestMinMinutes.ToString() + ".");
+				Core.BountyRequestMaxMinutes = Core.BountyRequestMinMinutes;
+			}
+			if (Core.PauseBountyInSafeZone && Core.obfm_TeleportOutOfSafeZone)
+			{
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyConfig] Both PauseBountyInSafeZone and TeleportOutOfSafeZone are enabled. PauseBountyInSafeZone takes precedence - disabling TeleportOutOfSafeZone.");
+				Core.obfm_TeleportOutOfSafeZone = false;
+			}
 		}
+		if (!Map)
+			return;
 		if (Map.BountyCircleReduceRadiusOverTime && Map.BountyCircleIncreaseRadiusOverTime)
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyConfig] Both BountyCircleReduceRadiusOverTime and BountyCircleIncreaseRadiusOverTime are enabled. Disabling BountyCircleIncreaseRadiusOverTime.");
@@ -536,6 +678,15 @@ class obfc_BountyConfig
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   EnableCommandAccessDeniedNotification: " + config.Core.EnableCommandAccessDeniedNotification.ToString());
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   EnableAutomatedBountyPlacement: " + config.Core.EnableAutomatedBountyPlacement.ToString() + " (true=server automatically places bounties, false=disabled)");
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   AutomatedBountyPlacementIntervalSeconds: " + config.Core.AutomatedBountyPlacementIntervalSeconds.ToString() + " (interval between automated bounty placements, must be >0 if enabled)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   PersistentBountyAfterLogOut: " + config.Core.PersistentBountyAfterLogOut.ToString() + " (true=bounty resumes on relog/restart, false=cleared on logout)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   DontCountSuicide: " + config.Core.DontCountSuicide.ToString() + " (true=non-player death keeps the bounty running, false=death ends it)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   DontCountFriendlyFire: " + config.Core.DontCountFriendlyFire.ToString() + " (true=group/party kill gives no reward and does not end the bounty)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   PauseBountyInSafeZone: " + config.Core.PauseBountyInSafeZone.ToString() + " (true=pause timer in safezone instead of teleporting out)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   BountyWarningTimeSeconds: " + config.Core.BountyWarningTimeSeconds.ToString() + " (0=no warning, >0=warn the server before the bounty starts)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   BountyRequestCostPerMinute: " + config.Core.BountyRequestCostPerMinute.ToString() + " (tokens per requested minute at the board, 0=use flat PlaceBountyTokenRequired)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   BountyRequestMinMinutes: " + config.Core.BountyRequestMinMinutes.ToString() + ", BountyRequestMaxMinutes: " + config.Core.BountyRequestMaxMinutes.ToString());
+			if (config.Core.SuicidePhrases)
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   SuicidePhrases: " + config.Core.SuicidePhrases.Count().ToString() + " phrase(s) configured");
 		}
 		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + " ========================================");
 		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + " Rulebreaker Settings:");
@@ -657,6 +808,62 @@ class obfc_BountyConfig
 			{
 				return false;
 			}
+		}
+		return true;
+	}
+	//! Covers safezone mods without a script API (Dr Jones Trader, TraderPlus, Rearmed) via configured zones.
+	static bool obfm_IsPositionInStaticSafeZone(vector playerPos)
+	{
+		int i;
+		obfc_BountyStaticZone zone;
+		if (!obfv_g_BountyZoneConfig || !obfv_g_BountyZoneConfig.StaticSafeZones)
+			return false;
+		for (i = 0; i < obfv_g_BountyZoneConfig.StaticSafeZones.Count(); i++)
+		{
+			zone = obfv_g_BountyZoneConfig.StaticSafeZones.Get(i);
+			if (!zone)
+				continue;
+			if (zone.obfm_ContainsPosition(playerPos))
+				return true;
+		}
+		return false;
+	}
+	//! Covers territory mods without a script API (Basic Territories, Rearmed) via configured zones.
+	static bool obfm_IsPositionInOwnStaticTerritory(vector playerPos, string guid, string plainId)
+	{
+		int i;
+		obfc_BountyStaticZone zone;
+		if (!obfv_g_BountyZoneConfig || !obfv_g_BountyZoneConfig.StaticTerritoryZones)
+			return false;
+		for (i = 0; i < obfv_g_BountyZoneConfig.StaticTerritoryZones.Count(); i++)
+		{
+			zone = obfv_g_BountyZoneConfig.StaticTerritoryZones.Get(i);
+			if (!zone)
+				continue;
+			if (!zone.obfm_ContainsPosition(playerPos))
+				continue;
+			if (zone.obfm_IsOwner(guid) || zone.obfm_IsOwner(plainId))
+				return true;
+		}
+		return false;
+	}
+	static bool obfm_IsFarEnoughFromStaticTerritories(vector playerPos, string guid, string plainId, float requiredDistance)
+	{
+		int i;
+		obfc_BountyStaticZone zone;
+		float distanceFromEdge;
+		if (!obfv_g_BountyZoneConfig || !obfv_g_BountyZoneConfig.StaticTerritoryZones)
+			return true;
+		for (i = 0; i < obfv_g_BountyZoneConfig.StaticTerritoryZones.Count(); i++)
+		{
+			zone = obfv_g_BountyZoneConfig.StaticTerritoryZones.Get(i);
+			if (!zone)
+				continue;
+			if (!zone.obfm_IsOwner(guid) && !zone.obfm_IsOwner(plainId))
+				continue;
+			distanceFromEdge = zone.obfm_GetDistanceFromEdge(playerPos);
+			if (distanceFromEdge < requiredDistance)
+				return false;
 		}
 		return true;
 	}
@@ -946,6 +1153,72 @@ class obfc_BountyAdminConfig
 				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("AdminGUID " + i.ToString() + ": " + config.AdminGUIDs.Get(i));
 			}
 		}
+	}
+}
+//! Kept out of BountyConfig.json on purpose: BountyConfig is round-tripped through the admin menu
+//! over RPC, and these lists have no admin UI. Own file = no risk of an admin save wiping them.
+class obfc_BountyZoneConfig
+{
+	ref array<ref obfc_BountyStaticZone> StaticSafeZones;
+	ref array<ref obfc_BountyStaticZone> StaticTerritoryZones;
+	void obfc_BountyZoneConfig()
+	{
+		StaticSafeZones = new array<ref obfc_BountyStaticZone>;
+		StaticTerritoryZones = new array<ref obfc_BountyStaticZone>;
+	}
+	void obfm_ValidateConfig()
+	{
+		if (!StaticSafeZones)
+			StaticSafeZones = new array<ref obfc_BountyStaticZone>;
+		if (!StaticTerritoryZones)
+			StaticTerritoryZones = new array<ref obfc_BountyStaticZone>;
+	}
+	void obfm_SaveConfig()
+	{
+		if (IsMissionClient())
+		{
+			return;
+		}
+		obfc_BountyConfig.obfm_CheckDirectories();
+		JsonFileLoader<obfc_BountyZoneConfig>.JsonSaveFile(obfv_Ninjins_Bounty_System_ZONE_CONFIG_FILE, this);
+	}
+	static obfc_BountyZoneConfig obfm_LoadConfig()
+	{
+		obfc_BountyZoneConfig config;
+		if (IsMissionClient())
+		{
+			return null;
+		}
+		obfc_BountyConfig.obfm_CheckDirectories();
+		config = new obfc_BountyZoneConfig();
+		if (FileExist(obfv_Ninjins_Bounty_System_ZONE_CONFIG_FILE))
+		{
+			JsonFileLoader<obfc_BountyZoneConfig>.JsonLoadFile(obfv_Ninjins_Bounty_System_ZONE_CONFIG_FILE, config);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("BountyZoneConfig loaded from file.");
+		}
+		else
+		{
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("BountyZones.json not found. Creating default zone config.");
+		}
+		config.obfm_ValidateConfig();
+		config.obfm_SaveConfig();
+		obfc_BountyZoneConfig.obfm_LogConfig(config);
+		return config;
+	}
+	static void obfm_LogConfig(obfc_BountyZoneConfig config)
+	{
+		int safeZoneCount;
+		int territoryZoneCount;
+		if (!config)
+			return;
+		safeZoneCount = 0;
+		territoryZoneCount = 0;
+		if (config.StaticSafeZones)
+			safeZoneCount = config.StaticSafeZones.Count();
+		if (config.StaticTerritoryZones)
+			territoryZoneCount = config.StaticTerritoryZones.Count();
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyZoneConfig] StaticSafeZones: " + safeZoneCount.ToString() + ", StaticTerritoryZones: " + territoryZoneCount.ToString());
+		Print("[Bounty System] Loaded " + safeZoneCount.ToString() + " static safezone(s) and " + territoryZoneCount.ToString() + " static territory zone(s) from BountyZones.json");
 	}
 }
 const string obfv_Ninjins_Bounty_System_BLACKLIST_CONFIG_FILE = obfv_Ninjins_Bounty_System_ROOT_FOLDER + "Config\\Blacklist.json";

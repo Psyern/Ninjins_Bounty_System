@@ -33,6 +33,7 @@ modded class MissionGameplay
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyReceiveOnlinePlayers", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyAdminReceivePlayers", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyReceiveClaimAmount", this, SingleplayerExecutionType.Client);
+		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyReceivePricing", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyCloseBoardMenu", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyAdminReceiveBlacklist", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyUpdateCountdown", this, SingleplayerExecutionType.Client);
@@ -421,6 +422,27 @@ modded class MissionGameplay
 			{
 				bountyMenu.obfm_UpdateClaimAmount(data.param1);
 				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received claim amount via RPC: " + data.param1.ToString());
+			}
+		}
+	}
+	void BountyReceivePricing(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
+	{
+		if (type != CallType.Client)
+			return;
+		Param3<int, int, int> data;
+		if (!ctx.Read(data))
+		{
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Failed to read board pricing data from RPC.");
+			return;
+		}
+		UIScriptedMenu menu = g_Game.GetUIManager().GetMenu();
+		if (menu && menu.IsInherited(obfc_NinjinsBountyBoardMenu))
+		{
+			obfc_NinjinsBountyBoardMenu bountyMenu = obfc_NinjinsBountyBoardMenu.Cast(menu);
+			if (bountyMenu && data)
+			{
+				bountyMenu.obfm_UpdatePricing(data.param1, data.param2, data.param3);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received board pricing via RPC: " + data.param1.ToString() + " token(s)/minute");
 			}
 		}
 	}

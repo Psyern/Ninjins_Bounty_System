@@ -1,6 +1,44 @@
 class obfc_BountyNotifications
 {
-	static void obfm_SendNotificationInternal(int type, PlayerIdentity identity, string playerName = "", string victimName = "", float durationSeconds = 0.0, int clearedRewardCount = 0, int currentHits = 0, int bountyHitsThreshold = 0, int tokensRequired = 0, int tokensFound = 0, int cooldownSeconds = 0, string containerClassName = "", string errorDetails = "", float remainingDuration = 0.0, BountyType bountyType = BountyType.PLACED, bool rewardGiven = true)
+	static bool obfm_IsBroadcastType(int type)
+	{
+		if (type == obfv_BOUNTY_NOTIFICATION_PLACED_BROADCAST)
+			return true;
+		if (type == obfv_BOUNTY_NOTIFICATION_RULE_BREAKER_BROADCAST)
+			return true;
+		if (type == obfv_BOUNTY_NOTIFICATION_EXPIRED_BROADCAST)
+			return true;
+		if (type == obfv_BOUNTY_NOTIFICATION_WIN_BROADCAST)
+			return true;
+		if (type == obfv_BOUNTY_NOTIFICATION_SUICIDE_BROADCAST)
+			return true;
+		if (type == obfv_BOUNTY_NOTIFICATION_LOGOUT_BROADCAST)
+			return true;
+		if (type == obfv_BOUNTY_NOTIFICATION_WARNING_BROADCAST)
+			return true;
+		return false;
+	}
+	//! Sends an already resolved title/message to every connected player.
+	static void obfm_BroadcastToAll(string title, string message, string iconPath, int color, float duration)
+	{
+		array<Man> players;
+		int i;
+		Man man;
+		PlayerIdentity targetIdentity;
+		players = new array<Man>();
+		g_Game.GetPlayers(players);
+		for (i = 0; i < players.Count(); i++)
+		{
+			man = players.Get(i);
+			if (!man)
+				continue;
+			targetIdentity = man.GetIdentity();
+			if (!targetIdentity)
+				continue;
+			NotificationSystem.Create(new StringLocaliser(title), new StringLocaliser(message), iconPath, color, duration, targetIdentity);
+		}
+	}
+	static void obfm_SendNotificationInternal(int type, PlayerIdentity identity, string playerName = "", string victimName = "", float durationSeconds = 0.0, int clearedRewardCount = 0, int currentHits = 0, int bountyHitsThreshold = 0, int tokensRequired = 0, int tokensFound = 0, int cooldownSeconds = 0, string containerClassName = "", string errorDetails = "", float remainingDuration = 0.0, BountyType bountyType = BountyType.PLACED, bool rewardGiven = true, string winnerName = "")
 	{
 		string title;
 		string message;
@@ -10,6 +48,7 @@ class obfc_BountyNotifications
 		string requiredStr;
 		string foundStr;
 		string cooldownStr;
+		string suicidePhrase;
 		int color;
 		float duration;
 		bool isEnabled;
@@ -19,7 +58,7 @@ class obfc_BountyNotifications
 		PlayerIdentity targetIdentity;
 		if (!IsMissionHost())
 			return;
-		if (!identity && type != obfv_BOUNTY_NOTIFICATION_PLACED_BROADCAST && type != obfv_BOUNTY_NOTIFICATION_RULE_BREAKER_BROADCAST)
+		if (!identity && !obfm_IsBroadcastType(type))
 			return;
 		title = "";
 		message = "";
@@ -253,6 +292,117 @@ class obfc_BountyNotifications
 					}
 				}
 				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyNotifications] Broadcasted rule breaker bounty placed notification to " + players.Count().ToString() + " players. Player: " + playerName + ", Duration: " + durationSeconds.ToString() + " seconds");
+				break;
+			}
+			case obfv_BOUNTY_NOTIFICATION_EXPIRED_BROADCAST:
+			{
+				isEnabled = (obfv_g_BountyConfig && obfv_g_BountyConfig.Broadcasts && obfv_g_BountyConfig.Broadcasts.Expired && obfv_g_BountyConfig.Broadcasts.Expired.Enabled);
+				if (!isEnabled)
+					return;
+				if (obfv_g_BountyConfig.Broadcasts.Expired.Message != "")
+				{
+					message = obfv_g_BountyConfig.Broadcasts.Expired.Message;
+					message.Replace("{PLAYER}", playerName);
+				}
+				if (obfv_g_BountyConfig.Broadcasts.Expired.Title != "")
+					title = obfv_g_BountyConfig.Broadcasts.Expired.Title;
+				if (obfv_g_BountyConfig.Broadcasts.Expired.IconPath != "")
+					iconPath = obfv_g_BountyConfig.Broadcasts.Expired.IconPath;
+				obfm_BroadcastToAll(title, message, iconPath, color, duration);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyNotifications] Broadcasted bounty expired notification. Player: " + playerName);
+				break;
+			}
+			case obfv_BOUNTY_NOTIFICATION_WIN_BROADCAST:
+			{
+				isEnabled = (obfv_g_BountyConfig && obfv_g_BountyConfig.Broadcasts && obfv_g_BountyConfig.Broadcasts.Win && obfv_g_BountyConfig.Broadcasts.Win.Enabled);
+				if (!isEnabled)
+					return;
+				if (obfv_g_BountyConfig.Broadcasts.Win.Message != "")
+				{
+					message = obfv_g_BountyConfig.Broadcasts.Win.Message;
+					message.Replace("{PLAYER}", playerName);
+					message.Replace("{WINNER}", winnerName);
+				}
+				if (obfv_g_BountyConfig.Broadcasts.Win.Title != "")
+					title = obfv_g_BountyConfig.Broadcasts.Win.Title;
+				if (obfv_g_BountyConfig.Broadcasts.Win.IconPath != "")
+					iconPath = obfv_g_BountyConfig.Broadcasts.Win.IconPath;
+				obfm_BroadcastToAll(title, message, iconPath, color, duration);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyNotifications] Broadcasted bounty win notification. Player: " + playerName + ", Winner: " + winnerName);
+				break;
+			}
+			case obfv_BOUNTY_NOTIFICATION_SUICIDE_BROADCAST:
+			{
+				isEnabled = (obfv_g_BountyConfig && obfv_g_BountyConfig.Broadcasts && obfv_g_BountyConfig.Broadcasts.Suicide && obfv_g_BountyConfig.Broadcasts.Suicide.Enabled);
+				if (!isEnabled)
+					return;
+				if (obfv_g_BountyConfig.Broadcasts.Suicide.Message != "")
+				{
+					message = obfv_g_BountyConfig.Broadcasts.Suicide.Message;
+					message.Replace("{PLAYER}", playerName);
+					suicidePhrase = "";
+					if (obfv_g_BountyConfig.Core)
+						suicidePhrase = obfv_g_BountyConfig.Core.obfm_GetRandomSuicidePhrase();
+					message.Replace("{SUICIDE_PHRASE}", suicidePhrase);
+				}
+				if (obfv_g_BountyConfig.Broadcasts.Suicide.Title != "")
+					title = obfv_g_BountyConfig.Broadcasts.Suicide.Title;
+				if (obfv_g_BountyConfig.Broadcasts.Suicide.IconPath != "")
+					iconPath = obfv_g_BountyConfig.Broadcasts.Suicide.IconPath;
+				obfm_BroadcastToAll(title, message, iconPath, color, duration);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyNotifications] Broadcasted bounty suicide notification. Player: " + playerName);
+				break;
+			}
+			case obfv_BOUNTY_NOTIFICATION_LOGOUT_BROADCAST:
+			{
+				isEnabled = (obfv_g_BountyConfig && obfv_g_BountyConfig.Broadcasts && obfv_g_BountyConfig.Broadcasts.Logout && obfv_g_BountyConfig.Broadcasts.Logout.Enabled);
+				if (!isEnabled)
+					return;
+				if (obfv_g_BountyConfig.Broadcasts.Logout.Message != "")
+				{
+					message = obfv_g_BountyConfig.Broadcasts.Logout.Message;
+					message.Replace("{PLAYER}", playerName);
+				}
+				if (obfv_g_BountyConfig.Broadcasts.Logout.Title != "")
+					title = obfv_g_BountyConfig.Broadcasts.Logout.Title;
+				if (obfv_g_BountyConfig.Broadcasts.Logout.IconPath != "")
+					iconPath = obfv_g_BountyConfig.Broadcasts.Logout.IconPath;
+				obfm_BroadcastToAll(title, message, iconPath, color, duration);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyNotifications] Broadcasted bounty logout notification. Player: " + playerName);
+				break;
+			}
+			case obfv_BOUNTY_NOTIFICATION_WARNING_BROADCAST:
+			{
+				isEnabled = (obfv_g_BountyConfig && obfv_g_BountyConfig.Broadcasts && obfv_g_BountyConfig.Broadcasts.Warning && obfv_g_BountyConfig.Broadcasts.Warning.Enabled);
+				if (!isEnabled)
+					return;
+				if (obfv_g_BountyConfig.Broadcasts.Warning.Message != "")
+				{
+					message = obfv_g_BountyConfig.Broadcasts.Warning.Message;
+					message.Replace("{PLAYER}", playerName);
+					durationStr = Math.Ceil(durationSeconds).ToString();
+					message.Replace("{TIME}", durationStr);
+				}
+				if (obfv_g_BountyConfig.Broadcasts.Warning.Title != "")
+					title = obfv_g_BountyConfig.Broadcasts.Warning.Title;
+				if (obfv_g_BountyConfig.Broadcasts.Warning.IconPath != "")
+					iconPath = obfv_g_BountyConfig.Broadcasts.Warning.IconPath;
+				obfm_BroadcastToAll(title, message, iconPath, color, duration);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyNotifications] Broadcasted bounty warning notification. Player: " + playerName + ", Time: " + durationSeconds.ToString() + "s");
+				break;
+			}
+			case obfv_BOUNTY_NOTIFICATION_BOUNTY_PAUSED_IN_SAFEZONE:
+			{
+				isEnabled = (obfv_g_BountyConfig && obfv_g_BountyConfig.Notifications && obfv_g_BountyConfig.Notifications.Other && obfv_g_BountyConfig.Notifications.Other.BountyPausedInSafeZone && obfv_g_BountyConfig.Notifications.Other.BountyPausedInSafeZone.Enabled);
+				if (!isEnabled)
+					return;
+				if (obfv_g_BountyConfig.Notifications.Other.BountyPausedInSafeZone.Title != "")
+					title = obfv_g_BountyConfig.Notifications.Other.BountyPausedInSafeZone.Title;
+				if (obfv_g_BountyConfig.Notifications.Other.BountyPausedInSafeZone.Message != "")
+					message = obfv_g_BountyConfig.Notifications.Other.BountyPausedInSafeZone.Message;
+				if (obfv_g_BountyConfig.Notifications.Other.BountyPausedInSafeZone.IconPath != "")
+					iconPath = obfv_g_BountyConfig.Notifications.Other.BountyPausedInSafeZone.IconPath;
+				NotificationSystem.Create(new StringLocaliser(title), new StringLocaliser(message), iconPath, color, duration, identity);
 				break;
 			}
 			case obfv_BOUNTY_NOTIFICATION_SKIP_SUCCESS:

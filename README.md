@@ -82,24 +82,68 @@ Depending on your server rules, admins may be able to:
 
 ## Configuration
 
-This mod ships with a base configuration (`config.cpp`) and data assets.
+Server-side JSON configs live under `$profile:Ninjins_Bounty_System\Config\`:
 
-Common configuration areas (depending on the script implementation in this version):
+| File | Purpose |
+|---|---|
+| `BountyConfig.json` | Core settings, rule breaker, rewards, map, UI, notifications, broadcasts |
+| `BountySuccessRewardConfig.json` | Reward sections, loot items, currency payouts |
+| `Admins.json` | Admin GUIDs / SteamID64s |
+| `Blacklist.json` | Players excluded from bounties |
+| `BountyZones.json` | Static safezone / territory zones (see below) |
+| `BountyBoardPlacements.json` | Auto-spawned bounty board positions |
 
-- Bounty creation rules
-  - minimum / maximum bounty value
-  - cooldowns
-  - taxes/fees
-  - deposits (items, money, token)
-- Reward rules
-  - payout type (items/token/crate)
-  - reward scaling
-  - blacklist/whitelist of allowed reward items
-- Persistence
-  - save interval
-  - bounty expiration time
+### Legacy `BountySettings.json` equivalents
 
-> If you have a server-side JSON or profile configuration for this mod, keep it under your server profile (recommended) and document the path in this section.
+Servers migrating from the original (2022) bounty mod map their settings as follows — all keys live in `Core` of `BountyConfig.json` unless noted:
+
+| Legacy setting | Here |
+|---|---|
+| `MinimumPlayerCount` | `MinOnlinePlayersRequired` |
+| `PersistentBountyAfterLogOut` | `PersistentBountyAfterLogOut` |
+| `BountyExpirationTime` | `PlacedBounty.BountyDurationSeconds` |
+| `DisableTimerInSafezone` | `PauseBountyInSafeZone` |
+| `DisableTimerInTerritory` | `PauseBountyInTerritory` |
+| `DontCountFriendlyFire` | `DontCountFriendlyFire` |
+| `DontCountSuicide` | `DontCountSuicide` |
+| `PlayerPositionRefreshTimer` | `Map.BountyMapUpdateIntervalSeconds` |
+| `NotificationHeader` / `NotificationIcon` | per-message `Title` / `IconPath` |
+| `BountyWarningTime` | `BountyWarningTimeSeconds` |
+| `BountyExpiredMessage` | `Broadcasts.Expired` |
+| `BountyWinMessage` | `Broadcasts.Win` (`{PLAYER}`, `{WINNER}`) |
+| `BountySuicideMessage` | `Broadcasts.Suicide` (`{PLAYER}`, `{SUICIDE_PHRASE}`) |
+| `BountyWarningMessage` | `Broadcasts.Warning` (`{PLAYER}`, `{TIME}`) |
+| `BountyLogoutMessage` | `Broadcasts.Logout` (`{PLAYER}`) |
+| `SuicidePhrases` | `SuicidePhrases` |
+| `RequiredPlayerLifetime` | `MinimumPlayerLifetimeSeconds` |
+| `BountyRewards` | `BountySuccessRewardConfig.json` |
+| `BountyBlacklist` | `Blacklist.json` (accepts SteamID64 **and** DayZ GUID) |
+| `BountyRequestCostPerMinute` | `BountyRequestCostPerMinute` (+ `BountyRequestMinMinutes` / `BountyRequestMaxMinutes`) |
+
+Notes:
+
+- `PauseBountyInSafeZone` and `TeleportOutOfSafeZone` are mutually exclusive; enabling the pause disables the teleport automatically.
+- `BountyRequestCostPerMinute` is in bounty tokens. When it is `> 0` the bounty board shows a duration field and charges `minutes x cost`. Set it to `0` to keep the flat `PlaceBountyTokenRequired` price and a fixed duration.
+- Detected automatically: **Expansion** and **NinjinsPvPPvE** safezones, **Expansion** territories, **Expansion parties** and **LB Advanced Groups** for friendly fire.
+
+### `BountyZones.json`
+
+Safezone and territory mods without a script API (Dr Jones Trader, TraderPlus, Rearmed, Basic Territories) are covered by re-entering their coordinates here:
+
+```json
+{
+    "StaticSafeZones": [
+        { "Name": "Green Mountain Trader", "Position": [3707.0, 402.0, 5972.0], "Radius": 250.0, "OwnerGUIDs": [] }
+    ],
+    "StaticTerritoryZones": [
+        { "Name": "Base North", "Position": [7500.0, 200.0, 8200.0], "Radius": 150.0, "OwnerGUIDs": ["76561198000000000"] }
+    ]
+}
+```
+
+`OwnerGUIDs` is only evaluated for territory zones and accepts SteamID64 or DayZ GUID. Safezones ignore it and apply to everyone.
+
+> This file is intentionally separate from `BountyConfig.json`: the admin menu round-trips `BountyConfig.json` over RPC, and these lists have no admin UI — keeping them apart prevents an admin save from clearing them.
 
 ---
 

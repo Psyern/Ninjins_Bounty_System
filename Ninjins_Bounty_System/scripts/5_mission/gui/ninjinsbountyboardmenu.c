@@ -8,10 +8,82 @@ class obfc_NinjinsBountyBoardMenu extends UIScriptedMenu
 	private ButtonWidget obfv_m_BttnClose;
 	private TextListboxWidget obfv_m_BountyOnlinePlayersList;
 	private TextWidget obfv_m_ClaimAmount;
+	private TextWidget obfv_m_BountyMinutesLabel;
+	private TextWidget obfv_m_BountyCostLabel;
+	private EditBoxWidget obfv_m_BountyMinutes;
 	private ref array<string> obfv_m_OnlinePlayerIdentifiers;
+	private int obfv_m_CostPerMinute;
+	private int obfv_m_MinMinutes;
+	private int obfv_m_MaxMinutes;
 	void obfc_NinjinsBountyBoardMenu()
 	{
 		obfv_m_OnlinePlayerIdentifiers = new array<string>();
+		obfv_m_CostPerMinute = 0;
+		obfv_m_MinMinutes = 1;
+		obfv_m_MaxMinutes = 1;
+	}
+	//! Clamped to the server-provided range so the displayed cost matches what the server will charge.
+	private int obfm_GetRequestedMinutes()
+	{
+		int minutes;
+		if (!obfv_m_BountyMinutes)
+			return obfv_m_MinMinutes;
+		minutes = obfv_m_BountyMinutes.GetText().ToInt();
+		if (minutes < obfv_m_MinMinutes)
+			minutes = obfv_m_MinMinutes;
+		if (minutes > obfv_m_MaxMinutes)
+			minutes = obfv_m_MaxMinutes;
+		return minutes;
+	}
+	void obfm_UpdatePricing(int costPerMinute, int minMinutes, int maxMinutes)
+	{
+		bool perMinuteActive;
+		obfv_m_CostPerMinute = costPerMinute;
+		obfv_m_MinMinutes = minMinutes;
+		obfv_m_MaxMinutes = maxMinutes;
+		if (obfv_m_MinMinutes < 1)
+			obfv_m_MinMinutes = 1;
+		if (obfv_m_MaxMinutes < obfv_m_MinMinutes)
+			obfv_m_MaxMinutes = obfv_m_MinMinutes;
+		perMinuteActive = obfv_m_CostPerMinute > 0;
+		if (obfv_m_BountyMinutesLabel)
+			obfv_m_BountyMinutesLabel.Show(perMinuteActive);
+		if (obfv_m_BountyMinutes)
+			obfv_m_BountyMinutes.Show(perMinuteActive);
+		if (obfv_m_BountyCostLabel)
+			obfv_m_BountyCostLabel.Show(perMinuteActive);
+		if (!perMinuteActive)
+			return;
+		if (obfv_m_BountyMinutes)
+			obfv_m_BountyMinutes.SetText(obfv_m_MinMinutes.ToString());
+		if (obfv_m_BountyMinutesLabel)
+			obfv_m_BountyMinutesLabel.SetText("Duration in minutes (" + obfv_m_MinMinutes.ToString() + "-" + obfv_m_MaxMinutes.ToString() + ")");
+		obfm_RefreshCostLabel();
+	}
+	void obfm_RefreshCostLabel()
+	{
+		int minutes;
+		int totalCost;
+		if (!obfv_m_BountyCostLabel)
+			return;
+		if (obfv_m_CostPerMinute <= 0)
+		{
+			obfv_m_BountyCostLabel.SetText("");
+			return;
+		}
+		minutes = obfm_GetRequestedMinutes();
+		totalCost = obfv_m_CostPerMinute * minutes;
+		obfv_m_BountyCostLabel.SetText("Cost: " + totalCost.ToString() + " token(s)");
+	}
+	override bool OnChange(Widget w, int x, int y, bool finished)
+	{
+		super.OnChange(w, x, y, finished);
+		if (w == obfv_m_BountyMinutes)
+		{
+			obfm_RefreshCostLabel();
+			return true;
+		}
+		return false;
 	}
 	private string obfm_GetPlayerEntryDisplayName(string entry)
 	{
@@ -45,6 +117,11 @@ class obfc_NinjinsBountyBoardMenu extends UIScriptedMenu
 		obfv_m_BttnClose = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BttnClose"));
 		obfv_m_BountyOnlinePlayersList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("OnlinePlayersList"));
 		obfv_m_ClaimAmount = TextWidget.Cast(layoutRoot.FindAnyWidget("ClaimAmount"));
+		obfv_m_BountyMinutesLabel = TextWidget.Cast(layoutRoot.FindAnyWidget("BountyMinutesLabel"));
+		obfv_m_BountyMinutes = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyMinutes"));
+		obfv_m_BountyCostLabel = TextWidget.Cast(layoutRoot.FindAnyWidget("BountyCostLabel"));
+		if (obfv_m_BountyMinutes)
+			obfv_m_BountyMinutes.SetHandler(this);
 		if (!obfv_m_BountyOnlinePlayersList)
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[NinjinsBountyBoardMenu] OnlinePlayersList widget not found in layout!");
@@ -55,7 +132,17 @@ class obfc_NinjinsBountyBoardMenu extends UIScriptedMenu
 		}
 		obfm_RefreshOnlinePlayers();
 		obfm_RefreshClaimAmount();
+		obfm_RefreshPricing();
 		return layoutRoot;
+	}
+	void obfm_RefreshPricing()
+	{
+		PlayerBase player;
+		player = PlayerBase.Cast(g_Game.GetPlayer());
+		if (!player || !player.GetIdentity())
+			return;
+		GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyRequestPricing", new Param1<int>(0), true, player.GetIdentity());
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[NinjinsBountyBoardMenu] Requested board pricing from server via RPC");
 	}
 	override void OnShow()
 	{
@@ -71,6 +158,7 @@ class obfc_NinjinsBountyBoardMenu extends UIScriptedMenu
 		SetFocus(layoutRoot);
 		obfm_RefreshOnlinePlayers();
 		obfm_RefreshClaimAmount();
+		obfm_RefreshPricing();
 	}
 	void obfm_RefreshClaimAmount()
 	{
@@ -114,6 +202,7 @@ class obfc_NinjinsBountyBoardMenu extends UIScriptedMenu
 		int selectedRow;
 		string selectedPlayerName;
 		string selectedPlayerIdentifier;
+		string placeBountyAction;
 		super.OnClick(w, x, y, button);
 		player = PlayerBase.Cast(g_Game.GetPlayer());
 		if (!player || !player.GetIdentity())
@@ -155,8 +244,13 @@ class obfc_NinjinsBountyBoardMenu extends UIScriptedMenu
 					obfv_m_BountyOnlinePlayersList.GetItemText(selectedRow, 0, selectedPlayerName);
 					if (selectedPlayerIdentifier != "")
 					{
-						GetRPCManager().SendRPC("Ninjins_Bounty_System", "BoardBountyAction", new Param1<string>("PlaceBountyOnPlayer:" + selectedPlayerIdentifier), true, player.GetIdentity());
-						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[NinjinsBountyBoardMenu] Place Bounty button clicked for player: " + selectedPlayerName);
+						placeBountyAction = "PlaceBountyOnPlayer:" + selectedPlayerIdentifier;
+						if (obfv_m_CostPerMinute > 0)
+						{
+							placeBountyAction = placeBountyAction + "@@" + obfm_GetRequestedMinutes().ToString();
+						}
+						GetRPCManager().SendRPC("Ninjins_Bounty_System", "BoardBountyAction", new Param1<string>(placeBountyAction), true, player.GetIdentity());
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[NinjinsBountyBoardMenu] Place Bounty button clicked for player: " + selectedPlayerName + " (action: " + placeBountyAction + ")");
 					}
 					else
 					{

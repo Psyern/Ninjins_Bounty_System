@@ -51,6 +51,11 @@ class obfc_BountyModule : CF_ModuleWorld
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("Failed to load BountySuccessRewardConfig!");
 		}
+		obfv_g_BountyZoneConfig = obfc_BountyZoneConfig.obfm_LoadConfig();
+		if (!obfv_g_BountyZoneConfig)
+		{
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("Failed to load BountyZoneConfig!");
+		}
 		obfm_InitBountyBoardPlacementConfig();
 		obfm_SpawnConfiguredBountyBoards();
 		obfv_m_BountyManager = obfc_BountyManager.GetInstance();
@@ -62,6 +67,7 @@ class obfc_BountyModule : CF_ModuleWorld
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyRequestOnlinePlayers", this, SingleplayerExecutionType.Server);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyAdminRequestPlayers", this, SingleplayerExecutionType.Server);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyRequestClaimAmount", this, SingleplayerExecutionType.Server);
+		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyRequestPricing", this, SingleplayerExecutionType.Server);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyAdminRequestBlacklist", this, SingleplayerExecutionType.Server);
 		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Registered all RPC handlers");
 	}
@@ -929,6 +935,9 @@ class obfc_BountyModule : CF_ModuleWorld
 				obfv_g_BountyConfig.Core.TeleportOutOfSafeZoneDistance = updatedConfig.Core.TeleportOutOfSafeZoneDistance;
 				obfv_g_BountyConfig.Core.MinimumPlayerLifetimeSeconds = updatedConfig.Core.MinimumPlayerLifetimeSeconds;
 				obfv_g_BountyConfig.Core.AutomatedBountyPlacementIntervalSeconds = updatedConfig.Core.AutomatedBountyPlacementIntervalSeconds;
+				//! Fields without an admin-menu widget are deliberately NOT merged from the client payload -
+				//! the client would send constructor defaults and wipe them. They stay in the live config,
+				//! get written back by SaveConfig() below and are re-read by ReloadAllConfigs().
 			}
 			if (updatedConfig.RuleBreaker && obfv_g_BountyConfig.RuleBreaker)
 			{
@@ -1139,6 +1148,7 @@ class obfc_BountyModule : CF_ModuleWorld
 					obfv_g_BountyConfig.Broadcasts.RuleBreaker.Message = updatedConfig.Broadcasts.RuleBreaker.Message;
 					obfv_g_BountyConfig.Broadcasts.RuleBreaker.IconPath = updatedConfig.Broadcasts.RuleBreaker.IconPath;
 				}
+				//! Expired/Win/Suicide/Logout/Warning have no admin-menu widgets - see the Core note above.
 			}
 			obfv_g_BountyConfig.obfm_ValidateConfig();
 			obfv_g_BountyConfig.obfm_SaveConfig();
@@ -1204,6 +1214,11 @@ class obfc_BountyModule : CF_ModuleWorld
 		string targetPlayerName = "";
 		string targetPlayerIdentifier = "";
 		PlayerBase targetPlayer = null;
+		int requestedMinutes = 0;
+		int minuteSeparatorIndex = -1;
+		int costPerMinute = 0;
+		string requestedMinutesStr = "";
+		float requestedDurationSeconds = 0.0;
 		int i;
 		Man man;
 		PlayerBase playerBase;
@@ -1349,9 +1364,35 @@ class obfc_BountyModule : CF_ModuleWorld
 		{
 			tokensRequired = 0;
 			tokensRemoved = 0;
+			requestedMinutes = 0;
+			requestedDurationSeconds = 0.0;
+			targetPlayerIdentifier = action;
+			targetPlayerIdentifier.Replace("PlaceBountyOnPlayer:", "");
+			//! Optional "@@<minutes>" suffix - only sent while per-minute pricing is active.
+			minuteSeparatorIndex = targetPlayerIdentifier.IndexOf("@@");
+			if (minuteSeparatorIndex >= 0)
+			{
+				requestedMinutesStr = targetPlayerIdentifier.Substring(minuteSeparatorIndex + 2, targetPlayerIdentifier.Length() - (minuteSeparatorIndex + 2));
+				requestedMinutes = requestedMinutesStr.ToInt();
+				targetPlayerIdentifier = targetPlayerIdentifier.Substring(0, minuteSeparatorIndex);
+			}
 			if (obfv_g_BountyConfig)
 			{
-				tokensRequired = obfv_g_BountyConfig.Core.PlaceBountyTokenRequired;
+				costPerMinute = obfv_g_BountyConfig.Core.BountyRequestCostPerMinute;
+				if (costPerMinute > 0)
+				{
+					if (requestedMinutes < obfv_g_BountyConfig.Core.BountyRequestMinMinutes)
+						requestedMinutes = obfv_g_BountyConfig.Core.BountyRequestMinMinutes;
+					if (requestedMinutes > obfv_g_BountyConfig.Core.BountyRequestMaxMinutes)
+						requestedMinutes = obfv_g_BountyConfig.Core.BountyRequestMaxMinutes;
+					tokensRequired = costPerMinute * requestedMinutes;
+					requestedDurationSeconds = requestedMinutes * 60.0;
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Per-minute pricing active - " + requestedMinutes.ToString() + " minute(s) x " + costPerMinute.ToString() + " token(s) = " + tokensRequired.ToString() + " token(s)");
+				}
+				else
+				{
+					tokensRequired = obfv_g_BountyConfig.Core.PlaceBountyTokenRequired;
+				}
 			}
 			if (tokensRequired > 0)
 			{
@@ -1363,8 +1404,6 @@ class obfc_BountyModule : CF_ModuleWorld
 					return;
 				}
 			}
-			targetPlayerIdentifier = action;
-			targetPlayerIdentifier.Replace("PlaceBountyOnPlayer:", "");
 			if (targetPlayerIdentifier != "")
 			{
 				targetPlayer = obfm_FindOnlinePlayerByIdentifier(targetPlayerIdentifier);
@@ -1379,7 +1418,7 @@ class obfc_BountyModule : CF_ModuleWorld
 						obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLAYER_ON_COOLDOWN, sender, actualPlayerName, "", 0.0, 0, 0, 0, 0, 0, cooldownSeconds);
 						return;
 					}
-					success = obfc_BountyManager.obfm_ApplyBountyToPlayer(targetPlayer, player, 0.0, "Bounty placed by " + sender.GetName() + " via bounty board", BountyType.PLACED);
+					success = obfc_BountyManager.obfm_ApplyBountyToPlayer(targetPlayer, player, requestedDurationSeconds, "Bounty placed by " + sender.GetName() + " via bounty board", BountyType.PLACED);
 					if (success)
 					{
 						if (tokensRequired > 0)
@@ -1659,6 +1698,32 @@ class obfc_BountyModule : CF_ModuleWorld
 		result = new Param1<int>(totalClaimAmount);
 		GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyReceiveClaimAmount", result, true, sender);
 		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Sent claim amount to " + sender.GetName() + ": " + totalClaimAmount.ToString());
+	}
+	//! Sends the board pricing model to the client so it can show the duration input and live cost.
+	void BountyRequestPricing(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
+	{
+		PlayerBase requestingPlayer;
+		int costPerMinute;
+		int minMinutes;
+		int maxMinutes;
+		Param3<int, int, int> result;
+		if (type != CallType.Server || !sender)
+			return;
+		requestingPlayer = PlayerBase.Cast(sender.GetPlayer());
+		if (!requestingPlayer)
+			return;
+		costPerMinute = 0;
+		minMinutes = 1;
+		maxMinutes = 1;
+		if (obfv_g_BountyConfig && obfv_g_BountyConfig.Core)
+		{
+			costPerMinute = obfv_g_BountyConfig.Core.BountyRequestCostPerMinute;
+			minMinutes = obfv_g_BountyConfig.Core.BountyRequestMinMinutes;
+			maxMinutes = obfv_g_BountyConfig.Core.BountyRequestMaxMinutes;
+		}
+		result = new Param3<int, int, int>(costPerMinute, minMinutes, maxMinutes);
+		GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyReceivePricing", result, true, sender);
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Sent board pricing to " + sender.GetName() + ": " + costPerMinute.ToString() + " token(s)/minute, range " + minMinutes.ToString() + "-" + maxMinutes.ToString());
 	}
 	void BountyAdminRequestBlacklist(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
 	{
