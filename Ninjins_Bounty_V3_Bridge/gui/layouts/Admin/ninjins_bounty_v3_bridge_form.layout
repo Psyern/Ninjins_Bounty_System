@@ -1,0 +1,126 @@
+PanelWidgetClass ninjins_bounty_v3_bridge_form_root {
+ visible 1
+ clipchildren 1
+ ignorepointer 0
+ color 0.074 0.066 0.09 0.94
+ position 0 0
+ size 896 775
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ scriptclass "NinjinsBntyV3_AdmForm"
+ style DayZDefaultPanel
+ {
+  PanelWidgetClass main_panel {
+   visible 1
+   clipchildren 1
+   ignorepointer 0
+   position 4 4
+   size 888 711
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   style blank
+  }
+  PanelWidgetClass bounty_v3_bridge_footer {
+   visible 1
+   ignorepointer 1
+   color 0.058 0.052 0.069 0.96
+   position 4 719
+   size 888 52
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   style DayZDefaultPanel
+   {
+    ButtonWidgetClass view_raw_button {
+     visible 1
+     clipchildren 0
+     ignorepointer 0
+     color 0.125 0.09 0.175 0.84
+     position 784 12
+     size 28 28
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style Default
+     {
+      ImageWidgetClass view_raw_button_icon {
+       ignorepointer 1
+       size 25 25
+       halign center_ref
+       valign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       mode additive
+       "src alpha" 1
+       "stretch mode" stretch_w_h
+      }
+     }
+    }
+    ButtonWidgetClass reload_button {
+     visible 1
+     clipchildren 0
+     ignorepointer 0
+     color 0.125 0.09 0.175 0.84
+     position 818 12
+     size 28 28
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style Default
+     {
+      ImageWidgetClass reload_button_icon {
+       ignorepointer 1
+       size 25 25
+       halign center_ref
+       valign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       mode additive
+       "src alpha" 1
+       "stretch mode" stretch_w_h
+      }
+     }
+    }
+    ButtonWidgetClass save_button {
+     visible 1
+     clipchildren 0
+     ignorepointer 0
+     color 0.125 0.09 0.175 0.84
+     position 852 12
+     size 28 28
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style Default
+     {
+      ImageWidgetClass save_button_icon {
+       ignorepointer 1
+       size 25 25
+       halign center_ref
+       valign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       mode additive
+       "src alpha" 1
+       "stretch mode" stretch_w_h
+      }
+     }
+    }
+   }
+  }
+ }
+}

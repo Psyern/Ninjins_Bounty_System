@@ -1,0 +1,1 @@
+#define Ninjins_Bounty_V3_Bridge

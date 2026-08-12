@@ -5,6 +5,11 @@
 *.bisign
 *.bikey
 
+# Packed asset source archives (keep model/texture sources out of the repo)
+*.rar
+*.zip
+*.7z
+
 # Game / server logs
 *.RPT
 *.log
