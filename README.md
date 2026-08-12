@@ -54,7 +54,6 @@ Ninjins_Bounty/                        ← repository root (this README)
 │   ├── gui/layouts/Admin/             ← server sidebar form + group label
 │   ├── scripts/                       ← Common / 3_Game / 4_World / 5_Mission
 │   └── BOUNTY_SYSTEM_CHANGES.md       ← which base-mod hooks the bridge relies on
-├── OBFUSCATION.md                     ← PBO Tools prefixes + packing instructions
 └── README.md
 ```
 
@@ -670,8 +669,8 @@ Deliberately left readable: modded classes, overrides, CF RPC handlers resolved 
 literals, JSON config keys, `netSync_` members, config.cpp-bound classnames, enums, and names shared
 with foreign types.
 
-See [`OBFUSCATION.md`](OBFUSCATION.md) for the full exclusion list and the packing procedure for
-interdependent mods.
+The full exclusion list and the packing procedure for interdependent mods are kept outside this
+repository.
 
 ---
 
