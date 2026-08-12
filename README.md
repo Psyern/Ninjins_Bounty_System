@@ -1,7 +1,7 @@
 # Ninjins Bounty System
 
 <p align="center">
-  <img src="Ninjins_Bounty_System/gui/layouts/ninjinsbountyboardimage.png" alt="Ninjins Bounty System" width="800">
+  <img src="psyern_ninjin_bounty_mod.png" alt="Psyern × Ninjin — Ninjins Bounty System" width="900">
 </p>
 
 <p align="center">
@@ -416,6 +416,10 @@ lives under `Core` in `BountyConfig.json`.
 ---
 
 ## Bounty Board
+
+<p align="center">
+  <img src="Ninjins_Bounty_System/gui/layouts/ninjinsbountyboardimage.png" alt="Bounty Board" width="800">
+</p>
 
 The board is the player-facing entry point. Look at it and use the interaction action to open it.
 
