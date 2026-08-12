@@ -663,10 +663,16 @@ modded class PlayerBase
 		dmgUtils.GrenadeAttackerContext(ctx, EntityAI.Cast(killer));
 		killerPlayer = ctx.Player;
 		#else
+		//! Same resolution order as vanilla PluginAdminLog.PlayerKilled: the killer object is often
+		//! the weapon/item, with the player as its hierarchy parent - only fall back to the object itself.
+		EntityAI killerEntity;
 		killerPlayer = null;
-		if (killer && killer.IsInherited(SurvivorBase))
+		killerEntity = EntityAI.Cast(killer);
+		if (killerEntity)
 		{
-			killerPlayer = PlayerBase.Cast(killer);
+			killerPlayer = PlayerBase.Cast(killerEntity.GetHierarchyParent());
+			if (!killerPlayer)
+				killerPlayer = PlayerBase.Cast(killerEntity);
 		}
 		#endif
 		isSuicide = (!killerPlayer || killerPlayer == this);
