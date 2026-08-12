@@ -34,9 +34,9 @@
 > **Maintenance notice (DayZ 1.29+)**
 >
 > With the DayZ **1.29** update, maintenance and updates of this mod moved to **Psyern**.
-> **Ninjin (Naij0)** — the original author — is stepping into retirement and no longer actively
-> maintains the project. This fork's goal is compatibility, stability and minimal disruption for
-> communities already running the mod.
+> **Ninjin (Naij0)** — the original author — is back and now develops this mod together with
+> **Psyern**. The goal stays compatibility, stability and minimal disruption for communities
+> already running the mod.
 
 ---
 
