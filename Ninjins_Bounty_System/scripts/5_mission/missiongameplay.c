@@ -341,14 +341,23 @@ modded class MissionGameplay
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Failed to read admin players data from RPC.");
 			return;
 		}
-		UIScriptedMenu menu = g_Game.GetUIManager().GetMenu();
+		if (!data || !data.param1)
+			return;
+		obfm_OnBountyAdminPlayersReceived(data.param1);
+	}
+	void obfm_OnBountyAdminPlayersReceived(array<string> players)
+	{
+		UIScriptedMenu menu;
+		obfc_BountyAdminMenu adminMenu;
+
+		menu = g_Game.GetUIManager().GetMenu();
 		if (menu && menu.IsInherited(obfc_BountyAdminMenu))
 		{
-			obfc_BountyAdminMenu adminMenu = obfc_BountyAdminMenu.Cast(menu);
-			if (adminMenu && data && data.param1)
+			adminMenu = obfc_BountyAdminMenu.Cast(menu);
+			if (adminMenu)
 			{
-				adminMenu.obfm_UpdatePlayersList(data.param1);
-				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received " + data.param1.Count().ToString() + " admin players via RPC.");
+				adminMenu.obfm_UpdatePlayersList(players);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received " + players.Count().ToString() + " admin players via RPC.");
 			}
 		}
 	}
@@ -362,14 +371,23 @@ modded class MissionGameplay
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[MissionGameplay] Failed to read blacklist data from RPC.");
 			return;
 		}
-		UIScriptedMenu menu = g_Game.GetUIManager().GetMenu();
+		if (!data || !data.param1)
+			return;
+		obfm_OnBountyAdminBlacklistReceived(data.param1);
+	}
+	void obfm_OnBountyAdminBlacklistReceived(array<string> blacklistedPlayers)
+	{
+		UIScriptedMenu menu;
+		obfc_BountyAdminMenu adminMenu;
+
+		menu = g_Game.GetUIManager().GetMenu();
 		if (menu && menu.IsInherited(obfc_BountyAdminMenu))
 		{
-			obfc_BountyAdminMenu adminMenu = obfc_BountyAdminMenu.Cast(menu);
-			if (adminMenu && data && data.param1)
+			adminMenu = obfc_BountyAdminMenu.Cast(menu);
+			if (adminMenu)
 			{
-				adminMenu.obfm_UpdateBlacklistedPlayersList(data.param1);
-				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received " + data.param1.Count().ToString() + " blacklisted players via RPC.");
+				adminMenu.obfm_UpdateBlacklistedPlayersList(blacklistedPlayers);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[MissionGameplay] Received " + blacklistedPlayers.Count().ToString() + " blacklisted players via RPC.");
 			}
 		}
 	}

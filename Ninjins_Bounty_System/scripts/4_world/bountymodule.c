@@ -543,10 +543,10 @@ class obfc_BountyModule : CF_ModuleWorld
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminAction: Player not found for identity: " + sender.GetName());
 			return;
 		}
-		if (!player.obfm_IsBountyAdmin())
+		if (!player.obfm_MayRunBountyAdminTools())
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminAction: Access denied for non-admin player: " + sender.GetName());
-			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender);
+			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender, null);
 			return;
 		}
 		bool success;
@@ -909,10 +909,10 @@ class obfc_BountyModule : CF_ModuleWorld
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminUpdateConfig: Player not found for identity: " + sender.GetName());
 			return;
 		}
-		if (!player.obfm_IsBountyAdmin())
+		if (!player.obfm_MayRunBountyAdminTools())
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminUpdateConfig: Access denied for non-admin player: " + sender.GetName());
-			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender);
+			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender, null);
 			return;
 		}
 		if (obfv_g_BountyConfig)
@@ -1171,7 +1171,7 @@ class obfc_BountyModule : CF_ModuleWorld
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminRequestConfig: Player not found for identity: " + sender.GetName());
 			return;
 		}
-		if (!player.obfm_IsBountyAdmin())
+		if (!player.obfm_MayRunBountyAdminTools())
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminRequestConfig: Access denied for non-admin player: " + sender.GetName());
 			return;
@@ -1309,7 +1309,7 @@ class obfc_BountyModule : CF_ModuleWorld
 			if (availablePlayers.Count() == 0)
 			{
 				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] No available players to transfer bounty to for " + sender.GetName() + " - tokens not consumed");
-				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_SKIP_NO_PLAYERS, sender);
+				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_SKIP_NO_PLAYERS, sender, null);
 				return;
 			}
 			tokensRequired = 0;
@@ -1323,7 +1323,11 @@ class obfc_BountyModule : CF_ModuleWorld
 				if (totalTokenQuantity < tokensRequired)
 				{
 					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to skip bounty but doesn't have enough tokens. Required: " + tokensRequired.ToString() + ", Found: " + totalTokenQuantity.ToString());
-					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_INSUFFICIENT_TOKENS, sender, "", "", 0.0, 0, 0, 0, tokensRequired, totalTokenQuantity);
+					obfc_BountyNotifArgs notifArgs4;
+					notifArgs4 = new obfc_BountyNotifArgs();
+					notifArgs4.tokensRequired = tokensRequired;
+					notifArgs4.tokensFound = totalTokenQuantity;
+					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_INSUFFICIENT_TOKENS, sender, notifArgs4);
 					return;
 				}
 			}
@@ -1351,9 +1355,12 @@ class obfc_BountyModule : CF_ModuleWorld
 					}
 					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Removed " + tokensRemoved.ToString() + " tokens from player " + sender.GetName());
 				}
-				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_BOUNTY_SKIPPED, sender);
+				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_BOUNTY_SKIPPED, sender, null);
 				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Transferred bounty from " + skippingPlayerName + " to " + targetPlayerName + " (skip action). New Duration: " + newDuration.ToString() + "s, BountyType: " + bountyType.ToString());
-				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_SKIP_SUCCESS, sender, targetPlayerName);
+				obfc_BountyNotifArgs notifArgs6;
+				notifArgs6 = new obfc_BountyNotifArgs();
+				notifArgs6.playerName = targetPlayerName;
+				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_SKIP_SUCCESS, sender, notifArgs6);
 			}
 			else
 			{
@@ -1400,7 +1407,11 @@ class obfc_BountyModule : CF_ModuleWorld
 				if (totalTokenQuantity < tokensRequired)
 				{
 					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to place bounty but doesn't have enough tokens. Required: " + tokensRequired.ToString() + ", Found: " + totalTokenQuantity.ToString());
-					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_INSUFFICIENT_TOKENS, sender, "", "", 0.0, 0, 0, 0, tokensRequired, totalTokenQuantity);
+					obfc_BountyNotifArgs notifArgs7;
+					notifArgs7 = new obfc_BountyNotifArgs();
+					notifArgs7.tokensRequired = tokensRequired;
+					notifArgs7.tokensFound = totalTokenQuantity;
+					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_INSUFFICIENT_TOKENS, sender, notifArgs7);
 					return;
 				}
 			}
@@ -1415,7 +1426,11 @@ class obfc_BountyModule : CF_ModuleWorld
 						float cooldownRemaining = targetPlayer.obfm_GetBountyCooldownRemaining();
 						int cooldownSeconds = Math.Ceil(cooldownRemaining);
 						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Cannot place bounty on " + actualPlayerName + " - player is on cooldown (" + cooldownSeconds.ToString() + " seconds remaining)");
-						obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLAYER_ON_COOLDOWN, sender, actualPlayerName, "", 0.0, 0, 0, 0, 0, 0, cooldownSeconds);
+						obfc_BountyNotifArgs notifArgs8;
+						notifArgs8 = new obfc_BountyNotifArgs();
+						notifArgs8.playerName = actualPlayerName;
+						notifArgs8.cooldownSeconds = cooldownSeconds;
+						obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLAYER_ON_COOLDOWN, sender, notifArgs8);
 						return;
 					}
 					success = obfc_BountyManager.obfm_ApplyBountyToPlayer(targetPlayer, player, requestedDurationSeconds, "Bounty placed by " + sender.GetName() + " via bounty board", BountyType.PLACED);
@@ -1641,10 +1656,10 @@ class obfc_BountyModule : CF_ModuleWorld
 		requestingPlayer = PlayerBase.Cast(sender.GetPlayer());
 		if (!requestingPlayer)
 			return;
-		if (!requestingPlayer.obfm_IsBountyAdmin())
+		if (!requestingPlayer.obfm_MayRunBountyAdminTools())
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminRequestPlayers: Access denied for non-admin player: " + sender.GetName());
-			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender);
+			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender, null);
 			return;
 		}
 		requestingIdentity = requestingPlayer.GetIdentity();
@@ -1745,10 +1760,10 @@ class obfc_BountyModule : CF_ModuleWorld
 		requestingPlayer = PlayerBase.Cast(sender.GetPlayer());
 		if (!requestingPlayer)
 			return;
-		if (!requestingPlayer.obfm_IsBountyAdmin())
+		if (!requestingPlayer.obfm_MayRunBountyAdminTools())
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] BountyAdminRequestBlacklist: Access denied for non-admin player: " + sender.GetName());
-			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender);
+			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_COMMAND_ACCESS_DENIED, sender, null);
 			return;
 		}
 		blacklistList = new array<string>();

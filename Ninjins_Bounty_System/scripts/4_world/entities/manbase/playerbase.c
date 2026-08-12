@@ -32,8 +32,10 @@ modded class PlayerBase
 		obfv_m_PendingSuccessRewardCount = 0;
 		obfv_m_BountyPaused = false;
 		netSync_BountyPaused = false;
+#ifndef NinjinsPvPPvE
 		netSync_IsInSafeZone = false;
 		netSync_IsSZOnExit = false;
+#endif
 	}
 	override void SetActions(out TInputActionMap InputActionMap) {
 		super.SetActions(InputActionMap);
@@ -42,6 +44,21 @@ modded class PlayerBase
 	bool obfm_IsBountyAdmin()
 	{
 		return netSync_BountyIsAdmin;
+	}
+	//! Overridable: base = bounty Admins.json; v3 bridge also allows Core admin menu access.
+	bool obfm_MayRunBountyAdminTools()
+	{
+		return obfm_IsBountyAdmin();
+	}
+	//! Overridable: base reads old PvPPvE netSync via GetClassVar; v3 bridge uses NinjinsUpgraded_IsInPvEZone.
+	bool obfm_BountyPlayerInPvEZone()
+	{
+		bool inPvE;
+
+		inPvE = false;
+		if (EnScript.GetClassVar(this, "netSync_IsInPvEZone", 0, inPvE))
+			return inPvE;
+		return false;
 	}
 	void obfm_SetBountyAdminStatus(bool isAdmin)
 	{
@@ -257,7 +274,6 @@ modded class PlayerBase
 		string pauseBountyInTerritoryStr;
 		string configStatus;
 		bool isNinjinsSafeZone;
-		bool ninjinsState;
 		if (!IsMissionHost())
 			return;
 		if (!obfc_BountyConfig.obfm_IsSystemActive())
@@ -335,21 +351,36 @@ modded class PlayerBase
 			{
 				if (obfv_m_BountyType == BountyType.RULE_BREAKER)
 				{
-					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_RULE_BREAKER_HUNTED, identity, "", "", durationSeconds, clearedRewardCount);
+					obfc_BountyNotifArgs notifArgs1;
+					notifArgs1 = new obfc_BountyNotifArgs();
+					notifArgs1.durationSeconds = durationSeconds;
+					notifArgs1.clearedRewardCount = clearedRewardCount;
+					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_RULE_BREAKER_HUNTED, identity, notifArgs1);
 				}
 				else
 				{
-					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLACED_HUNTED, identity, "", "", durationSeconds);
+					obfc_BountyNotifArgs notifArgs2;
+					notifArgs2 = new obfc_BountyNotifArgs();
+					notifArgs2.durationSeconds = durationSeconds;
+					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLACED_HUNTED, identity, notifArgs2);
 				}
 				if (!alreadyHasBounty)
 				{
 					if (obfv_m_BountyType == BountyType.RULE_BREAKER)
 					{
-						obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_RULE_BREAKER_BROADCAST, null, playerName, "", durationSeconds);
+						obfc_BountyNotifArgs notifArgs3;
+						notifArgs3 = new obfc_BountyNotifArgs();
+						notifArgs3.playerName = playerName;
+						notifArgs3.durationSeconds = durationSeconds;
+						obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_RULE_BREAKER_BROADCAST, null, notifArgs3);
 					}
 					else
 					{
-						obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLACED_BROADCAST, null, playerName, "", durationSeconds);
+						obfc_BountyNotifArgs notifArgs4;
+						notifArgs4 = new obfc_BountyNotifArgs();
+						notifArgs4.playerName = playerName;
+						notifArgs4.durationSeconds = durationSeconds;
+						obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLACED_BROADCAST, null, notifArgs4);
 					}
 				}
 			}
@@ -420,7 +451,7 @@ modded class PlayerBase
 					obfm_PauseBounty();
 					if (identity)
 					{
-						obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_BOUNTY_PAUSED_IN_TERRITORY, identity);
+						obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_BOUNTY_PAUSED_IN_TERRITORY, identity, null);
 					}
 				}
 				else
@@ -445,7 +476,7 @@ modded class PlayerBase
 				obfm_PauseBounty();
 				if (identity)
 				{
-					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_BOUNTY_PAUSED_IN_SAFEZONE, identity);
+					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_BOUNTY_PAUSED_IN_SAFEZONE, identity, null);
 				}
 			}
 		}
@@ -453,12 +484,7 @@ modded class PlayerBase
 		{
 			if (obfm_NinjinBountyIsPlayerInSafezone())
 			{
-				isNinjinsSafeZone = false;
-				ninjinsState = false;
-				if (EnScript.GetClassVar(this, "netSync_IsInSafeZone", 0, ninjinsState))
-				{
-					isNinjinsSafeZone = ninjinsState;
-				}
+				isNinjinsSafeZone = obfm_NinjinBountyIsPlayerInNinjinsSafeZone();
 				if (isNinjinsSafeZone)
 				{
 					if (obfm_NinjinBountyIsOnSafeZoneExitTimer())
@@ -511,12 +537,12 @@ modded class PlayerBase
 			if (wasBountyType == BountyType.RULE_BREAKER)
 			{
 				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Player " + playerName + " was a rule breaker - sending rule breaker expiration notification. EndReason: " + endReason.ToString());
-				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_RULE_BREAKER_EXPIRED, identity);
+				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_RULE_BREAKER_EXPIRED, identity, null);
 			}
 			else
 			{
 				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Player " + playerName + " was NOT a rule breaker - sending regular expiration notification. EndReason: " + endReason.ToString());
-				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLACED_EXPIRED, identity);
+				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLACED_EXPIRED, identity, null);
 			}
 			shouldGiveReward = true;
 			if (skipRewards)
@@ -534,19 +560,29 @@ modded class PlayerBase
 				if (shouldGiveReward)
 				{
 					obfm_AddPendingSuccessReward(1);
-					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLACED_SURVIVAL_REWARD, identity, "", "", 0.0, 0, 0, 0, 0, 0, 0, "", "", 0.0, wasBountyType, true);
+					obfc_BountyNotifArgs notifArgs9;
+					notifArgs9 = new obfc_BountyNotifArgs();
+					notifArgs9.bountyType = wasBountyType;
+					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLACED_SURVIVAL_REWARD, identity, notifArgs9);
 					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Player " + playerName + " survived bounty - set pending success reward (survival type) (must claim at bounty board).");
 				}
 				else
 				{
-					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLACED_SURVIVAL_REWARD, identity, "", "", 0.0, 0, 0, 0, 0, 0, 0, "", "", 0.0, wasBountyType, false);
+					obfc_BountyNotifArgs notifArgs10;
+					notifArgs10 = new obfc_BountyNotifArgs();
+					notifArgs10.bountyType = wasBountyType;
+					notifArgs10.rewardGiven = false;
+					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLACED_SURVIVAL_REWARD, identity, notifArgs10);
 					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Player " + playerName + " survived rule breaker bounty - no reward given.");
 				}
 			}
 		}
 		if (endReason == BountyEndReason.EXPIRED)
 		{
-			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_EXPIRED_BROADCAST, null, playerName);
+			obfc_BountyNotifArgs notifArgs11;
+			notifArgs11 = new obfc_BountyNotifArgs();
+			notifArgs11.playerName = playerName;
+			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_EXPIRED_BROADCAST, null, notifArgs11);
 		}
 		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Bounty cleared for player " + playerName + ".");
 	}
@@ -647,7 +683,10 @@ modded class PlayerBase
 				return;
 			}
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Player " + victimName + " died without a player killer and DontCountSuicide is disabled - ending bounty without reward.");
-			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_SUICIDE_BROADCAST, null, victimName);
+			obfc_BountyNotifArgs notifArgs12;
+			notifArgs12 = new obfc_BountyNotifArgs();
+			notifArgs12.playerName = victimName;
+			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_SUICIDE_BROADCAST, null, notifArgs12);
 			obfm_ClearBounty(true, BountyEndReason.SUICIDE);
 			return;
 		}
@@ -690,9 +729,19 @@ modded class PlayerBase
 			}
 			if (killerIdentity)
 			{
-				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLACED_KILLED_REWARD, killerIdentity, "", victimName, 0.0, 0, 0, 0, 0, 0, 0, "", "", 0.0, obfv_m_BountyType, shouldGiveReward);
+				obfc_BountyNotifArgs notifArgs13;
+				notifArgs13 = new obfc_BountyNotifArgs();
+				notifArgs13.victimName = victimName;
+				notifArgs13.bountyType = obfv_m_BountyType;
+				notifArgs13.rewardGiven = shouldGiveReward;
+				obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLACED_KILLED_REWARD, killerIdentity, notifArgs13);
 			}
-			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_WIN_BROADCAST, null, victimName, "", 0.0, 0, 0, 0, 0, 0, 0, "", "", 0.0, obfv_m_BountyType, true, killerName);
+			obfc_BountyNotifArgs notifArgs14;
+			notifArgs14 = new obfc_BountyNotifArgs();
+			notifArgs14.playerName = victimName;
+			notifArgs14.bountyType = obfv_m_BountyType;
+			notifArgs14.winnerName = killerName;
+			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_WIN_BROADCAST, null, notifArgs14);
 		}
 		obfm_ClearBounty(false, BountyEndReason.KILLED);
 	}
@@ -1005,7 +1054,10 @@ modded class PlayerBase
 			GetRPCManager().SendRPC("Ninjins_Bounty_System", "UpdateBountyState", paramBounty, true, identity);
 			Param1<float> paramCountdown = new Param1<float>(obfv_m_BountyRemainingDuration);
 			GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyUpdateCountdown", paramCountdown, true, identity);
-			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_BOUNTY_PERSISTED, identity, "", "", 0.0, 0, 0, 0, 0, 0, 0, "", "", obfv_m_BountyRemainingDuration);
+			obfc_BountyNotifArgs notifArgs15;
+			notifArgs15 = new obfc_BountyNotifArgs();
+			notifArgs15.remainingDuration = obfv_m_BountyRemainingDuration;
+			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_BOUNTY_PERSISTED, identity, notifArgs15);
 			string bountyTypeStr = "PLACED";
 			if (obfv_m_BountyType == BountyType.RULE_BREAKER)
 				bountyTypeStr = "RULE_BREAKER";
@@ -1241,7 +1293,10 @@ modded class PlayerBase
 			Param1<float> paramCountdown = new Param1<float>(obfv_m_BountyRemainingDuration);
 			GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyUpdateCountdown", paramCountdown, true, identity);
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Resumed bounty timer for player " + identity.GetName() + " (remaining: " + obfv_m_BountyRemainingDuration.ToString() + "s)");
-			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_BOUNTY_PERSISTED, identity, "", "", 0.0, 0, 0, 0, 0, 0, 0, "", "", obfv_m_BountyRemainingDuration);
+			obfc_BountyNotifArgs notifArgs16;
+			notifArgs16 = new obfc_BountyNotifArgs();
+			notifArgs16.remainingDuration = obfv_m_BountyRemainingDuration;
+			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_BOUNTY_PERSISTED, identity, notifArgs16);
 		}
 	}
 	bool obfm_IsBountyPaused()
@@ -1368,7 +1423,7 @@ modded class PlayerBase
 		identity = GetIdentity();
 		if (identity)
 		{
-			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_TELEPORTED_OUT_OF_TERRITORY, identity);
+			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_TELEPORTED_OUT_OF_TERRITORY, identity, null);
 		}
 	}
 	void obfm_TeleportOutOfSafeZone()
@@ -1545,11 +1600,21 @@ modded class PlayerBase
 	}
 	bool obfm_NinjinBountyIsPlayerInNinjinsSafeZone()
 	{
-		return netSync_IsInSafeZone;
+		bool inSafeZone;
+
+		inSafeZone = false;
+		if (EnScript.GetClassVar(this, "netSync_IsInSafeZone", 0, inSafeZone))
+			return inSafeZone;
+		return false;
 	}
 	bool obfm_NinjinBountyIsOnSafeZoneExitTimer()
 	{
-		return netSync_IsSZOnExit;
+		bool onExitTimer;
+
+		onExitTimer = false;
+		if (EnScript.GetClassVar(this, "netSync_IsSZOnExit", 0, onExitTimer))
+			return onExitTimer;
+		return false;
 	}
 	bool obfm_NinjinBountyIsPlayerInSafezone()
 	{

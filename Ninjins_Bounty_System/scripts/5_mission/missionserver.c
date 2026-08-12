@@ -24,7 +24,10 @@ modded class MissionServer
 			return;
 		if (!obfv_g_BountyConfig.Core.PersistentBountyAfterLogOut)
 			return;
-		obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_LOGOUT_BROADCAST, null, playerName);
+		obfc_BountyNotifArgs notifArgs1;
+		notifArgs1 = new obfc_BountyNotifArgs();
+		notifArgs1.playerName = playerName;
+		obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_LOGOUT_BROADCAST, null, notifArgs1);
 		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Player " + playerName + " logged out with an active bounty - it will return when they reconnect.");
 	}
 	override void OnUpdate(float timeslice)

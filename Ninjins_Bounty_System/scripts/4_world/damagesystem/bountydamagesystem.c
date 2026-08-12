@@ -224,13 +224,8 @@ class obfc_BountyDamageHandler
 			return true;
 		if (!obfv_attacker || !obfv_victim || obfv_attacker == obfv_victim)
 			return true;
-		#ifdef NinjinsPvPPvE
-		attackerInPvE = obfv_attacker.netSync_IsInPvEZone;
-		victimInPvE = obfv_victim.netSync_IsInPvEZone;
-		#else
-		attackerInPvE = false;
-		victimInPvE = false;
-		#endif
+		attackerInPvE = obfv_attacker.obfm_BountyPlayerInPvEZone();
+		victimInPvE = obfv_victim.obfm_BountyPlayerInPvEZone();
 		if (attackerInPvE && victimInPvE)
 		{
 			if (obfv_victim.obfm_HasBounty())
@@ -274,300 +269,324 @@ class obfc_BountyDamageHandler
 		}
 		return false;
 	}
-}
-#ifdef NinjinsPvPPvE
-modded class DamageUtils
-{
-	override bool ShouldAllowDamage(PlayerBase obfv_victim, TotalDamageResult damageResult, int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos, float speedCoef)
+	//! Bounty opinion when zone stance already denied (or old DamageUtils is deciding). Returns true when bounty chose allow/deny; openHitOut is that choice.
+	bool obfm_TryOpenDeniedZoneHit(PlayerBase obfv_victim, PlayerBase obfv_attacker, out bool openHitOut)
 	{
 		PlayerIdentity victimIdentity;
 		PlayerIdentity attackerIdentity;
 		string victimName;
 		string reason;
-		bool isExplosive;
+		string enablePvEToPvPRuleBreakerStr;
 		obfc_BountyHitTracker hitTracker;
 		bool shouldApplyBounty;
 		int obfv_hitCount;
 		int bountyHitsThreshold;
 		bool attackerIsBlacklisted;
-		obfc_BountyDamageHandler bountyHandler;
-		DamageUtils dmgUtils;
-		AttackerContext ctx;
-		PlayerBase obfv_attacker;
 		bool attackerInPvE;
 		bool victimInPvE;
-		victimName = "";
-		reason = "";
-		if (obfv_g_BountyConfig && obfv_g_BountyConfig.Core && obfv_g_BountyConfig.Core.EnableBountySystem)
+
+		openHitOut = false;
+		if (!IsMissionHost())
+			return false;
+		if (!obfv_g_BountyConfig || !obfv_g_BountyConfig.Core || !obfv_g_BountyConfig.Core.EnableBountySystem)
+			return false;
+		if (!obfv_attacker || !obfv_victim || obfv_attacker == obfv_victim)
+			return false;
+		if (obfm_ShouldAllowDamageToBountiedPlayer(obfv_attacker, obfv_victim))
 		{
-			bountyHandler = obfc_BountyDamageHandler.GetInstance();
-			dmgUtils = DamageUtils.GetInstance();
-			ctx = dmgUtils.ResolveAttacker(source);
-			dmgUtils.GrenadeAttackerContext(ctx, source);
-			obfv_attacker = ctx.Player;
-			bool attackerIsPlayer = ctx.IsPlayer() && ctx.Player != null;
-			bool victimIsPlayer = obfv_victim.IsInherited(PlayerBase);
-			#ifdef EXPANSIONMODAI
-			bool attackerIsAI = ctx.IsAI() && ctx.AI != null;
-			bool victimIsAI = obfv_victim.IsInherited(eAIBase);
-			#else
-			bool attackerIsAI = false;
-			bool victimIsAI = false;
-			#endif
-			if (attackerIsAI || victimIsAI)
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Allowing damage to bountied player from attacker. No bounty applied to attacker.");
+			openHitOut = true;
+			return true;
+		}
+		attackerInPvE = obfv_attacker.obfm_BountyPlayerInPvEZone();
+		victimInPvE = obfv_victim.obfm_BountyPlayerInPvEZone();
+		if (!attackerInPvE && !victimInPvE)
+		{
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Both attacker and victim in PvP state - allowing damage (bountied players can fight PvP players).");
+			openHitOut = true;
+			return true;
+		}
+		if (obfv_attacker.obfm_HasBounty() && victimInPvE)
+		{
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Bountied player attacking PvE player - blocking damage.");
+			openHitOut = false;
+			return true;
+		}
+		if (attackerInPvE && victimInPvE)
+		{
+			if (obfv_victim.obfm_HasBounty())
 			{
-				return super.ShouldAllowDamage(obfv_victim, damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Victim has bounty - allowing damage without applying bounty to attacker.");
+				openHitOut = true;
+				return true;
 			}
-			#ifdef NinjinsPvPPvE
-			if (obfv_victim && obfv_attacker && obfv_attacker != obfv_victim && obfv_victim.GetIdentity())
+			if (!obfv_attacker.obfm_HasBounty())
 			{
-				bool victimIsBlacklisted = false;
-				if (obfv_g_BountyBlacklistConfig && obfv_g_BountyBlacklistConfig.obfm_IsBlacklistedIdentity(obfv_victim.GetIdentity()))
+				attackerIsBlacklisted = false;
+				if (obfv_attacker.GetIdentity() && obfv_g_BountyBlacklistConfig && obfv_g_BountyBlacklistConfig.obfm_IsBlacklistedIdentity(obfv_attacker.GetIdentity()))
 				{
-					victimIsBlacklisted = true;
+					attackerIsBlacklisted = true;
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Blacklisted attacker attacking PvE player - skipping warnings/bounties, but normal PvE rules still apply.");
 				}
-				if (victimIsBlacklisted && g_MainConfig && g_MainConfig.EnableReflectDamage)
+				if (!attackerIsBlacklisted)
 				{
-					dmgUtils.ReflectDamageToAttacker(obfv_attacker, damageResult);
-					string attackerName;
-					if (obfv_attacker.GetIdentity())
-						attackerName = obfv_attacker.GetIdentity().GetName();
-					else
-						attackerName = "Unknown";
-					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Blacklisted player " + obfv_victim.GetIdentity().GetName() + " took damage from " + attackerName + " - reflecting damage (reflect damage enabled)");
-					return false; 
-				}
-			}
-			#endif
-			if (attackerIsPlayer && victimIsPlayer && obfv_attacker && obfv_victim && obfv_attacker != obfv_victim)
-			{
-				if (bountyHandler.obfm_ShouldAllowDamageToBountiedPlayer(obfv_attacker, obfv_victim))
-				{
-					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Allowing damage to bountied player from attacker. No bounty applied to attacker.");
+					if (obfv_g_BountyConfig.RuleBreaker && obfv_g_BountyConfig.RuleBreaker.EnableRuleBreakerHitThreshold)
+					{
+						hitTracker = obfc_BountyHitTracker.GetInstance();
+						shouldApplyBounty = hitTracker.obfm_RecordHit(obfv_attacker, obfv_victim);
+						obfv_hitCount = hitTracker.obfm_GetHitCountForPair(obfv_attacker, obfv_victim);
+						if (hitTracker.obfm_ShouldSendWarning(obfv_attacker, obfv_victim))
+						{
+							attackerIdentity = obfv_attacker.GetIdentity();
+							if (attackerIdentity && (!obfv_g_BountyBlacklistConfig || !obfv_g_BountyBlacklistConfig.obfm_IsBlacklistedIdentity(attackerIdentity)))
+							{
+								bountyHitsThreshold = obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits;
+								obfc_BountyNotifArgs notifArgs1;
+								notifArgs1 = new obfc_BountyNotifArgs();
+								notifArgs1.currentHits = obfv_hitCount;
+								notifArgs1.bountyHitsThreshold = bountyHitsThreshold;
+								obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_RULE_BREAKER_HIT_WARNING, attackerIdentity, notifArgs1);
+							}
+						}
+						if (shouldApplyBounty)
+						{
+							victimIdentity = obfv_victim.GetIdentity();
+							victimName = "Unknown";
+							if (victimIdentity)
+								victimName = victimIdentity.GetName();
+							reason = "PvE rule violation (attacked " + victimName + " in PvE zone)";
+							obfc_BountyManager.obfm_ApplyBountyToPlayer(obfv_attacker, null, 0.0, reason, BountyType.RULE_BREAKER);
+							#ifdef EXPANSIONMODHARDLINE
+							if (obfv_g_BountyConfig.RuleBreaker && obfv_g_BountyConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease && obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount > 0)
+							{
+								obfv_attacker.Expansion_DecreaseReputation(obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount);
+								obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Decreased Hardline reputation by " + obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount.ToString() + " for attacker (threshold met).");
+							}
+							#endif
+							hitTracker.obfm_ClearEntry(obfv_attacker, obfv_victim);
+							if (obfv_g_BountyConfig.RuleBreaker && obfv_g_BountyConfig.RuleBreaker.AllowPvEToPvEVictimKill)
+							{
+								obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Applied bounty to PvE attacker (hit threshold met: " + obfv_hitCount.ToString() + " hits >= " + obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits.ToString() + "). Allowing damage (AllowPvEToPvEVictimKill enabled).");
+								openHitOut = true;
+								return true;
+							}
+							obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Applied bounty to PvE attacker (hit threshold met: " + obfv_hitCount.ToString() + " hits >= " + obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits.ToString() + "). Blocking damage without reflection.");
+							openHitOut = false;
+							return true;
+						}
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] PvE rule violation detected but threshold not met yet. Hits: " + obfv_hitCount.ToString() + " / " + obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits.ToString() + ". Blocking damage without applying bounty.");
+						openHitOut = false;
+						return true;
+					}
+					victimIdentity = obfv_victim.GetIdentity();
+					victimName = "Unknown";
+					if (victimIdentity)
+						victimName = victimIdentity.GetName();
+					reason = "PvE rule violation (attacked " + victimName + " in PvE zone)";
+					obfc_BountyManager.obfm_ApplyBountyToPlayer(obfv_attacker, null, 0.0, reason, BountyType.RULE_BREAKER);
+					#ifdef EXPANSIONMODHARDLINE
+					if (obfv_g_BountyConfig.RuleBreaker && obfv_g_BountyConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease && obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount > 0)
+					{
+						obfv_attacker.Expansion_DecreaseReputation(obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Decreased Hardline reputation by " + obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount.ToString() + " for attacker (instant apply).");
+					}
+					#endif
+					if (obfv_g_BountyConfig.RuleBreaker && obfv_g_BountyConfig.RuleBreaker.AllowPvEToPvEVictimKill)
+					{
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Applied bounty to PvE attacker (instant apply - threshold system disabled). Allowing damage (AllowPvEToPvEVictimKill enabled).");
+						openHitOut = true;
+						return true;
+					}
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Applied bounty to PvE attacker (instant apply - threshold system disabled). Blocking damage without reflection.");
+					openHitOut = false;
 					return true;
 				}
-				#ifdef NinjinsPvPPvE
-				attackerInPvE = obfv_attacker.netSync_IsInPvEZone;
-				victimInPvE = obfv_victim.netSync_IsInPvEZone;
-				#else
-				attackerInPvE = false;
-				victimInPvE = false;
-				#endif
-				if (!attackerInPvE && !victimInPvE)
+			}
+		}
+		if (attackerInPvE && !victimInPvE)
+		{
+			if (obfv_g_BountyConfig.RuleBreaker)
+				enablePvEToPvPRuleBreakerStr = obfv_g_BountyConfig.RuleBreaker.EnablePvEToPvPRuleBreaker.ToString();
+			else
+				enablePvEToPvPRuleBreakerStr = "null";
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] PvE-to-PvP attack detected: Attacker in PvE=" + attackerInPvE.ToString() + ", Victim in PvE=" + victimInPvE.ToString() + ", EnablePvEToPvPRuleBreaker=" + enablePvEToPvPRuleBreakerStr);
+			if (obfv_victim.obfm_HasBounty())
+			{
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Victim has bounty - allowing damage without applying bounty to attacker.");
+				openHitOut = true;
+				return true;
+			}
+			if (obfv_g_BountyConfig.RuleBreaker && obfv_g_BountyConfig.RuleBreaker.EnablePvEToPvPRuleBreaker)
+			{
+				if (!obfv_attacker.obfm_HasBounty())
 				{
-					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Both attacker and victim in PvP state - allowing damage (bountied players can fight PvP players).");
-					return true; 
-				}
-				if (obfv_attacker.obfm_HasBounty() && victimInPvE)
-				{
-					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Bountied player attacking PvE player - blocking damage and reflecting.");
-					super.ShouldAllowDamage(obfv_victim, damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
-					return false;
-				}
-				if (attackerInPvE && victimInPvE)
-				{
-					if (obfv_victim.obfm_HasBounty())
+					attackerIsBlacklisted = false;
+					if (obfv_attacker.GetIdentity() && obfv_g_BountyBlacklistConfig && obfv_g_BountyBlacklistConfig.obfm_IsBlacklistedIdentity(obfv_attacker.GetIdentity()))
 					{
-						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Victim has bounty - allowing damage without applying bounty to attacker.");
-						return true; 
+						attackerIsBlacklisted = true;
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Blacklisted attacker attacking PvP player from PvE - skipping warnings/bounties, but normal PvE rules still apply.");
 					}
-					if (!obfv_attacker.obfm_HasBounty())
+					if (!attackerIsBlacklisted)
 					{
-						attackerIsBlacklisted = false;
-						if (obfv_attacker.GetIdentity() && obfv_g_BountyBlacklistConfig && obfv_g_BountyBlacklistConfig.obfm_IsBlacklistedIdentity(obfv_attacker.GetIdentity()))
+						if (obfv_g_BountyConfig.RuleBreaker.PvEToPvPInstantRuleBreakerHits == 1)
 						{
-							attackerIsBlacklisted = true;
-							obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Blacklisted attacker attacking PvE player - skipping warnings/bounties, but normal PvE rules still apply.");
-						}
-						if (!attackerIsBlacklisted)
-						{
-							if (obfv_g_BountyConfig.RuleBreaker && obfv_g_BountyConfig.RuleBreaker.EnableRuleBreakerHitThreshold)
+							victimIdentity = obfv_victim.GetIdentity();
+							victimName = "Unknown";
+							if (victimIdentity)
+								victimName = victimIdentity.GetName();
+							reason = "PvE to PvP rule violation (attacked " + victimName + " who is in PvP zone)";
+							obfc_BountyManager.obfm_ApplyBountyToPlayer(obfv_attacker, null, 0.0, reason, BountyType.RULE_BREAKER);
+							#ifdef EXPANSIONMODHARDLINE
+							if (obfv_g_BountyConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease && obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount > 0)
 							{
-								hitTracker = obfc_BountyHitTracker.GetInstance();
-								shouldApplyBounty = hitTracker.obfm_RecordHit(obfv_attacker, obfv_victim);
-								obfv_hitCount = hitTracker.obfm_GetHitCountForPair(obfv_attacker, obfv_victim);
-								if (hitTracker.obfm_ShouldSendWarning(obfv_attacker, obfv_victim))
+								obfv_attacker.Expansion_DecreaseReputation(obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount);
+								obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Decreased Hardline reputation by " + obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount.ToString() + " for PvE-to-PvP attacker (instant apply).");
+							}
+							#endif
+							obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Applied instant rulebreaker bounty to PvE attacker attacking PvP player (PvEToPvPInstantRuleBreakerHits=1). Blocking damage without reflection.");
+							openHitOut = false;
+							return true;
+						}
+						if (obfv_g_BountyConfig.RuleBreaker.EnableRuleBreakerHitThreshold)
+						{
+							hitTracker = obfc_BountyHitTracker.GetInstance();
+							shouldApplyBounty = hitTracker.obfm_RecordHit(obfv_attacker, obfv_victim);
+							obfv_hitCount = hitTracker.obfm_GetHitCountForPair(obfv_attacker, obfv_victim);
+							if (hitTracker.obfm_ShouldSendWarning(obfv_attacker, obfv_victim))
+							{
+								attackerIdentity = obfv_attacker.GetIdentity();
+								if (attackerIdentity && (!obfv_g_BountyBlacklistConfig || !obfv_g_BountyBlacklistConfig.obfm_IsBlacklistedIdentity(attackerIdentity)))
 								{
-									attackerIdentity = obfv_attacker.GetIdentity();
-									if (attackerIdentity && (!obfv_g_BountyBlacklistConfig || !obfv_g_BountyBlacklistConfig.obfm_IsBlacklistedIdentity(attackerIdentity)))
-									{
-										bountyHitsThreshold = obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits;
-										obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_RULE_BREAKER_HIT_WARNING, attackerIdentity, "", "", 0.0, 0, obfv_hitCount, bountyHitsThreshold);
-									}
-								}
-								if (shouldApplyBounty)
-								{
-									victimIdentity = obfv_victim.GetIdentity();
-									victimName = "Unknown";
-									if (victimIdentity)
-										victimName = victimIdentity.GetName();
-									reason = "PvE rule violation (attacked " + victimName + " in PvE zone)";
-									obfc_BountyManager.obfm_ApplyBountyToPlayer(obfv_attacker, null, 0.0, reason, BountyType.RULE_BREAKER);
-									#ifdef EXPANSIONMODHARDLINE
-									if (obfv_g_BountyConfig.RuleBreaker && obfv_g_BountyConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease && obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount > 0)
-									{
-										obfv_attacker.Expansion_DecreaseReputation(obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount);
-										obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Decreased Hardline reputation by " + obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount.ToString() + " for attacker (threshold met).");
-									}
-									#endif
-									hitTracker.obfm_ClearEntry(obfv_attacker, obfv_victim);
-									if (obfv_g_BountyConfig.RuleBreaker && obfv_g_BountyConfig.RuleBreaker.AllowPvEToPvEVictimKill)
-									{
-										obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Applied bounty to PvE attacker (hit threshold met: " + obfv_hitCount.ToString() + " hits >= " + obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits.ToString() + "). Allowing damage (AllowPvEToPvEVictimKill enabled).");
-										return true; 
-									}
-									obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Applied bounty to PvE attacker (hit threshold met: " + obfv_hitCount.ToString() + " hits >= " + obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits.ToString() + "). Blocking damage without reflection.");
-									return false;
-								}
-								else
-								{
-									obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] PvE rule violation detected but threshold not met yet. Hits: " + obfv_hitCount.ToString() + " / " + obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits.ToString() + ". Blocking damage without applying bounty.");
-									return false;
+									bountyHitsThreshold = obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits;
+									obfc_BountyNotifArgs notifArgs2;
+									notifArgs2 = new obfc_BountyNotifArgs();
+									notifArgs2.currentHits = obfv_hitCount;
+									notifArgs2.bountyHitsThreshold = bountyHitsThreshold;
+									obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_RULE_BREAKER_HIT_WARNING, attackerIdentity, notifArgs2);
 								}
 							}
-							else
+							if (shouldApplyBounty)
 							{
 								victimIdentity = obfv_victim.GetIdentity();
 								victimName = "Unknown";
 								if (victimIdentity)
 									victimName = victimIdentity.GetName();
-								reason = "PvE rule violation (attacked " + victimName + " in PvE zone)";
+								reason = "PvE to PvP rule violation (attacked " + victimName + " who is in PvP zone)";
 								obfc_BountyManager.obfm_ApplyBountyToPlayer(obfv_attacker, null, 0.0, reason, BountyType.RULE_BREAKER);
 								#ifdef EXPANSIONMODHARDLINE
-								if (obfv_g_BountyConfig.RuleBreaker && obfv_g_BountyConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease && obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount > 0)
+								if (obfv_g_BountyConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease && obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount > 0)
 								{
 									obfv_attacker.Expansion_DecreaseReputation(obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount);
-									obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Decreased Hardline reputation by " + obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount.ToString() + " for attacker (instant apply).");
+									obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Decreased Hardline reputation by " + obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount.ToString() + " for PvE-to-PvP attacker (threshold met).");
 								}
 								#endif
-								if (obfv_g_BountyConfig.RuleBreaker && obfv_g_BountyConfig.RuleBreaker.AllowPvEToPvEVictimKill)
-								{
-									obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Applied bounty to PvE attacker (instant apply - threshold system disabled). Allowing damage (AllowPvEToPvEVictimKill enabled).");
-									return true; 
-								}
-								obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Applied bounty to PvE attacker (instant apply - threshold system disabled). Blocking damage without reflection.");
-								return false;
+								hitTracker.obfm_ClearEntry(obfv_attacker, obfv_victim);
+								obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Applied bounty to PvE attacker attacking PvP player (hit threshold met: " + obfv_hitCount.ToString() + " hits >= " + obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits.ToString() + "). Blocking damage without reflection.");
+								openHitOut = false;
+								return true;
 							}
+							obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] PvE to PvP rule violation detected but threshold not met yet. Hits: " + obfv_hitCount.ToString() + " / " + obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits.ToString() + ". Blocking damage without applying bounty.");
+							openHitOut = false;
+							return true;
 						}
+						victimIdentity = obfv_victim.GetIdentity();
+						victimName = "Unknown";
+						if (victimIdentity)
+							victimName = victimIdentity.GetName();
+						reason = "PvE to PvP rule violation (attacked " + victimName + " who is in PvP zone)";
+						obfc_BountyManager.obfm_ApplyBountyToPlayer(obfv_attacker, null, 0.0, reason, BountyType.RULE_BREAKER);
+						#ifdef EXPANSIONMODHARDLINE
+						if (obfv_g_BountyConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease && obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount > 0)
+						{
+							obfv_attacker.Expansion_DecreaseReputation(obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount);
+							obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Decreased Hardline reputation by " + obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount.ToString() + " for PvE-to-PvP attacker (instant apply).");
+						}
+						#endif
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Applied bounty to PvE attacker attacking PvP player (instant apply - threshold system disabled). Blocking damage without reflection.");
+						openHitOut = false;
+						return true;
 					}
 				}
-				if (attackerInPvE && !victimInPvE)
+				else
 				{
-					string enablePvEToPvPRuleBreakerStr;
-					if (obfv_g_BountyConfig.RuleBreaker)
-						enablePvEToPvPRuleBreakerStr = obfv_g_BountyConfig.RuleBreaker.EnablePvEToPvPRuleBreaker.ToString();
-					else
-						enablePvEToPvPRuleBreakerStr = "null";
-					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] PvE-to-PvP attack detected: Attacker in PvE=" + attackerInPvE.ToString() + ", Victim in PvE=" + victimInPvE.ToString() + ", EnablePvEToPvPRuleBreaker=" + enablePvEToPvPRuleBreakerStr);
-					if (obfv_victim.obfm_HasBounty())
-					{
-						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Victim has bounty - allowing damage without applying bounty to attacker.");
-						return true; 
-					}
-					if (obfv_g_BountyConfig.RuleBreaker && obfv_g_BountyConfig.RuleBreaker.EnablePvEToPvPRuleBreaker)
-					{
-						if (!obfv_attacker.obfm_HasBounty())
-						{
-							attackerIsBlacklisted = false;
-							if (obfv_attacker.GetIdentity() && obfv_g_BountyBlacklistConfig && obfv_g_BountyBlacklistConfig.obfm_IsBlacklistedIdentity(obfv_attacker.GetIdentity()))
-							{
-								attackerIsBlacklisted = true;
-								obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Blacklisted attacker attacking PvP player from PvE - skipping warnings/bounties, but normal PvE rules still apply.");
-							}
-							if (!attackerIsBlacklisted)
-							{
-								if (obfv_g_BountyConfig.RuleBreaker.PvEToPvPInstantRuleBreakerHits == 1)
-								{
-									victimIdentity = obfv_victim.GetIdentity();
-									victimName = "Unknown";
-									if (victimIdentity)
-										victimName = victimIdentity.GetName();
-									reason = "PvE to PvP rule violation (attacked " + victimName + " who is in PvP zone)";
-									obfc_BountyManager.obfm_ApplyBountyToPlayer(obfv_attacker, null, 0.0, reason, BountyType.RULE_BREAKER);
-									#ifdef EXPANSIONMODHARDLINE
-									if (obfv_g_BountyConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease && obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount > 0)
-									{
-										obfv_attacker.Expansion_DecreaseReputation(obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount);
-										obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Decreased Hardline reputation by " + obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount.ToString() + " for PvE-to-PvP attacker (instant apply).");
-									}
-									#endif
-									obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Applied instant rulebreaker bounty to PvE attacker attacking PvP player (PvEToPvPInstantRuleBreakerHits=1). Blocking damage without reflection.");
-									return false;
-								}
-								if (obfv_g_BountyConfig.RuleBreaker.EnableRuleBreakerHitThreshold)
-								{
-									hitTracker = obfc_BountyHitTracker.GetInstance();
-									shouldApplyBounty = hitTracker.obfm_RecordHit(obfv_attacker, obfv_victim);
-									obfv_hitCount = hitTracker.obfm_GetHitCountForPair(obfv_attacker, obfv_victim);
-									if (hitTracker.obfm_ShouldSendWarning(obfv_attacker, obfv_victim))
-									{
-										attackerIdentity = obfv_attacker.GetIdentity();
-										if (attackerIdentity && (!obfv_g_BountyBlacklistConfig || !obfv_g_BountyBlacklistConfig.obfm_IsBlacklistedIdentity(attackerIdentity)))
-										{
-											bountyHitsThreshold = obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits;
-											obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_RULE_BREAKER_HIT_WARNING, attackerIdentity, "", "", 0.0, 0, obfv_hitCount, bountyHitsThreshold);
-										}
-									}
-									if (shouldApplyBounty)
-									{
-										victimIdentity = obfv_victim.GetIdentity();
-										victimName = "Unknown";
-										if (victimIdentity)
-											victimName = victimIdentity.GetName();
-										reason = "PvE to PvP rule violation (attacked " + victimName + " who is in PvP zone)";
-										obfc_BountyManager.obfm_ApplyBountyToPlayer(obfv_attacker, null, 0.0, reason, BountyType.RULE_BREAKER);
-										#ifdef EXPANSIONMODHARDLINE
-										if (obfv_g_BountyConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease && obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount > 0)
-										{
-											obfv_attacker.Expansion_DecreaseReputation(obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount);
-											obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Decreased Hardline reputation by " + obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount.ToString() + " for PvE-to-PvP attacker (threshold met).");
-										}
-										#endif
-										hitTracker.obfm_ClearEntry(obfv_attacker, obfv_victim);
-										obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Applied bounty to PvE attacker attacking PvP player (hit threshold met: " + obfv_hitCount.ToString() + " hits >= " + obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits.ToString() + "). Blocking damage without reflection.");
-										return false;
-									}
-									else
-									{
-										obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] PvE to PvP rule violation detected but threshold not met yet. Hits: " + obfv_hitCount.ToString() + " / " + obfv_g_BountyConfig.RuleBreaker.RuleBreakerHitThresholdBountyHits.ToString() + ". Blocking damage without applying bounty.");
-										return false;
-									}
-								}
-								else
-								{
-									victimIdentity = obfv_victim.GetIdentity();
-									victimName = "Unknown";
-									if (victimIdentity)
-										victimName = victimIdentity.GetName();
-									reason = "PvE to PvP rule violation (attacked " + victimName + " who is in PvP zone)";
-									obfc_BountyManager.obfm_ApplyBountyToPlayer(obfv_attacker, null, 0.0, reason, BountyType.RULE_BREAKER);
-									#ifdef EXPANSIONMODHARDLINE
-									if (obfv_g_BountyConfig.RuleBreaker.Expansion_EnableHardlineReputationDecrease && obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount > 0)
-									{
-										obfv_attacker.Expansion_DecreaseReputation(obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount);
-										obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Decreased Hardline reputation by " + obfv_g_BountyConfig.RuleBreaker.Expansion_HardlineReputationDecreaseAmount.ToString() + " for PvE-to-PvP attacker (instant apply).");
-									}
-									#endif
-									obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Applied bounty to PvE attacker attacking PvP player (instant apply - threshold system disabled). Blocking damage without reflection.");
-									return false;
-								}
-							}
-						}
-						else
-						{
-							obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] PvE attacker already has bounty - blocking damage without applying new bounty.");
-							return false;
-						}
-					}
-					else
-					{
-						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] PvE-to-PvP rule breaker is disabled - blocking damage without applying bounty.");
-						return false; 
-					}
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] PvE attacker already has bounty - blocking damage without applying new bounty.");
+					openHitOut = false;
+					return true;
 				}
 			}
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] PvE-to-PvP rule breaker is disabled - blocking damage without applying bounty.");
+			openHitOut = false;
+			return true;
 		}
-		return super.ShouldAllowDamage(obfv_victim, damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
+		return false;
+	}
+}
+#ifdef NinjinsPvPPvE
+modded class DamageUtils
+{
+	//! Parameter name must match parent DamageUtils (victim), not obfv_victim - EnScript fails otherwise.
+	override bool ShouldAllowDamage(PlayerBase victim, TotalDamageResult damageResult, int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos, float speedCoef)
+	{
+		obfc_BountyDamageHandler bountyHandler;
+		DamageUtils dmgUtils;
+		AttackerContext ctx;
+		PlayerBase attacker;
+		bool openHit;
+		bool bountyDecided;
+		bool attackerIsPlayer;
+		bool victimIsPlayer;
+		bool attackerIsAI;
+		bool victimIsAI;
+		bool victimIsBlacklisted;
+		string attackerName;
+
+		openHit = false;
+		bountyDecided = false;
+		if (!obfv_g_BountyConfig || !obfv_g_BountyConfig.Core || !obfv_g_BountyConfig.Core.EnableBountySystem)
+			return super.ShouldAllowDamage(victim, damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
+		bountyHandler = obfc_BountyDamageHandler.GetInstance();
+		dmgUtils = DamageUtils.GetInstance();
+		ctx = dmgUtils.ResolveAttacker(source);
+		dmgUtils.GrenadeAttackerContext(ctx, source);
+		attacker = ctx.Player;
+		attackerIsPlayer = ctx.IsPlayer() && ctx.Player != null;
+		victimIsPlayer = false;
+		if (victim)
+			victimIsPlayer = victim.IsInherited(PlayerBase);
+		#ifdef EXPANSIONMODAI
+		attackerIsAI = ctx.IsAI() && ctx.AI != null;
+		victimIsAI = false;
+		if (victim)
+			victimIsAI = victim.IsInherited(eAIBase);
+		#else
+		attackerIsAI = false;
+		victimIsAI = false;
+		#endif
+		if (attackerIsAI || victimIsAI)
+			return super.ShouldAllowDamage(victim, damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
+		if (victim && attacker && attacker != victim && victim.GetIdentity())
+		{
+			victimIsBlacklisted = false;
+			if (obfv_g_BountyBlacklistConfig && obfv_g_BountyBlacklistConfig.obfm_IsBlacklistedIdentity(victim.GetIdentity()))
+				victimIsBlacklisted = true;
+			if (victimIsBlacklisted && g_MainConfig && g_MainConfig.EnableReflectDamage)
+			{
+				dmgUtils.ReflectDamageToAttacker(attacker, damageResult);
+				if (attacker.GetIdentity())
+					attackerName = attacker.GetIdentity().GetName();
+				else
+					attackerName = "Unknown";
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Blacklisted player " + victim.GetIdentity().GetName() + " took damage from " + attackerName + " - reflecting damage (reflect damage enabled)");
+				return false;
+			}
+		}
+		if (attackerIsPlayer && victimIsPlayer && attacker && victim && attacker != victim)
+		{
+			bountyDecided = bountyHandler.obfm_TryOpenDeniedZoneHit(victim, attacker, openHit);
+			if (bountyDecided)
+				return openHit;
+		}
+		return super.ShouldAllowDamage(victim, damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
 	}
 }
 #endif

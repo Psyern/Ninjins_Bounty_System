@@ -278,7 +278,7 @@ class obfc_BountyCoreSystemSettings
 	ref array<string> SuicidePhrases;
 	void obfc_BountyCoreSystemSettings()
 	{
-		EnableBountySystem = true;
+		EnableBountySystem = false;
 		BountyCooldownSeconds = 3600.0; 
 		MaxBountiedPlayers = -1; 
 		MinOnlinePlayersRequired = 1; 

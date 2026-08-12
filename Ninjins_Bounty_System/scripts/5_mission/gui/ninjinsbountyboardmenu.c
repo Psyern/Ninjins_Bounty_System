@@ -120,8 +120,6 @@ class obfc_NinjinsBountyBoardMenu extends UIScriptedMenu
 		obfv_m_BountyMinutesLabel = TextWidget.Cast(layoutRoot.FindAnyWidget("BountyMinutesLabel"));
 		obfv_m_BountyMinutes = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyMinutes"));
 		obfv_m_BountyCostLabel = TextWidget.Cast(layoutRoot.FindAnyWidget("BountyCostLabel"));
-		if (obfv_m_BountyMinutes)
-			obfv_m_BountyMinutes.SetHandler(this);
 		if (!obfv_m_BountyOnlinePlayersList)
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[NinjinsBountyBoardMenu] OnlinePlayersList widget not found in layout!");

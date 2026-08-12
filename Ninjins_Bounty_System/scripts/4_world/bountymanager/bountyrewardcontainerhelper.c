@@ -508,7 +508,7 @@ class obfc_BountyRewardContainerHelper
 				PlayerIdentity playerIdentity = player.GetIdentity();
 				if (playerIdentity)
 				{
-					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_REWARD_INVENTORY_FULL, playerIdentity);
+					obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_REWARD_INVENTORY_FULL, playerIdentity, null);
 					GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyCloseBoardMenu", null, true, playerIdentity);
 				}
 			}

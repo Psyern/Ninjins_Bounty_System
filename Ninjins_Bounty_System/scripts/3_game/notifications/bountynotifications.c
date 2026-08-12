@@ -1,3 +1,42 @@
+//! Extra fields for \p obfm_SendNotificationInternal (EnScript max 16 method args).
+class obfc_BountyNotifArgs
+{
+	string playerName;
+	string victimName;
+	float durationSeconds;
+	int clearedRewardCount;
+	int currentHits;
+	int bountyHitsThreshold;
+	int tokensRequired;
+	int tokensFound;
+	int cooldownSeconds;
+	string containerClassName;
+	string errorDetails;
+	float remainingDuration;
+	BountyType bountyType;
+	bool rewardGiven;
+	string winnerName;
+
+	void obfc_BountyNotifArgs()
+	{
+		playerName = "";
+		victimName = "";
+		durationSeconds = 0.0;
+		clearedRewardCount = 0;
+		currentHits = 0;
+		bountyHitsThreshold = 0;
+		tokensRequired = 0;
+		tokensFound = 0;
+		cooldownSeconds = 0;
+		containerClassName = "";
+		errorDetails = "";
+		remainingDuration = 0.0;
+		bountyType = BountyType.PLACED;
+		rewardGiven = true;
+		winnerName = "";
+	}
+}
+
 class obfc_BountyNotifications
 {
 	static bool obfm_IsBroadcastType(int type)
@@ -38,7 +77,95 @@ class obfc_BountyNotifications
 			NotificationSystem.Create(new StringLocaliser(title), new StringLocaliser(message), iconPath, color, duration, targetIdentity);
 		}
 	}
-	static void obfm_SendNotificationInternal(int type, PlayerIdentity identity, string playerName = "", string victimName = "", float durationSeconds = 0.0, int clearedRewardCount = 0, int currentHits = 0, int bountyHitsThreshold = 0, int tokensRequired = 0, int tokensFound = 0, int cooldownSeconds = 0, string containerClassName = "", string errorDetails = "", float remainingDuration = 0.0, BountyType bountyType = BountyType.PLACED, bool rewardGiven = true, string winnerName = "")
+	static void obfm_SendNotifPlayer(int type, PlayerIdentity identity, string playerName)
+	{
+		obfc_BountyNotifArgs args;
+		args = new obfc_BountyNotifArgs();
+		args.playerName = playerName;
+		obfm_SendNotificationInternal(type, identity, args);
+	}
+	static void obfm_SendNotifDuration(int type, PlayerIdentity identity, float durationSeconds)
+	{
+		obfc_BountyNotifArgs args;
+		args = new obfc_BountyNotifArgs();
+		args.durationSeconds = durationSeconds;
+		obfm_SendNotificationInternal(type, identity, args);
+	}
+	static void obfm_SendNotifPlayerDuration(int type, PlayerIdentity identity, string playerName, float durationSeconds)
+	{
+		obfc_BountyNotifArgs args;
+		args = new obfc_BountyNotifArgs();
+		args.playerName = playerName;
+		args.durationSeconds = durationSeconds;
+		obfm_SendNotificationInternal(type, identity, args);
+	}
+	static void obfm_SendNotifRuleBreakerHunted(PlayerIdentity identity, float durationSeconds, int clearedRewardCount)
+	{
+		obfc_BountyNotifArgs args;
+		args = new obfc_BountyNotifArgs();
+		args.durationSeconds = durationSeconds;
+		args.clearedRewardCount = clearedRewardCount;
+		obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_RULE_BREAKER_HUNTED, identity, args);
+	}
+	static void obfm_SendNotifHits(int type, PlayerIdentity identity, int currentHits, int bountyHitsThreshold)
+	{
+		obfc_BountyNotifArgs args;
+		args = new obfc_BountyNotifArgs();
+		args.currentHits = currentHits;
+		args.bountyHitsThreshold = bountyHitsThreshold;
+		obfm_SendNotificationInternal(type, identity, args);
+	}
+	static void obfm_SendNotifTokens(int type, PlayerIdentity identity, int tokensRequired, int tokensFound)
+	{
+		obfc_BountyNotifArgs args;
+		args = new obfc_BountyNotifArgs();
+		args.tokensRequired = tokensRequired;
+		args.tokensFound = tokensFound;
+		obfm_SendNotificationInternal(type, identity, args);
+	}
+	static void obfm_SendNotifCooldown(int type, PlayerIdentity identity, string playerName, int cooldownSeconds)
+	{
+		obfc_BountyNotifArgs args;
+		args = new obfc_BountyNotifArgs();
+		args.playerName = playerName;
+		args.cooldownSeconds = cooldownSeconds;
+		obfm_SendNotificationInternal(type, identity, args);
+	}
+	static void obfm_SendNotifBountyTypeReward(int type, PlayerIdentity identity, string victimName, BountyType bountyType, bool rewardGiven)
+	{
+		obfc_BountyNotifArgs args;
+		args = new obfc_BountyNotifArgs();
+		args.victimName = victimName;
+		args.bountyType = bountyType;
+		args.rewardGiven = rewardGiven;
+		obfm_SendNotificationInternal(type, identity, args);
+	}
+	static void obfm_SendNotifWinBroadcast(string playerName, string winnerName, BountyType bountyType)
+	{
+		obfc_BountyNotifArgs args;
+		args = new obfc_BountyNotifArgs();
+		args.playerName = playerName;
+		args.winnerName = winnerName;
+		args.bountyType = bountyType;
+		args.rewardGiven = true;
+		obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_WIN_BROADCAST, null, args);
+	}
+	static void obfm_SendNotifPersisted(PlayerIdentity identity, float remainingDuration)
+	{
+		obfc_BountyNotifArgs args;
+		args = new obfc_BountyNotifArgs();
+		args.remainingDuration = remainingDuration;
+		obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_BOUNTY_PERSISTED, identity, args);
+	}
+	static void obfm_SendNotifSurvivalReward(PlayerIdentity identity, BountyType bountyType, bool rewardGiven)
+	{
+		obfc_BountyNotifArgs args;
+		args = new obfc_BountyNotifArgs();
+		args.bountyType = bountyType;
+		args.rewardGiven = rewardGiven;
+		obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLACED_SURVIVAL_REWARD, identity, args);
+	}
+	static void obfm_SendNotificationInternal(int type, PlayerIdentity identity, obfc_BountyNotifArgs args = null)
 	{
 		string title;
 		string message;
@@ -49,6 +176,20 @@ class obfc_BountyNotifications
 		string foundStr;
 		string cooldownStr;
 		string suicidePhrase;
+		string playerName;
+		string victimName;
+		float durationSeconds;
+		int clearedRewardCount;
+		int currentHits;
+		int bountyHitsThreshold;
+		int tokensRequired;
+		int tokensFound;
+		int cooldownSeconds;
+		string errorDetails;
+		float remainingDuration;
+		BountyType bountyType;
+		bool rewardGiven;
+		string winnerName;
 		int color;
 		float duration;
 		bool isEnabled;
@@ -56,10 +197,28 @@ class obfc_BountyNotifications
 		int i;
 		Man man;
 		PlayerIdentity targetIdentity;
+		obfc_BountyNotifArgs notifData;
 		if (!IsMissionHost())
 			return;
 		if (!identity && !obfm_IsBroadcastType(type))
 			return;
+		notifData = args;
+		if (!notifData)
+			notifData = new obfc_BountyNotifArgs();
+		playerName = notifData.playerName;
+		victimName = notifData.victimName;
+		durationSeconds = notifData.durationSeconds;
+		clearedRewardCount = notifData.clearedRewardCount;
+		currentHits = notifData.currentHits;
+		bountyHitsThreshold = notifData.bountyHitsThreshold;
+		tokensRequired = notifData.tokensRequired;
+		tokensFound = notifData.tokensFound;
+		cooldownSeconds = notifData.cooldownSeconds;
+		errorDetails = notifData.errorDetails;
+		remainingDuration = notifData.remainingDuration;
+		bountyType = notifData.bountyType;
+		rewardGiven = notifData.rewardGiven;
+		winnerName = notifData.winnerName;
 		title = "";
 		message = "";
 		iconPath = "";
