@@ -5,7 +5,7 @@ modded class MissionServer
 	override void OnInit()
 	{
 		super.OnInit();
-		if (!g_Game || !g_Game.IsServer())
+		if (!g_Game)
 			return;
 		NinjinsBntyV3_HookAdminServerRpc();
 	}
@@ -53,7 +53,7 @@ modded class MissionServer
 	{
 		if (type != CallType.Server)
 			return;
-		if (!NinjinsUpgraded_AdmCfgHost.SenderMayOpenAdminMenu(sender))
+		if (!NinjinsUpgraded_AdminCfgHost.SenderMayOpenAdminMenu(sender))
 			return;
 		NinjinsBntyV3_SendCfgToClient(sender);
 	}
@@ -65,7 +65,7 @@ modded class MissionServer
 
 		if (type != CallType.Server)
 			return;
-		if (!NinjinsUpgraded_AdmCfgHost.SenderMayEditCoreConfig(sender))
+		if (!NinjinsUpgraded_AdminCfgHost.SenderMayEditCoreConfig(sender))
 			return;
 		if (!ctx.Read(payload))
 			return;
@@ -83,7 +83,7 @@ modded class MissionServer
 	{
 		if (type != CallType.Server)
 			return;
-		if (!NinjinsUpgraded_AdmCfgHost.SenderMayEditCoreConfig(sender))
+		if (!NinjinsUpgraded_AdminCfgHost.SenderMayEditCoreConfig(sender))
 			return;
 		obfc_BountyManager.obfm_ReloadAllConfigs(null);
 		NinjinsBntyV3_SendCfgToClient(sender);

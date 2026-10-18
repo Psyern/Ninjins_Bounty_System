@@ -1,12 +1,12 @@
 //! One Enabled/Title/Message/IconPath block in the bounty admin sidebar (v2 parity).
 class NinjinsBntyV3_MsgRow
 {
-	ref NinjinsUpgraded_AdmRowBool m_EnabledRow;
-	ref NinjinsUpgraded_AdmRowText m_TitleRow;
-	ref NinjinsUpgraded_AdmRowText m_MessageRow;
-	ref NinjinsUpgraded_AdmRowText m_IconRow;
+	ref NinjinsUpgraded_AdminBoolRow m_EnabledRow;
+	ref NinjinsUpgraded_AdminTextRow m_TitleRow;
+	ref NinjinsUpgraded_AdminTextRow m_MessageRow;
+	ref NinjinsUpgraded_AdminTextRow m_IconRow;
 
-	void Layout(NinjinsUpgraded_AdmDynForm form, string labelPrefix)
+	void Layout(NinjinsUpgraded_AdminDynamicForm form, string labelPrefix)
 	{
 		if (!form)
 			return;

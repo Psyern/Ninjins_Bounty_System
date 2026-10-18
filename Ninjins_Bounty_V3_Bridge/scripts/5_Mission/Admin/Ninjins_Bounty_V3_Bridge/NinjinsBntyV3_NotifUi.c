@@ -21,6 +21,13 @@ class NinjinsBntyV3_NotifUi
 	ref NinjinsBntyV3_MsgRow m_OtherTeleport;
 	ref NinjinsBntyV3_MsgRow m_OtherPauseTerr;
 	ref NinjinsBntyV3_MsgRow m_OtherPauseSafe;
+	ref NinjinsBntyV3_MsgRow m_OtherRevengeAvail;
+	ref NinjinsBntyV3_MsgRow m_OtherRevengeDenied;
+	ref NinjinsBntyV3_MsgRow m_OtherPotAdded;
+	ref NinjinsBntyV3_MsgRow m_OtherPotPayout;
+	ref NinjinsBntyV3_MsgRow m_OtherPotRefund;
+	ref NinjinsBntyV3_MsgRow m_OtherNoMoney;
+	ref NinjinsBntyV3_MsgRow m_OtherPotRejected;
 	ref NinjinsBntyV3_MsgRow m_BcPlaced;
 	ref NinjinsBntyV3_MsgRow m_BcRule;
 	ref NinjinsBntyV3_MsgRow m_BcExpired;
@@ -28,8 +35,9 @@ class NinjinsBntyV3_NotifUi
 	ref NinjinsBntyV3_MsgRow m_BcSuicide;
 	ref NinjinsBntyV3_MsgRow m_BcLogout;
 	ref NinjinsBntyV3_MsgRow m_BcWarning;
+	ref NinjinsBntyV3_MsgRow m_BcPotIncreased;
 
-	protected NinjinsBntyV3_MsgRow NewRow(NinjinsUpgraded_AdmDynForm form, string labelPrefix)
+	protected NinjinsBntyV3_MsgRow NewRow(NinjinsUpgraded_AdminDynamicForm form, string labelPrefix)
 	{
 		NinjinsBntyV3_MsgRow row;
 
@@ -38,7 +46,7 @@ class NinjinsBntyV3_NotifUi
 		return row;
 	}
 
-	void Layout(NinjinsUpgraded_AdmDynForm form)
+	void Layout(NinjinsUpgraded_AdminDynamicForm form)
 	{
 		if (!form)
 			return;
@@ -68,6 +76,13 @@ class NinjinsBntyV3_NotifUi
 		m_OtherTeleport = NewRow(form, "Teleported out of territory");
 		m_OtherPauseTerr = NewRow(form, "Bounty paused in territory");
 		m_OtherPauseSafe = NewRow(form, "Bounty paused in safe zone");
+		m_OtherRevengeAvail = NewRow(form, "Revenge bounty available");
+		m_OtherRevengeDenied = NewRow(form, "Revenge bounty not eligible");
+		m_OtherPotAdded = NewRow(form, "Bounty money added");
+		m_OtherPotPayout = NewRow(form, "Bounty money collected");
+		m_OtherPotRefund = NewRow(form, "Bounty money refunded");
+		m_OtherNoMoney = NewRow(form, "Not enough money");
+		m_OtherPotRejected = NewRow(form, "Money bounty rejected");
 
 		form.AddSectionTitle("Broadcasts", false, "broadcasts");
 		m_BcPlaced = NewRow(form, "Broadcast placed bounty");
@@ -77,6 +92,7 @@ class NinjinsBntyV3_NotifUi
 		m_BcSuicide = NewRow(form, "Broadcast suicide");
 		m_BcLogout = NewRow(form, "Broadcast logout");
 		m_BcWarning = NewRow(form, "Broadcast warning");
+		m_BcPotIncreased = NewRow(form, "Broadcast bounty raised");
 	}
 
 	void Destroy()
@@ -121,6 +137,20 @@ class NinjinsBntyV3_NotifUi
 			m_OtherPauseTerr.Destroy();
 		if (m_OtherPauseSafe)
 			m_OtherPauseSafe.Destroy();
+		if (m_OtherRevengeAvail)
+			m_OtherRevengeAvail.Destroy();
+		if (m_OtherRevengeDenied)
+			m_OtherRevengeDenied.Destroy();
+		if (m_OtherPotAdded)
+			m_OtherPotAdded.Destroy();
+		if (m_OtherPotPayout)
+			m_OtherPotPayout.Destroy();
+		if (m_OtherPotRefund)
+			m_OtherPotRefund.Destroy();
+		if (m_OtherNoMoney)
+			m_OtherNoMoney.Destroy();
+		if (m_OtherPotRejected)
+			m_OtherPotRejected.Destroy();
 		if (m_BcPlaced)
 			m_BcPlaced.Destroy();
 		if (m_BcRule)
@@ -135,6 +165,8 @@ class NinjinsBntyV3_NotifUi
 			m_BcLogout.Destroy();
 		if (m_BcWarning)
 			m_BcWarning.Destroy();
+		if (m_BcPotIncreased)
+			m_BcPotIncreased.Destroy();
 		m_PlacedHunted = null;
 		m_PlacedExpired = null;
 		m_PlacedSurvival = null;
@@ -155,6 +187,13 @@ class NinjinsBntyV3_NotifUi
 		m_OtherTeleport = null;
 		m_OtherPauseTerr = null;
 		m_OtherPauseSafe = null;
+		m_OtherRevengeAvail = null;
+		m_OtherRevengeDenied = null;
+		m_OtherPotAdded = null;
+		m_OtherPotPayout = null;
+		m_OtherPotRefund = null;
+		m_OtherNoMoney = null;
+		m_OtherPotRejected = null;
 		m_BcPlaced = null;
 		m_BcRule = null;
 		m_BcExpired = null;
@@ -162,6 +201,7 @@ class NinjinsBntyV3_NotifUi
 		m_BcSuicide = null;
 		m_BcLogout = null;
 		m_BcWarning = null;
+		m_BcPotIncreased = null;
 	}
 
 	void LoadFromConfig(obfc_BountyConfig cfg)
@@ -218,6 +258,20 @@ class NinjinsBntyV3_NotifUi
 					m_OtherPauseTerr.LoadNotif(cfg.Notifications.Other.BountyPausedInTerritory);
 				if (m_OtherPauseSafe)
 					m_OtherPauseSafe.LoadNotif(cfg.Notifications.Other.BountyPausedInSafeZone);
+				if (m_OtherRevengeAvail)
+					m_OtherRevengeAvail.LoadNotif(cfg.Notifications.Other.RevengeAvailable);
+				if (m_OtherRevengeDenied)
+					m_OtherRevengeDenied.LoadNotif(cfg.Notifications.Other.RevengeNotEligible);
+				if (m_OtherPotAdded)
+					m_OtherPotAdded.LoadNotif(cfg.Notifications.Other.PotContributed);
+				if (m_OtherPotPayout)
+					m_OtherPotPayout.LoadNotif(cfg.Notifications.Other.PotPayout);
+				if (m_OtherPotRefund)
+					m_OtherPotRefund.LoadNotif(cfg.Notifications.Other.PotRefund);
+				if (m_OtherNoMoney)
+					m_OtherNoMoney.LoadNotif(cfg.Notifications.Other.InsufficientMoney);
+				if (m_OtherPotRejected)
+					m_OtherPotRejected.LoadNotif(cfg.Notifications.Other.PotRejected);
 			}
 		}
 		if (cfg.Broadcasts)
@@ -236,6 +290,8 @@ class NinjinsBntyV3_NotifUi
 				m_BcLogout.LoadBroadcast(cfg.Broadcasts.Logout);
 			if (m_BcWarning)
 				m_BcWarning.LoadBroadcast(cfg.Broadcasts.Warning);
+			if (m_BcPotIncreased)
+				m_BcPotIncreased.LoadBroadcast(cfg.Broadcasts.PotIncreased);
 		}
 	}
 
@@ -296,6 +352,34 @@ class NinjinsBntyV3_NotifUi
 			m_OtherPauseTerr.SaveNotif(cfg.Notifications.Other.BountyPausedInTerritory);
 		if (m_OtherPauseSafe)
 			m_OtherPauseSafe.SaveNotif(cfg.Notifications.Other.BountyPausedInSafeZone);
+		if (!cfg.Notifications.Other.RevengeAvailable)
+			cfg.Notifications.Other.RevengeAvailable = obfc_BountyConfig.obfm_CreateRevengeAvailableEntry();
+		if (m_OtherRevengeAvail)
+			m_OtherRevengeAvail.SaveNotif(cfg.Notifications.Other.RevengeAvailable);
+		if (!cfg.Notifications.Other.RevengeNotEligible)
+			cfg.Notifications.Other.RevengeNotEligible = obfc_BountyConfig.obfm_CreateRevengeNotEligibleEntry();
+		if (m_OtherRevengeDenied)
+			m_OtherRevengeDenied.SaveNotif(cfg.Notifications.Other.RevengeNotEligible);
+		if (!cfg.Notifications.Other.PotContributed)
+			cfg.Notifications.Other.PotContributed = new obfc_BountyNotificationEntry();
+		if (m_OtherPotAdded)
+			m_OtherPotAdded.SaveNotif(cfg.Notifications.Other.PotContributed);
+		if (!cfg.Notifications.Other.PotPayout)
+			cfg.Notifications.Other.PotPayout = new obfc_BountyNotificationEntry();
+		if (m_OtherPotPayout)
+			m_OtherPotPayout.SaveNotif(cfg.Notifications.Other.PotPayout);
+		if (!cfg.Notifications.Other.PotRefund)
+			cfg.Notifications.Other.PotRefund = new obfc_BountyNotificationEntry();
+		if (m_OtherPotRefund)
+			m_OtherPotRefund.SaveNotif(cfg.Notifications.Other.PotRefund);
+		if (!cfg.Notifications.Other.InsufficientMoney)
+			cfg.Notifications.Other.InsufficientMoney = new obfc_BountyNotificationEntry();
+		if (m_OtherNoMoney)
+			m_OtherNoMoney.SaveNotif(cfg.Notifications.Other.InsufficientMoney);
+		if (!cfg.Notifications.Other.PotRejected)
+			cfg.Notifications.Other.PotRejected = new obfc_BountyNotificationEntry();
+		if (m_OtherPotRejected)
+			m_OtherPotRejected.SaveNotif(cfg.Notifications.Other.PotRejected);
 
 		if (m_BcPlaced)
 			m_BcPlaced.SaveBroadcast(cfg.Broadcasts.PlacedBounty);
@@ -311,5 +395,9 @@ class NinjinsBntyV3_NotifUi
 			m_BcLogout.SaveBroadcast(cfg.Broadcasts.Logout);
 		if (m_BcWarning)
 			m_BcWarning.SaveBroadcast(cfg.Broadcasts.Warning);
+		if (!cfg.Broadcasts.PotIncreased)
+			cfg.Broadcasts.PotIncreased = new obfc_BountyBroadcastEntry();
+		if (m_BcPotIncreased)
+			m_BcPotIncreased.SaveBroadcast(cfg.Broadcasts.PotIncreased);
 	}
 }

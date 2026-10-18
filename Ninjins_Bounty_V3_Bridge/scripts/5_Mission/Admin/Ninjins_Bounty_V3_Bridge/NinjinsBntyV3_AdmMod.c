@@ -1,79 +1,104 @@
 class NinjinsBntyV3_AdmView
 {
-	protected ref NinjinsUpgraded_AdmDynForm m_Form;
+	protected ref NinjinsUpgraded_AdminDynamicForm m_Form;
 	protected ref obfc_BountyConfig m_Cfg;
 
-	protected ref NinjinsUpgraded_AdmRowBool m_EnableRow;
-	protected ref NinjinsUpgraded_AdmRowText m_CooldownRow;
-	protected ref NinjinsUpgraded_AdmRowInt m_MaxBountiedRow;
-	protected ref NinjinsUpgraded_AdmRowInt m_MinOnlineRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_DisableSelfRow;
-	protected ref NinjinsUpgraded_AdmRowInt m_SkipTokensRow;
-	protected ref NinjinsUpgraded_AdmRowInt m_PlaceTokensRow;
-	protected NinjinsUpgraded_AdmStrList m_TokenClassList;
-	protected ref NinjinsUpgraded_AdmRowBool m_TeleportTerritoryRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_PauseTerritoryRow;
-	protected ref NinjinsUpgraded_AdmRowText m_ResumeTerritoryDistRow;
-	protected ref NinjinsUpgraded_AdmRowText m_PauseTerritoryIntervalRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_TeleportSafeRow;
-	protected ref NinjinsUpgraded_AdmRowText m_TeleportSafeDistRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_PauseSafeRow;
-	protected ref NinjinsUpgraded_AdmRowInt m_MinAliveRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_AutoPlaceRow;
-	protected ref NinjinsUpgraded_AdmRowText m_AutoPlaceIntervalRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_PersistLogoutRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_DontSuicideRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_DontFriendlyRow;
-	protected ref NinjinsUpgraded_AdmRowText m_WarningTimeRow;
-	protected ref NinjinsUpgraded_AdmRowInt m_CostPerMinuteRow;
-	protected ref NinjinsUpgraded_AdmRowInt m_MinMinutesRow;
-	protected ref NinjinsUpgraded_AdmRowInt m_MaxMinutesRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_EnableRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_CooldownRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_MaxBountiedRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_MinOnlineRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_DisableSelfRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_SkipTokensRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_PlaceTokensRow;
+	protected NinjinsUpgraded_AdminStringList m_TokenClassList;
+	protected ref NinjinsUpgraded_AdminBoolRow m_TeleportTerritoryRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_PauseTerritoryRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_ResumeTerritoryDistRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_PauseTerritoryIntervalRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_TeleportSafeRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_TeleportSafeDistRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_PauseSafeRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_MinAliveRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_AutoPlaceRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_AutoPlaceIntervalRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_AutoTargetModeRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_TopKillerMinRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_TopKillerFallbackRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_PersistLogoutRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_DontSuicideRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_DontFriendlyRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_WarningTimeRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_CostPerMinuteRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_MinMinutesRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_MaxMinutesRow;
 
-	protected ref NinjinsUpgraded_AdmRowBool m_HitThresholdRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_PveToPvpRow;
-	protected ref NinjinsUpgraded_AdmRowInt m_PveToPvpInstantRow;
-	protected ref NinjinsUpgraded_AdmRowText m_RuleDurationRow;
-	protected ref NinjinsUpgraded_AdmRowText m_HitWindowRow;
-	protected ref NinjinsUpgraded_AdmRowInt m_HitWarnRow;
-	protected ref NinjinsUpgraded_AdmRowInt m_HitBountyRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_ClearPendingRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_AllowPveKillRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_HitThresholdRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_PveToPvpRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_PveToPvpInstantRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_RuleDurationRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_HitWindowRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_HitWarnRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_HitBountyRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_ClearPendingRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_AllowPveKillRow;
 
-	protected ref NinjinsUpgraded_AdmRowText m_PlacedDurationRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_SurvivalRewardRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_RuleBreakerRewardRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_PlacedDurationRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_SurvivalRewardRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_RuleBreakerRewardRow;
 
-	protected ref NinjinsUpgraded_AdmRowBool m_MapDrawRow;
-	protected ref NinjinsUpgraded_AdmRowText m_CircleRadiusRow;
-	protected ref NinjinsUpgraded_AdmRowText m_CircleMinRadiusRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_CircleReduceRow;
-	protected ref NinjinsUpgraded_AdmRowBool m_CircleIncreaseRow;
-	protected ref NinjinsUpgraded_AdmRowColor m_CircleColorRow;
-	protected ref NinjinsUpgraded_AdmRowInt m_CircleWidthRow;
-	protected ref NinjinsUpgraded_AdmRowText m_MapUpdateRow;
-	protected ref NinjinsUpgraded_AdmRowText m_MapRequestCdRow;
-	protected ref NinjinsUpgraded_AdmRowText m_MapSyncRow;
-	protected ref NinjinsUpgraded_AdmRowText m_MapSyncEmptyRow;
-	protected ref NinjinsUpgraded_AdmRowText m_OffsetMinRow;
-	protected ref NinjinsUpgraded_AdmRowText m_OffsetMaxRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_RevengeEnableRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_RevengeKillsRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_RevengeWindowRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_RevengeRestrictRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_RevengeResetRow;
 
-	protected ref NinjinsUpgraded_AdmRowBool m_HardlineRow;
-	protected ref NinjinsUpgraded_AdmRowInt m_HardlineAmountRow;
-	protected ref NinjinsUpgraded_AdmRowText m_CountdownXRow;
-	protected ref NinjinsUpgraded_AdmRowText m_CountdownYRow;
-	protected ref NinjinsUpgraded_AdmRowText m_CountdownWRow;
-	protected ref NinjinsUpgraded_AdmRowText m_CountdownHRow;
-	protected ref NinjinsUpgraded_AdmRowColor m_CountdownBgRow;
-	protected ref NinjinsUpgraded_AdmRowColor m_CountdownTextRow;
-	protected NinjinsUpgraded_AdmStrList m_SuicidePhrasesList;
+	protected ref NinjinsUpgraded_AdminBoolRow m_PotEnableRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_PotExpansionRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_PotMinRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_PotMaxRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_PotMaxTotalRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_PotFeeRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_PotStackRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_PotSurvivorRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_PotGroupRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_SelfBountyRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_SelfMinRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_SelfMaxRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_SelfSurvivalRow;
+
+	protected ref NinjinsUpgraded_AdminBoolRow m_MapDrawRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_CircleRadiusRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_CircleMinRadiusRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_CircleReduceRow;
+	protected ref NinjinsUpgraded_AdminBoolRow m_CircleIncreaseRow;
+	protected ref NinjinsUpgraded_AdminColorRow m_CircleColorRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_CircleWidthRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_MapUpdateRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_MapRequestCdRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_MapSyncRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_MapSyncEmptyRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_OffsetMinRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_OffsetMaxRow;
+
+	protected ref NinjinsUpgraded_AdminBoolRow m_HardlineRow;
+	protected ref NinjinsUpgraded_AdminIntRow m_HardlineAmountRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_CountdownXRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_CountdownYRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_CountdownWRow;
+	protected ref NinjinsUpgraded_AdminTextRow m_CountdownHRow;
+	protected ref NinjinsUpgraded_AdminColorRow m_CountdownBgRow;
+	protected ref NinjinsUpgraded_AdminColorRow m_CountdownTextRow;
+	protected NinjinsUpgraded_AdminStringList m_SuicidePhrasesList;
 	protected ref NinjinsBntyV3_NotifUi m_NotifUi;
 
-	protected NinjinsUpgraded_AdmStrList m_OnlinePlayersList;
-	protected NinjinsUpgraded_AdmStrList m_BlacklistList;
+	protected NinjinsUpgraded_AdminStringList m_OnlinePlayersList;
+	protected NinjinsUpgraded_AdminStringList m_BlacklistList;
 	protected ref array<string> m_OnlinePlayerIds;
 	protected ButtonWidget m_RefreshPlayersBtn;
 	protected ButtonWidget m_PlaceBountyBtn;
 	protected ButtonWidget m_PlaceRuleBreakerBtn;
+	protected ref NinjinsUpgraded_AdminTextRow m_LootPresetRow;
+	protected ButtonWidget m_PlaceLootBountyBtn;
 	protected ButtonWidget m_ClearSelectedBountyBtn;
 	protected ButtonWidget m_ClearMyBountyBtn;
 	protected ButtonWidget m_ClearSelectedCooldownBtn;
@@ -89,7 +114,7 @@ class NinjinsBntyV3_AdmView
 	{
 		if (!parent)
 			return false;
-		m_Form = new NinjinsUpgraded_AdmDynForm();
+		m_Form = new NinjinsUpgraded_AdminDynamicForm();
 		if (!m_Form.CreateIn(parent))
 			return false;
 		m_Cfg = null;
@@ -125,6 +150,9 @@ class NinjinsBntyV3_AdmView
 		m_MinAliveRow = null;
 		m_AutoPlaceRow = null;
 		m_AutoPlaceIntervalRow = null;
+		m_AutoTargetModeRow = null;
+		m_TopKillerMinRow = null;
+		m_TopKillerFallbackRow = null;
 		m_PersistLogoutRow = null;
 		m_DontSuicideRow = null;
 		m_DontFriendlyRow = null;
@@ -144,6 +172,26 @@ class NinjinsBntyV3_AdmView
 		m_PlacedDurationRow = null;
 		m_SurvivalRewardRow = null;
 		m_RuleBreakerRewardRow = null;
+		m_RevengeEnableRow = null;
+		m_RevengeKillsRow = null;
+		m_RevengeWindowRow = null;
+		m_RevengeRestrictRow = null;
+		m_RevengeResetRow = null;
+		m_PotEnableRow = null;
+		m_PotExpansionRow = null;
+		m_PotMinRow = null;
+		m_PotMaxRow = null;
+		m_PotMaxTotalRow = null;
+		m_PotFeeRow = null;
+		m_PotStackRow = null;
+		m_PotSurvivorRow = null;
+		m_PotGroupRow = null;
+		m_SelfBountyRow = null;
+		m_SelfMinRow = null;
+		m_SelfMaxRow = null;
+		m_SelfSurvivalRow = null;
+		m_LootPresetRow = null;
+		m_PlaceLootBountyBtn = null;
 		m_MapDrawRow = null;
 		m_CircleRadiusRow = null;
 		m_CircleMinRadiusRow = null;
@@ -237,7 +285,7 @@ class NinjinsBntyV3_AdmView
 		return value.ToString();
 	}
 
-	protected float ReadFloat(NinjinsUpgraded_AdmRowText row, float fallback)
+	protected float ReadFloat(NinjinsUpgraded_AdminTextRow row, float fallback)
 	{
 		string textValue;
 		if (!row)
@@ -258,6 +306,8 @@ class NinjinsBntyV3_AdmView
 		AddGroupLabel("/ add");
 		m_PlaceBountyBtn = StretchActionButton(m_Form.AddAccentButton("Place bounty"));
 		m_PlaceRuleBreakerBtn = StretchActionButton(m_Form.AddAccentButton("Place rule breaker"));
+		m_LootPresetRow = m_Form.AddText("Loot preset (BountyLootPresets.json)", "Marksman");
+		m_PlaceLootBountyBtn = StretchActionButton(m_Form.AddAccentButton("Place loot bounty"));
 		m_AddRewardBtn = StretchActionButton(m_Form.AddAccentButton("Add reward point"));
 
 		AddGroupLabel("/ remove");
@@ -303,6 +353,9 @@ class NinjinsBntyV3_AdmView
 		m_MinAliveRow = m_Form.AddInt("Minimum player lifetime seconds", 900);
 		m_AutoPlaceRow = m_Form.AddBool("Enable automated bounty placement", false);
 		m_AutoPlaceIntervalRow = m_Form.AddText("Automated placement interval seconds", "3600");
+		m_AutoTargetModeRow = m_Form.AddInt("Automated target (0=random, 1=top killer of week)", 0);
+		m_TopKillerMinRow = m_Form.AddInt("Top killer min weekly kills", 1);
+		m_TopKillerFallbackRow = m_Form.AddBool("Top killer fallback to random player", true);
 		m_PersistLogoutRow = m_Form.AddBool("Persistent bounty after logout", true);
 		m_DontSuicideRow = m_Form.AddBool("Dont count suicide", true);
 		m_DontFriendlyRow = m_Form.AddBool("Dont count friendly fire", true);
@@ -328,6 +381,28 @@ class NinjinsBntyV3_AdmView
 		m_PlacedDurationRow = m_Form.AddText("Placed bounty duration seconds", "60");
 		m_SurvivalRewardRow = m_Form.AddBool("Enable survival reward", true);
 		m_RuleBreakerRewardRow = m_Form.AddBool("PvE rule breaker give rewards", false);
+
+		m_Form.AddSectionTitle("Revenge bounty", false, "revengeBounty");
+		m_RevengeEnableRow = m_Form.AddBool("Enable revenge bounty", false);
+		m_RevengeKillsRow = m_Form.AddInt("Kills by same player required", 3);
+		m_RevengeWindowRow = m_Form.AddText("Kill count window seconds (0=no expiry)", "3600");
+		m_RevengeRestrictRow = m_Form.AddBool("Board placement only on revenge targets", true);
+		m_RevengeResetRow = m_Form.AddBool("Reset kill count after revenge bounty", true);
+
+		m_Form.AddSectionTitle("Money bounties", false, "bountyPots");
+		m_PotEnableRow = m_Form.AddBool("Enable money bounties (pots)", false);
+		m_PotExpansionRow = m_Form.AddBool("Use Expansion Market money", true);
+		m_PotMinRow = m_Form.AddInt("Min reward per contribution", 100);
+		m_PotMaxRow = m_Form.AddInt("Max reward per contribution (0=unlimited)", 0);
+		m_PotMaxTotalRow = m_Form.AddInt("Max pot total (0=unlimited)", 0);
+		m_PotFeeRow = m_Form.AddInt("Fee percent on top", 10);
+		m_PotStackRow = m_Form.AddBool("Allow adding money to bounties", true);
+		m_PotSurvivorRow = m_Form.AddBool("Survivor keeps the pot", false);
+		m_PotGroupRow = m_Form.AddBool("Refund instead of paying group mates", true);
+		m_SelfBountyRow = m_Form.AddBool("Enable self-imposed bounty", false);
+		m_SelfMinRow = m_Form.AddInt("Self bounty min minutes", 10);
+		m_SelfMaxRow = m_Form.AddInt("Self bounty max minutes", 120);
+		m_SelfSurvivalRow = m_Form.AddBool("Self bounty gives survival reward", false);
 
 		m_Form.AddSectionTitle("Map", false, "map");
 		m_MapDrawRow = m_Form.AddBool("Enable map drawing", true);
@@ -360,7 +435,7 @@ class NinjinsBntyV3_AdmView
 	}
 
 	//! Selection-only list: hide add/remove editors and shrink empty bottom space.
-	protected void CompactSelectList(NinjinsUpgraded_AdmStrList listRow)
+	protected void CompactSelectList(NinjinsUpgraded_AdminStringList listRow)
 	{
 		Widget listRoot;
 		Widget titleWidget;
@@ -562,12 +637,12 @@ class NinjinsBntyV3_AdmView
 
 	protected void ShowNeedPlayerAlert()
 	{
-		NinjinsUpgraded_AdmAlert.ShowError("Bounty System", "Select a player first.");
+		NinjinsUpgraded_AdminAlert.ShowError("Bounty System", "Select a player first.");
 	}
 
 	protected void ShowNeedBlacklistAlert()
 	{
-		NinjinsUpgraded_AdmAlert.ShowError("Bounty System", "Select a blacklist entry first.");
+		NinjinsUpgraded_AdminAlert.ShowError("Bounty System", "Select a blacklist entry first.");
 	}
 
 	protected bool OnAdminActionClick(Widget w)
@@ -594,6 +669,22 @@ class NinjinsBntyV3_AdmView
 				return true;
 			}
 			SendAdminAction("AddBountySelectedPlayer:" + selectedPlayerId);
+			return true;
+		}
+		if (w == m_PlaceLootBountyBtn)
+		{
+			selectedPlayerId = SelectedOnlinePlayerId();
+			if (selectedPlayerId == "")
+			{
+				ShowNeedPlayerAlert();
+				return true;
+			}
+			if (!m_LootPresetRow || m_LootPresetRow.ReadTextValue() == "")
+			{
+				NinjinsUpgraded_AdminAlert.ShowError("Bounty System", "Enter a loot preset name first.");
+				return true;
+			}
+			SendAdminAction("AddLootBountySelectedPlayer:" + selectedPlayerId + "@@" + m_LootPresetRow.ReadTextValue());
 			return true;
 		}
 		if (w == m_PlaceRuleBreakerBtn)
@@ -735,6 +826,12 @@ class NinjinsBntyV3_AdmView
 			m_AutoPlaceRow.SetChecked(cfg.Core.EnableAutomatedBountyPlacement);
 		if (m_AutoPlaceIntervalRow)
 			m_AutoPlaceIntervalRow.SetTextValue(FloatText(cfg.Core.AutomatedBountyPlacementIntervalSeconds));
+		if (m_AutoTargetModeRow)
+			m_AutoTargetModeRow.SetIntValue(cfg.Core.AutomatedBountyTargetMode);
+		if (m_TopKillerMinRow)
+			m_TopKillerMinRow.SetIntValue(cfg.Core.TopKillerMinWeeklyKills);
+		if (m_TopKillerFallbackRow)
+			m_TopKillerFallbackRow.SetChecked(cfg.Core.TopKillerFallbackToRandom);
 		if (m_PersistLogoutRow)
 			m_PersistLogoutRow.SetChecked(cfg.Core.PersistentBountyAfterLogOut);
 		if (m_DontSuicideRow)
@@ -779,6 +876,50 @@ class NinjinsBntyV3_AdmView
 			m_SurvivalRewardRow.SetChecked(cfg.Reward.EnableSurvivalReward);
 		if (m_RuleBreakerRewardRow)
 			m_RuleBreakerRewardRow.SetChecked(cfg.Reward.PvERuleBreakerGiveRewards);
+
+		if (cfg.RevengeBounty)
+		{
+			if (m_RevengeEnableRow)
+				m_RevengeEnableRow.SetChecked(cfg.RevengeBounty.EnableRevengeBounty);
+			if (m_RevengeKillsRow)
+				m_RevengeKillsRow.SetIntValue(cfg.RevengeBounty.RevengeKillsRequired);
+			if (m_RevengeWindowRow)
+				m_RevengeWindowRow.SetTextValue(FloatText(cfg.RevengeBounty.RevengeKillWindowSeconds));
+			if (m_RevengeRestrictRow)
+				m_RevengeRestrictRow.SetChecked(cfg.RevengeBounty.RestrictPlacementToRevengeTargets);
+			if (m_RevengeResetRow)
+				m_RevengeResetRow.SetChecked(cfg.RevengeBounty.ResetKillsAfterRevengeBounty);
+		}
+
+		if (cfg.Pot)
+		{
+			if (m_PotEnableRow)
+				m_PotEnableRow.SetChecked(cfg.Pot.EnableBountyPots);
+			if (m_PotExpansionRow)
+				m_PotExpansionRow.SetChecked(cfg.Pot.UseExpansionMarketMoney);
+			if (m_PotMinRow)
+				m_PotMinRow.SetIntValue(cfg.Pot.MinContribution);
+			if (m_PotMaxRow)
+				m_PotMaxRow.SetIntValue(cfg.Pot.MaxContribution);
+			if (m_PotMaxTotalRow)
+				m_PotMaxTotalRow.SetIntValue(cfg.Pot.MaxPotTotal);
+			if (m_PotFeeRow)
+				m_PotFeeRow.SetIntValue(cfg.Pot.FeePercent);
+			if (m_PotStackRow)
+				m_PotStackRow.SetChecked(cfg.Pot.AllowStacking);
+			if (m_PotSurvivorRow)
+				m_PotSurvivorRow.SetChecked(cfg.Pot.SurvivorKeepsPot);
+			if (m_PotGroupRow)
+				m_PotGroupRow.SetChecked(cfg.Pot.BlockGroupPayout);
+			if (m_SelfBountyRow)
+				m_SelfBountyRow.SetChecked(cfg.Pot.EnableSelfBounty);
+			if (m_SelfMinRow)
+				m_SelfMinRow.SetIntValue(cfg.Pot.SelfBountyMinMinutes);
+			if (m_SelfMaxRow)
+				m_SelfMaxRow.SetIntValue(cfg.Pot.SelfBountyMaxMinutes);
+			if (m_SelfSurvivalRow)
+				m_SelfSurvivalRow.SetChecked(cfg.Pot.SelfBountySurvivalReward);
+		}
 
 		if (m_MapDrawRow)
 			m_MapDrawRow.SetChecked(cfg.Map.BountyEnableMapDrawing);
@@ -876,6 +1017,12 @@ class NinjinsBntyV3_AdmView
 		if (m_AutoPlaceRow)
 			cfg.Core.EnableAutomatedBountyPlacement = m_AutoPlaceRow.IsChecked();
 		cfg.Core.AutomatedBountyPlacementIntervalSeconds = ReadFloat(m_AutoPlaceIntervalRow, 3600.0);
+		if (m_AutoTargetModeRow)
+			cfg.Core.AutomatedBountyTargetMode = m_AutoTargetModeRow.ReadIntValue();
+		if (m_TopKillerMinRow)
+			cfg.Core.TopKillerMinWeeklyKills = m_TopKillerMinRow.ReadIntValue();
+		if (m_TopKillerFallbackRow)
+			cfg.Core.TopKillerFallbackToRandom = m_TopKillerFallbackRow.IsChecked();
 		if (m_PersistLogoutRow)
 			cfg.Core.PersistentBountyAfterLogOut = m_PersistLogoutRow.IsChecked();
 		if (m_DontSuicideRow)
@@ -916,6 +1063,47 @@ class NinjinsBntyV3_AdmView
 			cfg.Reward.EnableSurvivalReward = m_SurvivalRewardRow.IsChecked();
 		if (m_RuleBreakerRewardRow)
 			cfg.Reward.PvERuleBreakerGiveRewards = m_RuleBreakerRewardRow.IsChecked();
+
+		if (!cfg.RevengeBounty)
+			cfg.RevengeBounty = new obfc_BountyRevengeSettings();
+		if (m_RevengeEnableRow)
+			cfg.RevengeBounty.EnableRevengeBounty = m_RevengeEnableRow.IsChecked();
+		if (m_RevengeKillsRow)
+			cfg.RevengeBounty.RevengeKillsRequired = m_RevengeKillsRow.ReadIntValue();
+		cfg.RevengeBounty.RevengeKillWindowSeconds = ReadFloat(m_RevengeWindowRow, 3600.0);
+		if (m_RevengeRestrictRow)
+			cfg.RevengeBounty.RestrictPlacementToRevengeTargets = m_RevengeRestrictRow.IsChecked();
+		if (m_RevengeResetRow)
+			cfg.RevengeBounty.ResetKillsAfterRevengeBounty = m_RevengeResetRow.IsChecked();
+
+		if (!cfg.Pot)
+			cfg.Pot = new obfc_BountyPotSettings();
+		if (m_PotEnableRow)
+			cfg.Pot.EnableBountyPots = m_PotEnableRow.IsChecked();
+		if (m_PotExpansionRow)
+			cfg.Pot.UseExpansionMarketMoney = m_PotExpansionRow.IsChecked();
+		if (m_PotMinRow)
+			cfg.Pot.MinContribution = m_PotMinRow.ReadIntValue();
+		if (m_PotMaxRow)
+			cfg.Pot.MaxContribution = m_PotMaxRow.ReadIntValue();
+		if (m_PotMaxTotalRow)
+			cfg.Pot.MaxPotTotal = m_PotMaxTotalRow.ReadIntValue();
+		if (m_PotFeeRow)
+			cfg.Pot.FeePercent = m_PotFeeRow.ReadIntValue();
+		if (m_PotStackRow)
+			cfg.Pot.AllowStacking = m_PotStackRow.IsChecked();
+		if (m_PotSurvivorRow)
+			cfg.Pot.SurvivorKeepsPot = m_PotSurvivorRow.IsChecked();
+		if (m_PotGroupRow)
+			cfg.Pot.BlockGroupPayout = m_PotGroupRow.IsChecked();
+		if (m_SelfBountyRow)
+			cfg.Pot.EnableSelfBounty = m_SelfBountyRow.IsChecked();
+		if (m_SelfMinRow)
+			cfg.Pot.SelfBountyMinMinutes = m_SelfMinRow.ReadIntValue();
+		if (m_SelfMaxRow)
+			cfg.Pot.SelfBountyMaxMinutes = m_SelfMaxRow.ReadIntValue();
+		if (m_SelfSurvivalRow)
+			cfg.Pot.SelfBountySurvivalReward = m_SelfSurvivalRow.IsChecked();
 
 		if (m_MapDrawRow)
 			cfg.Map.BountyEnableMapDrawing = m_MapDrawRow.IsChecked();
@@ -1009,7 +1197,7 @@ class NinjinsBntyV3_AdmForm: NinjinsUpgraded_AdminForm
 	protected ImageWidget m_ReloadButtonIcon;
 	protected ImageWidget m_ViewRawButtonIcon;
 	protected string m_RawBody;
-	protected ref NinjinsUpgraded_RawWnd m_RawWnd;
+	protected ref NinjinsUpgraded_RawWindow m_RawWnd;
 	protected bool m_AwaitingReload;
 
 	override bool SetModule(NinjinsUpgraded_AdminModBase module)
@@ -1037,9 +1225,9 @@ class NinjinsBntyV3_AdmForm: NinjinsUpgraded_AdminForm
 		Class.CastTo(m_SaveButtonIcon, m_LayoutRoot.FindAnyWidget("save_button_icon"));
 		Class.CastTo(m_ReloadButtonIcon, m_LayoutRoot.FindAnyWidget("reload_button_icon"));
 		Class.CastTo(m_ViewRawButtonIcon, m_LayoutRoot.FindAnyWidget("view_raw_button_icon"));
-		NinjinsUpgraded_IcoBrowse.LoadToolbarIcon(m_SaveButtonIcon, "save");
-		NinjinsUpgraded_IcoBrowse.LoadToolbarIcon(m_ReloadButtonIcon, "refresh");
-		NinjinsUpgraded_IcoBrowse.LoadToolbarIcon(m_ViewRawButtonIcon, "raw");
+		NinjinsUpgraded_IconBrowse.LoadToolbarIcon(m_SaveButtonIcon, "save");
+		NinjinsUpgraded_IconBrowse.LoadToolbarIcon(m_ReloadButtonIcon, "refresh");
+		NinjinsUpgraded_IconBrowse.LoadToolbarIcon(m_ViewRawButtonIcon, "raw");
 		m_View = new NinjinsBntyV3_AdmView();
 		if (m_MainPanel && m_View)
 			m_View.CreateIn(m_MainPanel);
@@ -1070,7 +1258,7 @@ class NinjinsBntyV3_AdmForm: NinjinsUpgraded_AdminForm
 	override void OnHide()
 	{
 		super.OnHide();
-		NinjinsUpgraded_RawWndOps.CloseIfOpen(m_RawWnd);
+		NinjinsUpgraded_RawWindowOps.CloseIfOpen(m_RawWnd);
 		m_RawWnd = null;
 		if (m_View)
 			m_View.Destroy();
@@ -1080,13 +1268,13 @@ class NinjinsBntyV3_AdmForm: NinjinsUpgraded_AdminForm
 	override void PaintUiColors()
 	{
 		if (m_LayoutRoot)
-			m_LayoutRoot.SetColor(NinjinsUpgraded_UiPal.WindowRoot());
+			m_LayoutRoot.SetColor(NinjinsUpgraded_UiColors.WindowRoot());
 		if (m_SaveButton)
-			m_SaveButton.SetColor(NinjinsUpgraded_UiPal.BtnIdle());
+			m_SaveButton.SetColor(NinjinsUpgraded_UiColors.BtnIdle());
 		if (m_ReloadButton)
-			m_ReloadButton.SetColor(NinjinsUpgraded_UiPal.BtnIdle());
+			m_ReloadButton.SetColor(NinjinsUpgraded_UiColors.BtnIdle());
 		if (m_ViewRawButton)
-			m_ViewRawButton.SetColor(NinjinsUpgraded_UiPal.BtnIdle());
+			m_ViewRawButton.SetColor(NinjinsUpgraded_UiColors.BtnIdle());
 		if (m_View)
 			m_View.PaintUiColors();
 	}
@@ -1178,7 +1366,7 @@ class NinjinsBntyV3_AdmForm: NinjinsUpgraded_AdminForm
 		if (m_AwaitingReload)
 		{
 			m_AwaitingReload = false;
-			NinjinsUpgraded_AdmAlert.ShowSuccess("Bounty System", "Settings reloaded from server");
+			NinjinsUpgraded_AdminAlert.ShowSuccess("Bounty System", "Settings reloaded from server");
 		}
 	}
 
@@ -1186,10 +1374,10 @@ class NinjinsBntyV3_AdmForm: NinjinsUpgraded_AdminForm
 	{
 		if (saved)
 		{
-			NinjinsUpgraded_AdmAlert.ShowSuccess("Bounty System", "Settings saved.");
+			NinjinsUpgraded_AdminAlert.ShowSuccess("Bounty System", "Settings saved.");
 			return;
 		}
-		NinjinsUpgraded_AdmAlert.ShowError("Bounty System", "Settings save failed.");
+		NinjinsUpgraded_AdminAlert.ShowError("Bounty System", "Settings save failed.");
 	}
 
 	protected string MakeRawBody(obfc_BountyConfig cfg)
@@ -1212,7 +1400,7 @@ class NinjinsBntyV3_AdmForm: NinjinsUpgraded_AdminForm
 		rawBody = m_RawBody;
 		if (rawBody == "")
 			rawBody = "{\n\t\"note\": \"No config received from server yet.\"\n}";
-		NinjinsUpgraded_RawWndOps.CloseIfOpen(m_RawWnd);
-		m_RawWnd = NinjinsUpgraded_RawWndOps.OpenReadOnly("Bounty System - Raw JSON", rawBody, GetOwnerWindow());
+		NinjinsUpgraded_RawWindowOps.CloseIfOpen(m_RawWnd);
+		m_RawWnd = NinjinsUpgraded_RawWindowOps.OpenReadOnly("Bounty System - Raw JSON", rawBody, GetOwnerWindow());
 	}
 }

@@ -2,11 +2,11 @@ modded class PlayerBase
 {
 	override bool obfm_MayRunBountyAdminTools()
 	{
-		NinjinsUpgraded_PermGate permGate;
+		NinjinsUpgraded_PermissionGate permGate;
 
 		if (super.obfm_MayRunBountyAdminTools())
 			return true;
-		permGate = GetNinjinsUpgradedPermGate();
+		permGate = GetNinjinsUpgradedPermissionGate();
 		if (!permGate)
 			return false;
 		if (!GetIdentity())

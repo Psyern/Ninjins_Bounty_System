@@ -72,10 +72,14 @@ servers running the Ninjins Upgraded v3 stack — see
 
 ### Bounty Gameplay
 - Player-placed bounties at the board
+- Money bounties: put up a reward, others can add money, the killer collects it
+- Self-imposed bounties with your own reward
+- Admin loot bounties from loot presets
+- Revenge bounties on players who keep killing you
 - Per-minute or flat token pricing
 - Skip the current bounty for tokens
 - Rule Breaker bounties (PvE offenders)
-- Automated bounty placement
+- Automated bounty placement (random or top killer of the week)
 - Bounty warning countdown
 - Live countdown HUD widget
 - Map circle with shrinking radius
@@ -134,6 +138,13 @@ Every entry is individually toggleable and carries its own `Title`, `Message` an
 | `Other` | TeleportedOutOfTerritory | Player was moved out of their territory |
 | `Other` | BountyPausedInTerritory | Timer paused inside own territory |
 | `Other` | BountyPausedInSafeZone | Timer paused inside a safezone |
+| `Other` | RevengeAvailable | The same player killed you `RevengeKillsRequired` times (`{PLAYER}`, `{KILLS}`, `{KILLS_REQUIRED}`) |
+| `Other` | RevengeNotEligible | Board placement refused because the target is no revenge target |
+| `Other` | PotContributed | Your money went into a bounty pot (`{PLAYER}` `{AMOUNT}` `{FEE}` `{TOTAL}` `{CURRENCY}`) |
+| `Other` | PotPayout | You collected a bounty pot - claim it at the board |
+| `Other` | PotRefund | A bounty you paid into ended without a winner - money is waiting at the board |
+| `Other` | InsufficientMoney | Not enough money for reward + fee (`{AMOUNT}` `{FOUND}`) |
+| `Other` | PotRejected | A money bounty action was refused (`{REASON}`) |
 
 ### Broadcasts
 
@@ -148,6 +159,7 @@ Server-wide messages. Placeholders are replaced at send time.
 | `Win` | `{PLAYER}` `{WINNER}` | Bounty target was killed by a player |
 | `Suicide` | `{PLAYER}` `{SUICIDE_PHRASE}` | Target died without a player killer |
 | `Logout` | `{PLAYER}` | Target logged out while bountied |
+| `PotIncreased` | `{PLAYER}` `{TOTAL}` `{CURRENCY}` | Money was put on a bounty |
 
 ---
 
@@ -213,7 +225,12 @@ profiles/Ninjins_Bounty_System/
 │   ├── BountyZones.json                ← static safezones / territories
 │   ├── Admins.json                     ← admin SteamID64s / GUIDs
 │   ├── Blacklist.json                  ← players excluded from bounties
-│   └── BountyBoardPlacements.json      ← auto-spawned board positions
+│   ├── BountyBoardPlacements.json      ← auto-spawned board positions
+│   └── BountyLootPresets.json          ← loot presets for admin loot bounties
+├── Data/
+│   ├── BountyPots.json                 ← money/loot riding on active bounties
+│   ├── BountyPayouts.json              ← unclaimed winnings and refunds per player
+│   └── WeeklyKills.json                ← PvP kills of the current week (Monday 00:00 UTC)
 └── Logging/
     ├── Config/LoggingSettings.json
     └── Logs/Ninjins_Bounty_System_2026-08-09.log
@@ -256,6 +273,9 @@ requires hand-editing.
 | `BountyRequestMaxMinutes` | `60` | Upper clamp for the board duration field |
 | `EnableAutomatedBountyPlacement` | `false` | Server places bounties on its own |
 | `AutomatedBountyPlacementIntervalSeconds` | `3600.0` | Interval for automated placement |
+| `AutomatedBountyTargetMode` | `0` | `0` = random eligible player, `1` = eligible player with the most PvP kills this week |
+| `TopKillerMinWeeklyKills` | `1` | Kills this week needed to count as top killer |
+| `TopKillerFallbackToRandom` | `true` | No top killer online: pick a random player instead of skipping |
 | `SuicidePhrases` | 8 phrases | One is picked at random for `Broadcasts.Suicide` |
 | `EnableConfigReloadSuccessNotification` | `true` | Confirm config reloads to the admin |
 | `EnableCommandAccessDeniedNotification` | `true` | Tell non-admins their command was rejected |
@@ -284,6 +304,57 @@ Rule Breaker bounties punish players who break the server's PvE rules.
 | `AllowPvEToPvEVictimKill` | `false` | Let the victim retaliate without being flagged |
 | `Expansion_EnableHardlineReputationDecrease` | `false` | Deduct Expansion Hardline reputation |
 | `Expansion_HardlineReputationDecreaseAmount` | `10` | Amount deducted |
+
+### `BountyConfig.json` → `RevengeBounty`
+
+A player killed by the **same** player `RevengeKillsRequired` times may pay the normal board
+placement price (`PlaceBountyTokenRequired` or per-minute pricing) to put a bounty on that killer.
+Kills are counted server-side in memory per victim/killer pair: they survive relogs, reset on server
+restart, and never count while the victim had a bounty or (with `DontCountFriendlyFire`) for
+group-mate kills. Editable in the V3 admin menu under **Revenge bounty**.
+
+| Field | Default | Description |
+|---|---|---|
+| `EnableRevengeBounty` | `false` | Turn the revenge bounty on |
+| `RevengeKillsRequired` | `3` | Kills by the same player before the victim may place a revenge bounty |
+| `RevengeKillWindowSeconds` | `3600.0` | Only kills within this window count (`0` = no expiry until restart) |
+| `RestrictPlacementToRevengeTargets` | `true` | Board lists and accepts revenge targets only; `false` keeps open placement and marks revenge targets `[Revenge xN]` |
+| `ResetKillsAfterRevengeBounty` | `true` | The kill count for that killer starts over once the revenge bounty is placed |
+
+### `BountyConfig.json` → `Pot` (money bounties)
+
+Players attach a money reward when placing a bounty, add money to any active bounty, or put a
+bounty on themselves. Every contribution costs reward + `FeePercent` (the fee is destroyed). The
+player who kills the target collects the whole pot plus any admin loot at the bounty board
+(**Claim Money** / **Claim Item Reward**). Money is Expansion Market currency when that mod is
+loaded, otherwise the bounty tokens. No ATM support - payouts are physical money.
+
+| Field | Default | Description |
+|---|---|---|
+| `EnableBountyPots` | `false` | Turn money bounties on |
+| `UseExpansionMarketMoney` | `true` | Use Expansion Market currencies when loaded, else bounty tokens |
+| `MinContribution` | `100` | Smallest reward per contribution |
+| `MaxContribution` | `0` | Largest reward per contribution, `0` = unlimited |
+| `MaxPotTotal` | `0` | Cap for one bounty's pot, `0` = unlimited |
+| `FeePercent` | `10` | Charged on top of every contribution and destroyed (money sink) |
+| `AllowStacking` | `true` | Allow adding money to an existing bounty |
+| `SurvivorKeepsPot` | `false` | Target who survives takes the pot; `false` refunds the contributors |
+| `BlockGroupPayout` | `true` | A group/party mate of the target never collects - the pot is refunded |
+| `EnableSelfBounty` | `false` | Players may put a bounty with their own reward on themselves |
+| `SelfBountyMinMinutes` / `SelfBountyMaxMinutes` | `10` / `120` | Duration range for self-imposed bounties |
+| `SelfBountySurvivalReward` | `false` | Surviving your own bounty also pays the normal survival reward |
+
+**How a pot ends:** killer collects everything · bounty expired or cleared by an admin/skip → refund
+to every contributor (or the survivor, see `SurvivorKeepsPot`) · suicide, logout or a non-player death
+→ refund to everyone except the target, whose own money is forfeited. A target that is online without
+a bounty (e.g. the bounty never started) gets its pot refunded within about a minute.
+
+### `BountyLootPresets.json`
+
+Named item lists for admin loot bounties (V3 admin menu → **Place loot bounty**, preset name in the row
+above). Every item of the preset spawns into `ContainerClassName` when the killer claims it. Items use
+the same fields as `BountySuccessRewardConfig.json` (`ItemClassName`, `Amount`, `QuantMin/Max`,
+`HealthMin/Max`, `Attachments`). Defaults: `Marksman` (SVD set) and `Medic`.
 
 ### `BountyConfig.json` → `PlacedBounty` · `Reward` · `UI` · `Map`
 
@@ -428,7 +499,10 @@ The board is the player-facing entry point. Look at it and use the interaction a
 | **Duration (minutes)** | Only visible while per-minute pricing is active — shows the live cost |
 | **Skip** | Pay `SkipBountyTokenRequired` to skip the current bounty |
 | **Claim Rewards** | Hand over the reward crate / items you earned |
-| **Claim Money** | Pay out the currency rewards you earned |
+| **Claim Money** | Pay out the currency rewards you earned, plus won/refunded bounty money |
+| **Reward money** | Only with `Pot.EnableBountyPots` - reward added to Place Bounty / Add Money (shows the cost incl. fee) |
+| **Add Money to Bounty** | Raise the pot of the selected bountied player |
+| **Bounty on Myself** | Self-imposed bounty for the entered minutes with your reward |
 
 Board and crate classnames:
 

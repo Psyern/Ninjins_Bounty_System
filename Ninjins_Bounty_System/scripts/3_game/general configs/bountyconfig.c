@@ -60,6 +60,13 @@ class obfc_BountyOtherNotifications
 	ref obfc_BountyNotificationEntry TeleportedOutOfTerritory; 
 	ref obfc_BountyNotificationEntry BountyPausedInTerritory;
 	ref obfc_BountyNotificationEntry BountyPausedInSafeZone;
+	ref obfc_BountyNotificationEntry RevengeAvailable;
+	ref obfc_BountyNotificationEntry RevengeNotEligible;
+	ref obfc_BountyNotificationEntry PotContributed;
+	ref obfc_BountyNotificationEntry PotPayout;
+	ref obfc_BountyNotificationEntry PotRefund;
+	ref obfc_BountyNotificationEntry InsufficientMoney;
+	ref obfc_BountyNotificationEntry PotRejected;
 	void obfc_BountyOtherNotifications()
 	{
 		InsufficientTokens = new obfc_BountyNotificationEntry();
@@ -73,6 +80,13 @@ class obfc_BountyOtherNotifications
 		TeleportedOutOfTerritory = new obfc_BountyNotificationEntry();
 		BountyPausedInTerritory = new obfc_BountyNotificationEntry();
 		BountyPausedInSafeZone = new obfc_BountyNotificationEntry();
+		RevengeAvailable = new obfc_BountyNotificationEntry();
+		RevengeNotEligible = new obfc_BountyNotificationEntry();
+		PotContributed = new obfc_BountyNotificationEntry();
+		PotPayout = new obfc_BountyNotificationEntry();
+		PotRefund = new obfc_BountyNotificationEntry();
+		InsufficientMoney = new obfc_BountyNotificationEntry();
+		PotRejected = new obfc_BountyNotificationEntry();
 	}
 }
 class obfc_BountyBroadcastEntry
@@ -98,6 +112,7 @@ class obfc_BountyBroadcasts
 	ref obfc_BountyBroadcastEntry Suicide;
 	ref obfc_BountyBroadcastEntry Logout;
 	ref obfc_BountyBroadcastEntry Warning;
+	ref obfc_BountyBroadcastEntry PotIncreased;
 	void obfc_BountyBroadcasts()
 	{
 		PlacedBounty = new obfc_BountyBroadcastEntry();
@@ -107,6 +122,7 @@ class obfc_BountyBroadcasts
 		Suicide = new obfc_BountyBroadcastEntry();
 		Logout = new obfc_BountyBroadcastEntry();
 		Warning = new obfc_BountyBroadcastEntry();
+		PotIncreased = new obfc_BountyBroadcastEntry();
 	}
 }
 //! Mod-agnostic zone definition. Lets server owners cover safezone/territory mods that expose no
@@ -267,6 +283,9 @@ class obfc_BountyCoreSystemSettings
 	int MinimumPlayerLifetimeSeconds;
 	bool EnableAutomatedBountyPlacement;
 	float AutomatedBountyPlacementIntervalSeconds;
+	int AutomatedBountyTargetMode;
+	int TopKillerMinWeeklyKills;
+	bool TopKillerFallbackToRandom;
 	bool PersistentBountyAfterLogOut;
 	bool DontCountSuicide;
 	bool DontCountFriendlyFire;
@@ -298,6 +317,9 @@ class obfc_BountyCoreSystemSettings
 		MinimumPlayerLifetimeSeconds = 900;
 		EnableAutomatedBountyPlacement = false;
 		AutomatedBountyPlacementIntervalSeconds = 3600.0;
+		AutomatedBountyTargetMode = obfv_BOUNTY_TARGET_MODE_RANDOM;
+		TopKillerMinWeeklyKills = 1;
+		TopKillerFallbackToRandom = true;
 		PersistentBountyAfterLogOut = true;
 		DontCountSuicide = true;
 		DontCountFriendlyFire = true;
@@ -359,6 +381,58 @@ class obfc_BountyPlacedBountySettings
 	void obfc_BountyPlacedBountySettings()
 	{
 		BountyDurationSeconds = 60.0;
+	}
+}
+//! Revenge bounty: a player killed RevengeKillsRequired times by the same player may pay the
+//! normal board placement price to put a bounty on that killer.
+class obfc_BountyRevengeSettings
+{
+	bool EnableRevengeBounty;
+	int RevengeKillsRequired;
+	float RevengeKillWindowSeconds;
+	bool RestrictPlacementToRevengeTargets;
+	bool ResetKillsAfterRevengeBounty;
+	void obfc_BountyRevengeSettings()
+	{
+		EnableRevengeBounty = false;
+		RevengeKillsRequired = 3;
+		RevengeKillWindowSeconds = 3600.0;
+		RestrictPlacementToRevengeTargets = true;
+		ResetKillsAfterRevengeBounty = true;
+	}
+}
+//! Money pots on bounties: open money bounties, stacking, self-imposed bounties and admin loot.
+//! The killer collects the pot at the bounty board; the fee on top of every contribution is destroyed.
+class obfc_BountyPotSettings
+{
+	bool EnableBountyPots;
+	bool UseExpansionMarketMoney;
+	int MinContribution;
+	int MaxContribution;
+	int MaxPotTotal;
+	int FeePercent;
+	bool AllowStacking;
+	bool SurvivorKeepsPot;
+	bool BlockGroupPayout;
+	bool EnableSelfBounty;
+	int SelfBountyMinMinutes;
+	int SelfBountyMaxMinutes;
+	bool SelfBountySurvivalReward;
+	void obfc_BountyPotSettings()
+	{
+		EnableBountyPots = false;
+		UseExpansionMarketMoney = true;
+		MinContribution = 100;
+		MaxContribution = 0;
+		MaxPotTotal = 0;
+		FeePercent = 10;
+		AllowStacking = true;
+		SurvivorKeepsPot = false;
+		BlockGroupPayout = true;
+		EnableSelfBounty = false;
+		SelfBountyMinMinutes = 10;
+		SelfBountyMaxMinutes = 120;
+		SelfBountySurvivalReward = false;
 	}
 }
 class obfc_BountyRewardSettings
@@ -426,6 +500,8 @@ class obfc_BountyConfig
 	ref obfc_BountyCoreSystemSettings Core;
 	ref obfc_BountyRuleBreakerSettings RuleBreaker;
 	ref obfc_BountyPlacedBountySettings PlacedBounty;
+	ref obfc_BountyRevengeSettings RevengeBounty;
+	ref obfc_BountyPotSettings Pot;
 	ref obfc_BountyRewardSettings Reward;
 	ref obfc_BountyMapSettings Map;
 	ref obfc_BountyUISettings UI;
@@ -436,6 +512,8 @@ class obfc_BountyConfig
 		Core = new obfc_BountyCoreSystemSettings();
 		RuleBreaker = new obfc_BountyRuleBreakerSettings();
 		PlacedBounty = new obfc_BountyPlacedBountySettings();
+		RevengeBounty = new obfc_BountyRevengeSettings();
+		Pot = new obfc_BountyPotSettings();
 		Reward = new obfc_BountyRewardSettings();
 		Map = new obfc_BountyMapSettings();
 		UI = new obfc_BountyUISettings();
@@ -520,6 +598,9 @@ class obfc_BountyConfig
 		Notifications.Other.TeleportedOutOfTerritory.Title = "Teleported Out";
 		Notifications.Other.TeleportedOutOfTerritory.Message = "You were teleported out of your own territory. Bountied players cannot stay in their own territory.";
 		Notifications.Other.TeleportedOutOfTerritory.IconPath = "Ninjins_Bounty_System/gui/icons/bountyskull.edds";
+		Notifications.Other.RevengeAvailable = obfm_CreateRevengeAvailableEntry();
+		Notifications.Other.RevengeNotEligible = obfm_CreateRevengeNotEligibleEntry();
+		obfm_ApplyPotNotificationDefaults();
 		Broadcasts = new obfc_BountyBroadcasts();
 		Broadcasts.PlacedBounty.Enabled = true;
 		Broadcasts.PlacedBounty.Title = "Bounty Placed";
@@ -549,6 +630,72 @@ class obfc_BountyConfig
 		Broadcasts.Warning.Title = "Bounty Incoming";
 		Broadcasts.Warning.Message = "A bounty on {PLAYER} will start in {TIME} seconds.";
 		Broadcasts.Warning.IconPath = "Ninjins_Bounty_System/gui/icons/bountyskull.edds";
+		obfm_ApplyPotBroadcastDefaults();
+	}
+	static obfc_BountyNotificationEntry obfm_CreateNotificationEntry(string title, string message, string iconPath)
+	{
+		obfc_BountyNotificationEntry entry;
+		entry = new obfc_BountyNotificationEntry();
+		entry.Enabled = true;
+		entry.Title = title;
+		entry.Message = message;
+		entry.IconPath = iconPath;
+		return entry;
+	}
+	//! Fills pot notification entries that are missing or blank (new install or an older BountyConfig.json).
+	void obfm_ApplyPotNotificationDefaults()
+	{
+		if (!Notifications || !Notifications.Other)
+			return;
+		if (obfm_IsBlankNotificationEntry(Notifications.Other.PotContributed))
+			Notifications.Other.PotContributed = obfm_CreateNotificationEntry("Bounty Raised", "You added {AMOUNT} {CURRENCY} to the bounty on {PLAYER} (fee {FEE}). The bounty is now worth {TOTAL} {CURRENCY}.", "Ninjins_Bounty_System/gui/icons/bountycheckmark.edds");
+		if (obfm_IsBlankNotificationEntry(Notifications.Other.PotPayout))
+			Notifications.Other.PotPayout = obfm_CreateNotificationEntry("Bounty Collected", "You collected the bounty on {PLAYER}: {AMOUNT} {CURRENCY}. Claim it at the bounty board.", "Ninjins_Bounty_System/gui/icons/bountycheckmark.edds");
+		if (obfm_IsBlankNotificationEntry(Notifications.Other.PotRefund))
+			Notifications.Other.PotRefund = obfm_CreateNotificationEntry("Bounty Refund", "The bounty on {PLAYER} ended. {AMOUNT} {CURRENCY} were returned to you - claim them at the bounty board.", "Ninjins_Bounty_System/gui/icons/bountycheckmark.edds");
+		if (obfm_IsBlankNotificationEntry(Notifications.Other.InsufficientMoney))
+			Notifications.Other.InsufficientMoney = obfm_CreateNotificationEntry("Not Enough Money", "You need {AMOUNT} {CURRENCY} (including the fee). You have {FOUND} {CURRENCY}.", "Ninjins_Bounty_System/gui/icons/bountyerror.edds");
+		if (obfm_IsBlankNotificationEntry(Notifications.Other.PotRejected))
+			Notifications.Other.PotRejected = obfm_CreateNotificationEntry("Bounty Not Placed", "{REASON}", "Ninjins_Bounty_System/gui/icons/bountyerror.edds");
+	}
+	void obfm_ApplyPotBroadcastDefaults()
+	{
+		if (!Broadcasts)
+			return;
+		if (Broadcasts.PotIncreased && (Broadcasts.PotIncreased.Title != "" || Broadcasts.PotIncreased.Message != ""))
+			return;
+		Broadcasts.PotIncreased = new obfc_BountyBroadcastEntry();
+		Broadcasts.PotIncreased.Enabled = true;
+		Broadcasts.PotIncreased.Title = "Bounty Raised";
+		Broadcasts.PotIncreased.Message = "The bounty on {PLAYER} is now worth {TOTAL} {CURRENCY}!";
+		Broadcasts.PotIncreased.IconPath = "Ninjins_Bounty_System/gui/icons/bountyskull.edds";
+	}
+	static obfc_BountyNotificationEntry obfm_CreateRevengeAvailableEntry()
+	{
+		obfc_BountyNotificationEntry entry;
+		entry = new obfc_BountyNotificationEntry();
+		entry.Enabled = true;
+		entry.Title = "Revenge Bounty";
+		entry.Message = "{PLAYER} has killed you {KILLS} times. You can now place a revenge bounty on them at the bounty board.";
+		entry.IconPath = "Ninjins_Bounty_System/gui/icons/bountyskull.edds";
+		return entry;
+	}
+	static obfc_BountyNotificationEntry obfm_CreateRevengeNotEligibleEntry()
+	{
+		obfc_BountyNotificationEntry entry;
+		entry = new obfc_BountyNotificationEntry();
+		entry.Enabled = true;
+		entry.Title = "No Revenge Bounty";
+		entry.Message = "You can only place a bounty on a player who killed you {KILLS_REQUIRED} times. {PLAYER} has killed you {KILLS} time(s).";
+		entry.IconPath = "Ninjins_Bounty_System/gui/icons/bountyerror.edds";
+		return entry;
+	}
+	//! Entries missing from an older BountyConfig.json come back null or blank - give them the default text.
+	static bool obfm_IsBlankNotificationEntry(obfc_BountyNotificationEntry entry)
+	{
+		if (!entry)
+			return true;
+		return entry.Title == "" && entry.Message == "";
 	}
 	void obfm_SaveConfig()
 	{
@@ -584,6 +731,44 @@ class obfc_BountyConfig
 				Core.obfm_TeleportOutOfSafeZone = false;
 			}
 		}
+		if (!RevengeBounty)
+			RevengeBounty = new obfc_BountyRevengeSettings();
+		if (RevengeBounty.RevengeKillsRequired < 1)
+			RevengeBounty.RevengeKillsRequired = 1;
+		if (RevengeBounty.RevengeKillWindowSeconds < 0.0)
+			RevengeBounty.RevengeKillWindowSeconds = 0.0;
+		if (Notifications && Notifications.Other)
+		{
+			if (obfm_IsBlankNotificationEntry(Notifications.Other.RevengeAvailable))
+				Notifications.Other.RevengeAvailable = obfm_CreateRevengeAvailableEntry();
+			if (obfm_IsBlankNotificationEntry(Notifications.Other.RevengeNotEligible))
+				Notifications.Other.RevengeNotEligible = obfm_CreateRevengeNotEligibleEntry();
+		}
+		obfm_ApplyPotNotificationDefaults();
+		obfm_ApplyPotBroadcastDefaults();
+		if (Core)
+		{
+			if (Core.AutomatedBountyTargetMode != obfv_BOUNTY_TARGET_MODE_TOP_KILLER)
+				Core.AutomatedBountyTargetMode = obfv_BOUNTY_TARGET_MODE_RANDOM;
+			if (Core.TopKillerMinWeeklyKills < 1)
+				Core.TopKillerMinWeeklyKills = 1;
+		}
+		if (!Pot)
+			Pot = new obfc_BountyPotSettings();
+		if (Pot.MinContribution < 1)
+			Pot.MinContribution = 1;
+		if (Pot.MaxContribution < 0)
+			Pot.MaxContribution = 0;
+		if (Pot.MaxContribution > 0 && Pot.MaxContribution < Pot.MinContribution)
+			Pot.MaxContribution = Pot.MinContribution;
+		if (Pot.MaxPotTotal < 0)
+			Pot.MaxPotTotal = 0;
+		if (Pot.FeePercent < 0)
+			Pot.FeePercent = 0;
+		if (Pot.SelfBountyMinMinutes < 1)
+			Pot.SelfBountyMinMinutes = 1;
+		if (Pot.SelfBountyMaxMinutes < Pot.SelfBountyMinMinutes)
+			Pot.SelfBountyMaxMinutes = Pot.SelfBountyMinMinutes;
 		if (!Map)
 			return;
 		if (Map.BountyCircleReduceRadiusOverTime && Map.BountyCircleIncreaseRadiusOverTime)
@@ -678,6 +863,7 @@ class obfc_BountyConfig
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   EnableCommandAccessDeniedNotification: " + config.Core.EnableCommandAccessDeniedNotification.ToString());
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   EnableAutomatedBountyPlacement: " + config.Core.EnableAutomatedBountyPlacement.ToString() + " (true=server automatically places bounties, false=disabled)");
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   AutomatedBountyPlacementIntervalSeconds: " + config.Core.AutomatedBountyPlacementIntervalSeconds.ToString() + " (interval between automated bounty placements, must be >0 if enabled)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   AutomatedBountyTargetMode: " + config.Core.AutomatedBountyTargetMode.ToString() + " (0=random player, 1=top killer of the week), TopKillerMinWeeklyKills: " + config.Core.TopKillerMinWeeklyKills.ToString() + ", TopKillerFallbackToRandom: " + config.Core.TopKillerFallbackToRandom.ToString());
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   PersistentBountyAfterLogOut: " + config.Core.PersistentBountyAfterLogOut.ToString() + " (true=bounty resumes on relog/restart, false=cleared on logout)");
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   DontCountSuicide: " + config.Core.DontCountSuicide.ToString() + " (true=non-player death keeps the bounty running, false=death ends it)");
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   DontCountFriendlyFire: " + config.Core.DontCountFriendlyFire.ToString() + " (true=group/party kill gives no reward and does not end the bounty)");
@@ -708,6 +894,29 @@ class obfc_BountyConfig
 		if (config.PlacedBounty)
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   BountyDurationSeconds: " + config.PlacedBounty.BountyDurationSeconds.ToString());
+		}
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + " ========================================");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + " Revenge Bounty Settings:");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + " ========================================");
+		if (config.RevengeBounty)
+		{
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   EnableRevengeBounty: " + config.RevengeBounty.EnableRevengeBounty.ToString());
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   RevengeKillsRequired: " + config.RevengeBounty.RevengeKillsRequired.ToString() + " (kills by the same player before the victim may place a revenge bounty)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   RevengeKillWindowSeconds: " + config.RevengeBounty.RevengeKillWindowSeconds.ToString() + " (0=kills never expire until restart, >0=only kills within this window count)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   RestrictPlacementToRevengeTargets: " + config.RevengeBounty.RestrictPlacementToRevengeTargets.ToString() + " (true=board placement only on revenge targets, false=anyone, revenge targets are marked)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   ResetKillsAfterRevengeBounty: " + config.RevengeBounty.ResetKillsAfterRevengeBounty.ToString() + " (true=kill count resets once the revenge bounty is placed)");
+		}
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + " ========================================");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + " Bounty Pot Settings:");
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + " ========================================");
+		if (config.Pot)
+		{
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   EnableBountyPots: " + config.Pot.EnableBountyPots.ToString() + " (money rewards on bounties, collected by the killer)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   UseExpansionMarketMoney: " + config.Pot.UseExpansionMarketMoney.ToString() + " (true=Expansion Market currencies when loaded, false=bounty tokens)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   MinContribution: " + config.Pot.MinContribution.ToString() + ", MaxContribution: " + config.Pot.MaxContribution.ToString() + " (0=unlimited), MaxPotTotal: " + config.Pot.MaxPotTotal.ToString() + " (0=unlimited)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   FeePercent: " + config.Pot.FeePercent.ToString() + " (charged on top of every contribution and destroyed)");
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   AllowStacking: " + config.Pot.AllowStacking.ToString() + ", SurvivorKeepsPot: " + config.Pot.SurvivorKeepsPot.ToString() + ", BlockGroupPayout: " + config.Pot.BlockGroupPayout.ToString());
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   EnableSelfBounty: " + config.Pot.EnableSelfBounty.ToString() + " (" + config.Pot.SelfBountyMinMinutes.ToString() + "-" + config.Pot.SelfBountyMaxMinutes.ToString() + " minutes), SelfBountySurvivalReward: " + config.Pot.SelfBountySurvivalReward.ToString());
 		}
 		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + " ========================================");
 		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + " Reward Settings:");

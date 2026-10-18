@@ -16,6 +16,14 @@ class obfc_BountyNotifArgs
 	BountyType bountyType;
 	bool rewardGiven;
 	string winnerName;
+	int revengeKills;
+	int revengeKillsRequired;
+	int potAmount;
+	int potTotal;
+	int potFee;
+	int moneyFound;
+	string currencyLabel;
+	string reasonText;
 
 	void obfc_BountyNotifArgs()
 	{
@@ -34,6 +42,14 @@ class obfc_BountyNotifArgs
 		bountyType = BountyType.PLACED;
 		rewardGiven = true;
 		winnerName = "";
+		revengeKills = 0;
+		revengeKillsRequired = 0;
+		potAmount = 0;
+		potTotal = 0;
+		potFee = 0;
+		moneyFound = 0;
+		currencyLabel = "";
+		reasonText = "";
 	}
 }
 
@@ -55,7 +71,44 @@ class obfc_BountyNotifications
 			return true;
 		if (type == obfv_BOUNTY_NOTIFICATION_WARNING_BROADCAST)
 			return true;
+		if (type == obfv_BOUNTY_NOTIFICATION_POT_BROADCAST)
+			return true;
 		return false;
+	}
+	//! Shared placeholder replacement for the bounty pot messages.
+	static string obfm_ApplyPotPlaceholders(string text, obfc_BountyNotifArgs args)
+	{
+		string result;
+		result = text;
+		result.Replace("{PLAYER}", args.playerName);
+		result.Replace("{AMOUNT}", args.potAmount.ToString());
+		result.Replace("{TOTAL}", args.potTotal.ToString());
+		result.Replace("{FEE}", args.potFee.ToString());
+		result.Replace("{FOUND}", args.moneyFound.ToString());
+		result.Replace("{CURRENCY}", args.currencyLabel);
+		result.Replace("{REASON}", args.reasonText);
+		return result;
+	}
+	//! Resolves one of the pot notification entries; null when it is missing or disabled.
+	static obfc_BountyNotificationEntry obfm_GetPotEntry(int type)
+	{
+		if (!obfv_g_BountyConfig || !obfv_g_BountyConfig.Notifications || !obfv_g_BountyConfig.Notifications.Other)
+			return null;
+		obfc_BountyNotificationEntry entry;
+		entry = null;
+		if (type == obfv_BOUNTY_NOTIFICATION_POT_CONTRIBUTED)
+			entry = obfv_g_BountyConfig.Notifications.Other.PotContributed;
+		else if (type == obfv_BOUNTY_NOTIFICATION_POT_PAYOUT)
+			entry = obfv_g_BountyConfig.Notifications.Other.PotPayout;
+		else if (type == obfv_BOUNTY_NOTIFICATION_POT_REFUND)
+			entry = obfv_g_BountyConfig.Notifications.Other.PotRefund;
+		else if (type == obfv_BOUNTY_NOTIFICATION_INSUFFICIENT_MONEY)
+			entry = obfv_g_BountyConfig.Notifications.Other.InsufficientMoney;
+		else if (type == obfv_BOUNTY_NOTIFICATION_POT_REJECTED)
+			entry = obfv_g_BountyConfig.Notifications.Other.PotRejected;
+		if (!entry || !entry.Enabled)
+			return null;
+		return entry;
 	}
 	//! Sends an already resolved title/message to every connected player.
 	static void obfm_BroadcastToAll(string title, string message, string iconPath, int color, float duration)
@@ -190,6 +243,9 @@ class obfc_BountyNotifications
 		BountyType bountyType;
 		bool rewardGiven;
 		string winnerName;
+		int revengeKills;
+		int revengeKillsRequired;
+		obfc_BountyNotificationEntry potEntry;
 		int color;
 		float duration;
 		bool isEnabled;
@@ -219,12 +275,25 @@ class obfc_BountyNotifications
 		bountyType = notifData.bountyType;
 		rewardGiven = notifData.rewardGiven;
 		winnerName = notifData.winnerName;
+		revengeKills = notifData.revengeKills;
+		revengeKillsRequired = notifData.revengeKillsRequired;
 		title = "";
 		message = "";
 		iconPath = "";
-		color = ARGB(255, 255, 165, 0); 
+		color = ARGB(255, 255, 165, 0);
 		duration = 8.0;
 		isEnabled = false;
+		if (type >= obfv_BOUNTY_NOTIFICATION_POT_CONTRIBUTED && type <= obfv_BOUNTY_NOTIFICATION_POT_REJECTED)
+		{
+			potEntry = obfm_GetPotEntry(type);
+			if (!potEntry)
+				return;
+			title = obfm_ApplyPotPlaceholders(potEntry.Title, notifData);
+			message = obfm_ApplyPotPlaceholders(potEntry.Message, notifData);
+			iconPath = potEntry.IconPath;
+			NotificationSystem.Create(new StringLocaliser(title), new StringLocaliser(message), iconPath, color, duration, identity);
+			return;
+		}
 		switch (type)
 		{
 			case obfv_BOUNTY_NOTIFICATION_PLACED_HUNTED:
@@ -799,6 +868,55 @@ class obfc_BountyNotifications
 				if (obfv_g_BountyConfig.Notifications.Other.TeleportedOutOfTerritory.IconPath != "")
 					iconPath = obfv_g_BountyConfig.Notifications.Other.TeleportedOutOfTerritory.IconPath;
 				NotificationSystem.Create(new StringLocaliser(title), new StringLocaliser(message), iconPath, color, duration, identity);
+				break;
+			}
+			case obfv_BOUNTY_NOTIFICATION_REVENGE_AVAILABLE:
+			{
+				isEnabled = (obfv_g_BountyConfig && obfv_g_BountyConfig.Notifications && obfv_g_BountyConfig.Notifications.Other && obfv_g_BountyConfig.Notifications.Other.RevengeAvailable && obfv_g_BountyConfig.Notifications.Other.RevengeAvailable.Enabled);
+				if (!isEnabled)
+					return;
+				if (obfv_g_BountyConfig.Notifications.Other.RevengeAvailable.Title != "")
+					title = obfv_g_BountyConfig.Notifications.Other.RevengeAvailable.Title;
+				if (obfv_g_BountyConfig.Notifications.Other.RevengeAvailable.Message != "")
+				{
+					message = obfv_g_BountyConfig.Notifications.Other.RevengeAvailable.Message;
+					message.Replace("{PLAYER}", playerName);
+					message.Replace("{KILLS}", revengeKills.ToString());
+					message.Replace("{KILLS_REQUIRED}", revengeKillsRequired.ToString());
+				}
+				if (obfv_g_BountyConfig.Notifications.Other.RevengeAvailable.IconPath != "")
+					iconPath = obfv_g_BountyConfig.Notifications.Other.RevengeAvailable.IconPath;
+				NotificationSystem.Create(new StringLocaliser(title), new StringLocaliser(message), iconPath, color, duration, identity);
+				break;
+			}
+			case obfv_BOUNTY_NOTIFICATION_REVENGE_NOT_ELIGIBLE:
+			{
+				isEnabled = (obfv_g_BountyConfig && obfv_g_BountyConfig.Notifications && obfv_g_BountyConfig.Notifications.Other && obfv_g_BountyConfig.Notifications.Other.RevengeNotEligible && obfv_g_BountyConfig.Notifications.Other.RevengeNotEligible.Enabled);
+				if (!isEnabled)
+					return;
+				if (obfv_g_BountyConfig.Notifications.Other.RevengeNotEligible.Title != "")
+					title = obfv_g_BountyConfig.Notifications.Other.RevengeNotEligible.Title;
+				if (obfv_g_BountyConfig.Notifications.Other.RevengeNotEligible.Message != "")
+				{
+					message = obfv_g_BountyConfig.Notifications.Other.RevengeNotEligible.Message;
+					message.Replace("{PLAYER}", playerName);
+					message.Replace("{KILLS}", revengeKills.ToString());
+					message.Replace("{KILLS_REQUIRED}", revengeKillsRequired.ToString());
+				}
+				if (obfv_g_BountyConfig.Notifications.Other.RevengeNotEligible.IconPath != "")
+					iconPath = obfv_g_BountyConfig.Notifications.Other.RevengeNotEligible.IconPath;
+				NotificationSystem.Create(new StringLocaliser(title), new StringLocaliser(message), iconPath, color, duration, identity);
+				break;
+			}
+			case obfv_BOUNTY_NOTIFICATION_POT_BROADCAST:
+			{
+				isEnabled = (obfv_g_BountyConfig && obfv_g_BountyConfig.Broadcasts && obfv_g_BountyConfig.Broadcasts.PotIncreased && obfv_g_BountyConfig.Broadcasts.PotIncreased.Enabled);
+				if (!isEnabled)
+					return;
+				title = obfm_ApplyPotPlaceholders(obfv_g_BountyConfig.Broadcasts.PotIncreased.Title, notifData);
+				message = obfm_ApplyPotPlaceholders(obfv_g_BountyConfig.Broadcasts.PotIncreased.Message, notifData);
+				iconPath = obfv_g_BountyConfig.Broadcasts.PotIncreased.IconPath;
+				obfm_BroadcastToAll(title, message, iconPath, color, duration);
 				break;
 			}
 			case obfv_BOUNTY_NOTIFICATION_REWARD_INVENTORY_FULL:

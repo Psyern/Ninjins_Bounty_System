@@ -51,6 +51,11 @@ class obfc_BountyModule : CF_ModuleWorld
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("Failed to load BountySuccessRewardConfig!");
 		}
+		obfv_g_BountyLootPresetConfig = obfc_BountyLootPresetConfig.obfm_LoadConfig();
+		if (!obfv_g_BountyLootPresetConfig)
+		{
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("Failed to load BountyLootPresets!");
+		}
 		obfv_g_BountyZoneConfig = obfc_BountyZoneConfig.obfm_LoadConfig();
 		if (!obfv_g_BountyZoneConfig)
 		{
@@ -69,6 +74,7 @@ class obfc_BountyModule : CF_ModuleWorld
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyRequestClaimAmount", this, SingleplayerExecutionType.Server);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyRequestPricing", this, SingleplayerExecutionType.Server);
 		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyAdminRequestBlacklist", this, SingleplayerExecutionType.Server);
+		GetRPCManager().AddRPC("Ninjins_Bounty_System", "BountyRequestPotInfo", this, SingleplayerExecutionType.Server);
 		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Registered all RPC handlers");
 	}
 	void obfm_InitBountyAdminConfig()
@@ -303,6 +309,133 @@ class obfc_BountyModule : CF_ModuleWorld
 		}
 		return tokensRemoved >= tokensRequired;
 	}
+	//! Strips "<separator><number>" from the end of text and returns the number (0 when absent).
+	int obfm_ExtractNumberSuffix(inout string text, string separator)
+	{
+		int separatorIndex;
+		int numberStart;
+		string numberText;
+		separatorIndex = text.IndexOf(separator);
+		if (separatorIndex < 0)
+			return 0;
+		numberStart = separatorIndex + separator.Length();
+		numberText = text.Substring(numberStart, text.Length() - numberStart);
+		text = text.Substring(0, separatorIndex);
+		return numberText.ToInt();
+	}
+	void obfm_SendPotRejected(PlayerIdentity identity, string reason)
+	{
+		obfc_BountyNotifArgs args;
+		args = new obfc_BountyNotifArgs();
+		args.reasonText = reason;
+		obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_POT_REJECTED, identity, args);
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyPot] Rejected for " + identity.GetName() + ": " + reason);
+	}
+	//! Validates the contribution and takes amount + fee from the player. False = nothing was taken.
+	bool obfm_TakePotContribution(PlayerBase player, PlayerIdentity sender, string targetId, int amount, out int fee)
+	{
+		string rejectReason;
+		int moneyNeeded;
+		int moneyFound;
+		bool moneyTaken;
+		obfc_BountyNotifArgs args;
+		fee = 0;
+		rejectReason = obfc_BountyPotManager.obfm_ValidateContribution(targetId, amount);
+		if (rejectReason != "")
+		{
+			obfm_SendPotRejected(sender, rejectReason);
+			return false;
+		}
+		fee = obfc_BountyPotManager.obfm_GetFee(amount);
+		moneyNeeded = amount + fee;
+		moneyFound = obfc_BountyMoney.obfm_GetPlayerMoney(player);
+		moneyTaken = false;
+		if (moneyFound >= moneyNeeded)
+			moneyTaken = obfc_BountyMoney.obfm_TakeMoney(player, moneyNeeded);
+		if (moneyTaken)
+			return true;
+		args = new obfc_BountyNotifArgs();
+		args.potAmount = moneyNeeded;
+		args.moneyFound = moneyFound;
+		args.currencyLabel = obfc_BountyMoney.obfm_GetCurrencyLabel();
+		obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_INSUFFICIENT_MONEY, sender, args);
+		return false;
+	}
+	//! Books money already taken from the contributor into the target's pot and announces the new total.
+	void obfm_BookPotContribution(PlayerBase target, PlayerIdentity contributor, int amount, int fee, bool selfImposed)
+	{
+		obfc_BountyNotifArgs args;
+		obfc_BountyPotManager.obfm_AddShare(target, contributor, amount, selfImposed);
+		args = new obfc_BountyNotifArgs();
+		args.playerName = target.GetIdentity().GetName();
+		args.potAmount = amount;
+		args.potFee = fee;
+		args.potTotal = obfc_BountyPotManager.obfm_GetPotTotal(target.GetIdentity().GetId());
+		args.currencyLabel = obfc_BountyMoney.obfm_GetCurrencyLabel();
+		obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_POT_CONTRIBUTED, contributor, args);
+		obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_POT_BROADCAST, null, args);
+	}
+	//! ApplyBountyToPlayer also returns true while BountyWarningTimeSeconds delays the start and when
+	//! SetBountyWithType silently refused (MaxBountiedPlayers) - only the latter is a failure.
+	bool obfm_IsBountyStartedOrPending(PlayerBase target)
+	{
+		if (target.obfm_HasBounty())
+			return true;
+		if (obfv_g_BountyConfig && obfv_g_BountyConfig.Core && obfv_g_BountyConfig.Core.BountyWarningTimeSeconds > 0.0)
+			return true;
+		return false;
+	}
+	//! Standard pending rewards plus admin loot won from bounty pots.
+	int obfm_GetClaimableRewardCount(PlayerBase player)
+	{
+		int count;
+		if (!player)
+			return 0;
+		count = player.obfm_GetTotalPendingRewardCount();
+		if (player.GetIdentity())
+			count = count + obfc_BountyPotManager.obfm_GetPendingLootCount(player.GetIdentity().GetId());
+		return count;
+	}
+	void obfm_SendClaimAmount(PlayerBase player, PlayerIdentity identity)
+	{
+		Param1<int> result;
+		result = new Param1<int>(obfm_GetClaimableRewardCount(player));
+		GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyReceiveClaimAmount", result, true, identity);
+	}
+	//! Board pot settings plus the requester's unclaimed pot money and loot.
+	void obfm_SendPotInfo(PlayerIdentity identity)
+	{
+		bool potsEnabled;
+		bool stackingAllowed;
+		bool selfBountyAllowed;
+		int feePercent;
+		int minContribution;
+		string currencyLabel;
+		int pendingMoney;
+		int pendingLoot;
+		Param8<bool, bool, bool, int, int, string, int, int> result;
+		potsEnabled = obfc_BountyPotManager.obfm_IsEnabled();
+		stackingAllowed = obfc_BountyPotManager.obfm_IsStackingAllowed();
+		selfBountyAllowed = obfc_BountyPotManager.obfm_IsSelfBountyAllowed();
+		feePercent = 0;
+		minContribution = 0;
+		if (obfv_g_BountyConfig && obfv_g_BountyConfig.Pot)
+		{
+			feePercent = obfv_g_BountyConfig.Pot.FeePercent;
+			minContribution = obfv_g_BountyConfig.Pot.MinContribution;
+		}
+		currencyLabel = obfc_BountyMoney.obfm_GetCurrencyLabel();
+		pendingMoney = obfc_BountyPotManager.obfm_GetPendingMoney(identity.GetId());
+		pendingLoot = obfc_BountyPotManager.obfm_GetPendingLootCount(identity.GetId());
+		result = new Param8<bool, bool, bool, int, int, string, int, int>(potsEnabled, stackingAllowed, selfBountyAllowed, feePercent, minContribution, currencyLabel, pendingMoney, pendingLoot);
+		GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyReceivePotInfo", result, true, identity);
+	}
+	void BountyRequestPotInfo(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
+	{
+		if (type != CallType.Server || !sender)
+			return;
+		obfm_SendPotInfo(sender);
+	}
 	override void OnInvokeConnect(Class sender, CF_EventArgs args)
 	{
 		super.OnInvokeConnect(sender, args);
@@ -403,6 +536,7 @@ class obfc_BountyModule : CF_ModuleWorld
 		{
 			obfv_m_BountyManager.Update(updateArgs.DeltaTime);
 		}
+		obfc_BountyPotManager.obfm_Update(updateArgs.DeltaTime);
 	}
 	void RequestBountiedPlayers(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
 	{
@@ -572,6 +706,9 @@ class obfc_BountyModule : CF_ModuleWorld
 		int colonIndex;
 		bool alreadyBlacklisted;
 		bool removed;
+		int lootSeparatorIndex;
+		string lootPresetName = "";
+		obfc_BountyLootPreset lootPreset;
 		if (action.IndexOf("ApplyTestRuleBreakerBounty:") == 0)
 		{
 			targetPlayerName = action;
@@ -803,6 +940,50 @@ class obfc_BountyModule : CF_ModuleWorld
 			{
 				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] No player name provided for RemoveRewardPoint");
 			}
+		}
+		else if (action.IndexOf("AddLootBountySelectedPlayer:") == 0)
+		{
+			//! "AddLootBountySelectedPlayer:<player>@@<preset>" - an already bountied player only gets the loot attached.
+			targetPlayerName = action;
+			targetPlayerName.Replace("AddLootBountySelectedPlayer:", "");
+			lootSeparatorIndex = targetPlayerName.IndexOf("@@");
+			if (lootSeparatorIndex < 0)
+			{
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] AddLootBountySelectedPlayer without loot preset: " + action);
+				return;
+			}
+			lootPresetName = targetPlayerName.Substring(lootSeparatorIndex + 2, targetPlayerName.Length() - (lootSeparatorIndex + 2));
+			lootPresetName.TrimInPlace();
+			targetPlayerName = targetPlayerName.Substring(0, lootSeparatorIndex);
+			lootPreset = null;
+			if (obfv_g_BountyLootPresetConfig)
+				lootPreset = obfv_g_BountyLootPresetConfig.obfm_FindPreset(lootPresetName);
+			if (!lootPreset)
+			{
+				if (obfv_g_BountyLootPresetConfig)
+					obfm_SendPotRejected(sender, "Unknown loot preset '" + lootPresetName + "'. Available: " + obfv_g_BountyLootPresetConfig.obfm_GetPresetNames());
+				return;
+			}
+			targetPlayer = obfm_FindOnlinePlayerByIdentifier(targetPlayerName);
+			if (!targetPlayer)
+			{
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminAction] Player " + targetPlayerName + " not found or not online");
+				return;
+			}
+			success = true;
+			if (!targetPlayer.obfm_HasBounty())
+			{
+				success = obfc_BountyManager.obfm_ApplyBountyToPlayer(targetPlayer, player, 0.0, "Admin loot bounty (" + lootPreset.Name + ")", BountyType.PLACED);
+				if (success && !obfm_IsBountyStartedOrPending(targetPlayer))
+					success = false;
+			}
+			if (!success)
+			{
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Failed to apply loot bounty to " + targetPlayerName + " (system may be disabled, cooldown, safe zone or bounty limit)");
+				return;
+			}
+			obfc_BountyPotManager.obfm_AddLoot(targetPlayer, lootPreset.Name);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyAdminAction] Loot preset " + lootPreset.Name + " put on the bounty of " + targetPlayerName + " by admin " + sender.GetName());
 		}
 		else if (action.IndexOf("AddToBlacklist:") == 0)
 		{
@@ -1254,6 +1435,12 @@ class obfc_BountyModule : CF_ModuleWorld
 		Param1<int> claimAmountResult;
 		string actualPlayerName = "";
 		int cdIndex;
+		bool isRevengeTarget = false;
+		string placementReason = "";
+		int rewardAmount = 0;
+		int potFee = 0;
+		string selfBountyPayload = "";
+		int potMoneyClaimed = 0;
 		if (action == "SkipBounty")
 		{
 			if (!player.obfm_HasBounty())
@@ -1345,7 +1532,7 @@ class obfc_BountyModule : CF_ModuleWorld
 			{
 				if (tokensRequired > 0)
 				{
-					tokensRemoved = obfm_ConsumePlayerTokens(player, tokensRequired, totalTokenQuantity);
+					obfm_ConsumePlayerTokens(player, tokensRequired, tokensRemoved);
 					if (tokensRemoved < tokensRequired)
 					{
 						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Failed to remove all required skip tokens after transfer. Required: " + tokensRequired.ToString() + ", Removed: " + tokensRemoved.ToString());
@@ -1375,6 +1562,8 @@ class obfc_BountyModule : CF_ModuleWorld
 			requestedDurationSeconds = 0.0;
 			targetPlayerIdentifier = action;
 			targetPlayerIdentifier.Replace("PlaceBountyOnPlayer:", "");
+			//! Optional "##<reward>" suffix - money for the bounty pot, only sent while pots are active.
+			rewardAmount = obfm_ExtractNumberSuffix(targetPlayerIdentifier, "##");
 			//! Optional "@@<minutes>" suffix - only sent while per-minute pricing is active.
 			minuteSeparatorIndex = targetPlayerIdentifier.IndexOf("@@");
 			if (minuteSeparatorIndex >= 0)
@@ -1421,6 +1610,21 @@ class obfc_BountyModule : CF_ModuleWorld
 				if (targetPlayer && targetPlayer.GetIdentity())
 				{
 					actualPlayerName = targetPlayer.GetIdentity().GetName();
+					if (obfc_BountyRevengeTracker.obfm_IsEnabled())
+					{
+						isRevengeTarget = obfc_BountyRevengeTracker.obfm_IsRevengeTarget(sender.GetId(), targetPlayer.GetIdentity().GetId());
+						if (!isRevengeTarget && obfc_BountyRevengeTracker.obfm_IsPlacementRestricted())
+						{
+							obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] " + sender.GetName() + " cannot place a bounty on " + actualPlayerName + " - not a revenge target (RestrictPlacementToRevengeTargets = true)");
+							obfc_BountyNotifArgs revengeNotifArgs;
+							revengeNotifArgs = new obfc_BountyNotifArgs();
+							revengeNotifArgs.playerName = actualPlayerName;
+							revengeNotifArgs.revengeKills = obfc_BountyRevengeTracker.obfm_GetKillCount(sender.GetId(), targetPlayer.GetIdentity().GetId());
+							revengeNotifArgs.revengeKillsRequired = obfc_BountyRevengeTracker.obfm_GetKillsRequired();
+							obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_REVENGE_NOT_ELIGIBLE, sender, revengeNotifArgs);
+							return;
+						}
+					}
 					if (targetPlayer.obfm_IsBountyOnCooldown())
 					{
 						float cooldownRemaining = targetPlayer.obfm_GetBountyCooldownRemaining();
@@ -1433,24 +1637,46 @@ class obfc_BountyModule : CF_ModuleWorld
 						obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_PLAYER_ON_COOLDOWN, sender, notifArgs8);
 						return;
 					}
-					success = obfc_BountyManager.obfm_ApplyBountyToPlayer(targetPlayer, player, requestedDurationSeconds, "Bounty placed by " + sender.GetName() + " via bounty board", BountyType.PLACED);
+					if (rewardAmount > 0)
+					{
+						if (targetPlayer.obfm_HasBounty())
+						{
+							obfm_SendPotRejected(sender, actualPlayerName + " already has a bounty - use Add Money to raise it.");
+							return;
+						}
+						if (!obfm_TakePotContribution(player, sender, targetPlayer.GetIdentity().GetId(), rewardAmount, potFee))
+							return;
+					}
+					placementReason = "Bounty placed by " + sender.GetName() + " via bounty board";
+					if (isRevengeTarget)
+						placementReason = "Revenge bounty placed by " + sender.GetName() + " via bounty board";
+					success = obfc_BountyManager.obfm_ApplyBountyToPlayer(targetPlayer, player, requestedDurationSeconds, placementReason, BountyType.PLACED);
+					if (success && !obfm_IsBountyStartedOrPending(targetPlayer))
+						success = false;
 					if (success)
 					{
 						if (tokensRequired > 0)
 						{
-							tokensRemoved = obfm_ConsumePlayerTokens(player, tokensRequired, totalTokenQuantity);
+							obfm_ConsumePlayerTokens(player, tokensRequired, tokensRemoved);
 							if (tokensRemoved < tokensRequired)
 							{
 								obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Failed to remove all required placement tokens after applying bounty. Required: " + tokensRequired.ToString() + ", Removed: " + tokensRemoved.ToString());
 								obfc_BountyManager.obfm_ClearBountyFromPlayer(targetPlayer, player, "Placement token rollback", true);
+								obfc_BountyMoney.obfm_GiveMoney(player, rewardAmount + potFee);
 								return;
 							}
 							obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Removed " + tokensRemoved.ToString() + " tokens from player " + sender.GetName() + " for placing bounty");
 						}
-						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Placed bounty on " + actualPlayerName + " by " + sender.GetName());
+						if (isRevengeTarget && obfc_BountyRevengeTracker.obfm_ShouldResetAfterRevenge())
+							obfc_BountyRevengeTracker.obfm_ResetPair(sender.GetId(), targetPlayer.GetIdentity().GetId());
+						if (rewardAmount > 0)
+							obfm_BookPotContribution(targetPlayer, sender, rewardAmount, potFee, false);
+						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Placed bounty on " + actualPlayerName + " by " + sender.GetName() + " (revenge: " + isRevengeTarget.ToString() + ", reward: " + rewardAmount.ToString() + ")");
 					}
 					else
 					{
+						if (rewardAmount > 0)
+							obfc_BountyMoney.obfm_GiveMoney(player, rewardAmount + potFee);
 						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Failed to place bounty on " + actualPlayerName + " (system may be disabled or player lifetime not reached)");
 					}
 				}
@@ -1460,8 +1686,74 @@ class obfc_BountyModule : CF_ModuleWorld
 				}
 			}
 		}
+		else if (action.IndexOf("AddToPot:") == 0)
+		{
+			targetPlayerIdentifier = action;
+			targetPlayerIdentifier.Replace("AddToPot:", "");
+			rewardAmount = obfm_ExtractNumberSuffix(targetPlayerIdentifier, "##");
+			if (!obfc_BountyPotManager.obfm_IsStackingAllowed())
+			{
+				obfm_SendPotRejected(sender, "Adding money to bounties is disabled on this server.");
+				return;
+			}
+			targetPlayer = obfm_FindOnlinePlayerByIdentifier(targetPlayerIdentifier);
+			if (!targetPlayer || !targetPlayer.GetIdentity())
+			{
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] AddToPot: player not found: " + targetPlayerIdentifier);
+				return;
+			}
+			actualPlayerName = targetPlayer.GetIdentity().GetName();
+			if (!targetPlayer.obfm_HasBounty())
+			{
+				obfm_SendPotRejected(sender, actualPlayerName + " has no active bounty - place one first.");
+				return;
+			}
+			if (!obfm_TakePotContribution(player, sender, targetPlayer.GetIdentity().GetId(), rewardAmount, potFee))
+				return;
+			obfm_BookPotContribution(targetPlayer, sender, rewardAmount, potFee, false);
+		}
+		else if (action.IndexOf("SelfBounty") == 0)
+		{
+			if (!obfc_BountyPotManager.obfm_IsSelfBountyAllowed())
+			{
+				obfm_SendPotRejected(sender, "Self-imposed bounties are disabled on this server.");
+				return;
+			}
+			selfBountyPayload = action;
+			selfBountyPayload.Replace("SelfBounty", "");
+			rewardAmount = obfm_ExtractNumberSuffix(selfBountyPayload, "##");
+			requestedMinutes = obfm_ExtractNumberSuffix(selfBountyPayload, "@@");
+			if (requestedMinutes < obfv_g_BountyConfig.Pot.SelfBountyMinMinutes)
+				requestedMinutes = obfv_g_BountyConfig.Pot.SelfBountyMinMinutes;
+			if (requestedMinutes > obfv_g_BountyConfig.Pot.SelfBountyMaxMinutes)
+				requestedMinutes = obfv_g_BountyConfig.Pot.SelfBountyMaxMinutes;
+			if (player.obfm_HasBounty())
+			{
+				obfm_SendPotRejected(sender, "You already have a bounty.");
+				return;
+			}
+			if (!obfm_TakePotContribution(player, sender, sender.GetId(), rewardAmount, potFee))
+				return;
+			requestedDurationSeconds = requestedMinutes * 60.0;
+			success = obfc_BountyManager.obfm_ApplyBountyToPlayer(player, player, requestedDurationSeconds, "Self-imposed bounty", BountyType.PLACED);
+			if (!success || !obfm_IsBountyStartedOrPending(player))
+			{
+				obfc_BountyMoney.obfm_GiveMoney(player, rewardAmount + potFee);
+				obfm_SendPotRejected(sender, "Your bounty could not be started (cooldown, safe zone, play time or bounty limit). Your money was returned.");
+				return;
+			}
+			obfm_BookPotContribution(player, sender, rewardAmount, potFee, true);
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] " + sender.GetName() + " placed a self-imposed bounty: " + requestedMinutes.ToString() + " minute(s), reward " + rewardAmount.ToString());
+		}
 		else if (action == "ClaimRewards")
 		{
+			//! Admin loot won from a bounty pot is handed out first, one container per click.
+			if (obfc_BountyPotManager.obfm_GetPendingLootCount(sender.GetId()) > 0)
+			{
+				if (obfc_BountyPotManager.obfm_ClaimLoot(player))
+					obfm_SendClaimAmount(player, sender);
+				return;
+			}
 			if (!player.obfm_HasPendingRewards())
 			{
 				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to claim rewards but has no pending rewards");
@@ -1488,7 +1780,7 @@ class obfc_BountyModule : CF_ModuleWorld
 						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Gave Hardline reputation reward of " + obfv_g_BountySuccessRewardConfig.HardlineReputationRewardAmount.ToString() + " to " + sender.GetName() + " for claiming success reward.");
 					}
 					#endif
-					updatedClaimAmount = player.obfm_GetTotalPendingRewardCount();
+					updatedClaimAmount = obfm_GetClaimableRewardCount(player);
 					claimAmountResult = new Param1<int>(updatedClaimAmount);
 					GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyReceiveClaimAmount", claimAmountResult, true, sender);
 				}
@@ -1500,9 +1792,13 @@ class obfc_BountyModule : CF_ModuleWorld
 		}
 		else if (action == "ClaimCurrencyRewards")
 		{
+			potMoneyClaimed = obfc_BountyPotManager.obfm_ClaimMoney(player);
+			if (potMoneyClaimed > 0)
+				obfm_SendPotInfo(sender);
 			if (!player.obfm_HasPendingRewards())
 			{
-				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to claim currency rewards but has no pending rewards");
+				if (potMoneyClaimed <= 0)
+					obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BoardBountyAction] Player " + sender.GetName() + " tried to claim currency rewards but has no pending rewards");
 				return;
 			}
 			if (player.obfm_IsRuleBreakerBounty() && obfv_g_BountyConfig && obfv_g_BountyConfig.Reward && !obfv_g_BountyConfig.Reward.PvERuleBreakerGiveRewards)
@@ -1526,7 +1822,7 @@ class obfc_BountyModule : CF_ModuleWorld
 						obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BoardBountyAction] Gave Hardline reputation reward of " + obfv_g_BountySuccessRewardConfig.HardlineReputationRewardAmount.ToString() + " to " + sender.GetName() + " for claiming success reward currency.");
 					}
 					#endif
-					updatedClaimAmount = player.obfm_GetTotalPendingRewardCount();
+					updatedClaimAmount = obfm_GetClaimableRewardCount(player);
 					claimAmountResult = new Param1<int>(updatedClaimAmount);
 					GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyReceiveClaimAmount", claimAmountResult, true, sender);
 				}
@@ -1587,6 +1883,15 @@ class obfc_BountyModule : CF_ModuleWorld
 		int cooldownSeconds;
 		string formattedCooldown;
 		Param1<array<string>> result;
+		bool revengeEnabled;
+		bool revengeOnly;
+		int revengeKills;
+		int revengeKillsRequired;
+		bool potsEnabled;
+		bool stackingAllowed;
+		bool targetHasBounty;
+		bool keepForStacking;
+		int potTotal;
 		if (type != CallType.Server || !sender)
 			return;
 		requestingPlayer = PlayerBase.Cast(sender.GetPlayer());
@@ -1596,6 +1901,11 @@ class obfc_BountyModule : CF_ModuleWorld
 		if (!requestingIdentity)
 			return;
 		requestingPlayerName = requestingIdentity.GetName();
+		revengeEnabled = obfc_BountyRevengeTracker.obfm_IsEnabled();
+		revengeOnly = obfc_BountyRevengeTracker.obfm_IsPlacementRestricted();
+		revengeKillsRequired = obfc_BountyRevengeTracker.obfm_GetKillsRequired();
+		potsEnabled = obfc_BountyPotManager.obfm_IsEnabled();
+		stackingAllowed = obfc_BountyPotManager.obfm_IsStackingAllowed();
 		excludeSelf = false;
 		if (obfv_g_BountyConfig && obfv_g_BountyConfig.Core && obfv_g_BountyConfig.Core.DisableSelfBounty)
 		{
@@ -1621,6 +1931,14 @@ class obfc_BountyModule : CF_ModuleWorld
 				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Excluding requesting player from online list (DisableSelfBounty = true): " + requestingPlayerName);
 				continue;
 			}
+			revengeKills = 0;
+			if (revengeEnabled)
+				revengeKills = obfc_BountyRevengeTracker.obfm_GetKillCount(requestingIdentity.GetId(), playerId);
+			targetHasBounty = player.obfm_HasBounty();
+			//! The board only offers players the requester may place a bounty on or add money to.
+			keepForStacking = stackingAllowed && targetHasBounty;
+			if (revengeOnly && revengeKills < revengeKillsRequired && !keepForStacking)
+				continue;
 			displayName = playerName;
 			if (player.obfm_IsBountyOnCooldown())
 			{
@@ -1629,6 +1947,15 @@ class obfc_BountyModule : CF_ModuleWorld
 				formattedCooldown = obfm_FormatCooldownTime(cooldownSeconds);
 				displayName = playerName + " CD:" + formattedCooldown;
 			}
+			if (revengeEnabled && revengeKills >= revengeKillsRequired)
+				displayName = displayName + " [Revenge x" + revengeKills.ToString() + "]";
+			if (potsEnabled && targetHasBounty)
+				displayName = displayName + " [WANTED]";
+			potTotal = obfc_BountyPotManager.obfm_GetPotTotal(playerId);
+			if (potTotal > 0)
+				displayName = displayName + " [Pot " + potTotal.ToString() + "]";
+			if (obfc_BountyPotManager.obfm_HasLoot(playerId))
+				displayName = displayName + " [Loot]";
 			playerList.Insert(obfm_BuildPlayerListEntry(displayName, playerId));
 		}
 		result = new Param1<array<string>>(playerList);
@@ -1709,7 +2036,7 @@ class obfc_BountyModule : CF_ModuleWorld
 		requestingPlayer = PlayerBase.Cast(sender.GetPlayer());
 		if (!requestingPlayer)
 			return;
-		totalClaimAmount = requestingPlayer.obfm_GetTotalPendingRewardCount();
+		totalClaimAmount = obfm_GetClaimableRewardCount(requestingPlayer);
 		result = new Param1<int>(totalClaimAmount);
 		GetRPCManager().SendRPC("Ninjins_Bounty_System", "BountyReceiveClaimAmount", result, true, sender);
 		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Sent claim amount to " + sender.GetName() + ": " + totalClaimAmount.ToString());

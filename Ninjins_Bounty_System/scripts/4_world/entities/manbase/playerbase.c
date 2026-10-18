@@ -508,10 +508,14 @@ modded class PlayerBase
 		bool playerSurvived;
 		BountyType wasBountyType;
 		bool shouldGiveReward;
+		bool selfImposedPot;
 		if (!IsMissionHost())
 			return;
 		if (!netSync_HasBounty)
 			return;
+		selfImposedPot = false;
+		if (GetIdentity())
+			selfImposedPot = obfc_BountyPotManager.obfm_IsSelfImposed(GetIdentity().GetId());
 		netSync_HasBounty = false;
 		netSync_BountyRemainingDuration = 0.0;
 		obfv_m_BountyExpireTime = 0.0;
@@ -555,6 +559,11 @@ modded class PlayerBase
 				shouldGiveReward = false;
 				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Player " + playerName + " was a rule breaker - skipping success reward (survival type) (PvERuleBreakerGiveRewards = false)");
 			}
+			else if (selfImposedPot && obfv_g_BountyConfig && obfv_g_BountyConfig.Pot && !obfv_g_BountyConfig.Pot.SelfBountySurvivalReward)
+			{
+				shouldGiveReward = false;
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Player " + playerName + " survived a self-imposed bounty - no survival reward (SelfBountySurvivalReward = false)");
+			}
 			if (playerSurvived && obfv_g_BountyConfig && obfv_g_BountyConfig.Reward && obfv_g_BountyConfig.Reward.EnableSurvivalReward)
 			{
 				if (shouldGiveReward)
@@ -584,6 +593,7 @@ modded class PlayerBase
 			notifArgs11.playerName = playerName;
 			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_EXPIRED_BROADCAST, null, notifArgs11);
 		}
+		obfc_BountyPotManager.obfm_ResolveOnEnd(this, endReason, playerSurvived);
 		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Bounty] Bounty cleared for player " + playerName + ".");
 	}
 	//! Keeps the bounty alive across a death that must not count as a win (suicide, friendly fire).
@@ -638,23 +648,9 @@ modded class PlayerBase
 			}
 		}
 	}
-	override void EEKilled(Object killer)
+	PlayerBase obfm_ResolveBountyKillerPlayer(Object killer)
 	{
-		super.EEKilled(killer);
-		obfm_UpdateBountyDurationBeforeDeath();
-		PlayerIdentity victimIdentity;
-		PlayerIdentity killerIdentity;
-		string victimName;
-		string killerName;
 		PlayerBase killerPlayer;
-		bool shouldGiveReward;
-		bool isSuicide;
-		if (!IsMissionHost())
-			return;
-		if (!obfm_HasBounty())
-			return;
-		if (!obfv_g_BountyConfig || !obfv_g_BountyConfig.Core || !obfv_g_BountyConfig.Core.EnableBountySystem)
-			return;
 		#ifdef NinjinsPvPPvE
 		DamageUtils dmgUtils;
 		AttackerContext ctx;
@@ -675,6 +671,63 @@ modded class PlayerBase
 				killerPlayer = PlayerBase.Cast(killerEntity);
 		}
 		#endif
+		return killerPlayer;
+	}
+	//! Runs before EEKilled's has-bounty early return: every PvP kill counts for the weekly top killer,
+	//! revenge only counts victims without a bounty (bountied players are fair game).
+	void obfm_TrackPvPKill(Object killer)
+	{
+		PlayerBase killerPlayer;
+		PlayerIdentity victimIdentity;
+		PlayerIdentity killerIdentity;
+		int killCount;
+		int killsRequired;
+		obfc_BountyNotifArgs notifArgs;
+		if (!obfv_g_BountyConfig || !obfv_g_BountyConfig.Core || !obfv_g_BountyConfig.Core.EnableBountySystem)
+			return;
+		killerPlayer = obfm_ResolveBountyKillerPlayer(killer);
+		if (!killerPlayer || killerPlayer == this)
+			return;
+		victimIdentity = GetIdentity();
+		killerIdentity = killerPlayer.GetIdentity();
+		if (!victimIdentity || !killerIdentity)
+			return;
+		if (obfv_g_BountyConfig.Core.DontCountFriendlyFire && obfm_NinjinBountyIsFriendlyKiller(killerPlayer))
+			return;
+		obfc_BountyWeeklyKills.obfm_RegisterKill(killerIdentity.GetId(), killerIdentity.GetName());
+		if (!obfc_BountyRevengeTracker.obfm_IsEnabled() || obfm_HasBounty())
+			return;
+		killCount = obfc_BountyRevengeTracker.obfm_RegisterKill(victimIdentity.GetId(), killerIdentity.GetId());
+		killsRequired = obfc_BountyRevengeTracker.obfm_GetKillsRequired();
+		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[Revenge] " + victimIdentity.GetName() + " was killed by " + killerIdentity.GetName() + " (" + killCount.ToString() + "/" + killsRequired.ToString() + ")");
+		//! Notify once, on the kill that reaches the threshold.
+		if (killCount != killsRequired)
+			return;
+		notifArgs = new obfc_BountyNotifArgs();
+		notifArgs.playerName = killerIdentity.GetName();
+		notifArgs.revengeKills = killCount;
+		notifArgs.revengeKillsRequired = killsRequired;
+		obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_REVENGE_AVAILABLE, victimIdentity, notifArgs);
+	}
+	override void EEKilled(Object killer)
+	{
+		super.EEKilled(killer);
+		obfm_UpdateBountyDurationBeforeDeath();
+		PlayerIdentity victimIdentity;
+		PlayerIdentity killerIdentity;
+		string victimName;
+		string killerName;
+		PlayerBase killerPlayer;
+		bool shouldGiveReward;
+		bool isSuicide;
+		if (!IsMissionHost())
+			return;
+		obfm_TrackPvPKill(killer);
+		if (!obfm_HasBounty())
+			return;
+		if (!obfv_g_BountyConfig || !obfv_g_BountyConfig.Core || !obfv_g_BountyConfig.Core.EnableBountySystem)
+			return;
+		killerPlayer = obfm_ResolveBountyKillerPlayer(killer);
 		isSuicide = (!killerPlayer || killerPlayer == this);
 		victimIdentity = GetIdentity();
 		victimName = obfv_BOUNTY_PLAYER_NAME_UNKNOWN;
@@ -748,6 +801,7 @@ modded class PlayerBase
 			notifArgs14.bountyType = obfv_m_BountyType;
 			notifArgs14.winnerName = killerName;
 			obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_WIN_BROADCAST, null, notifArgs14);
+			obfc_BountyPotManager.obfm_ResolveOnKill(this, killerPlayer);
 		}
 		obfm_ClearBounty(false, BountyEndReason.KILLED);
 	}

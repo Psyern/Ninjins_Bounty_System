@@ -437,12 +437,47 @@ class obfc_BountyManager
 			}
 			eligiblePlayers.Insert(player);
 		}
+		if (eligiblePlayers.Count() > 0 && obfv_g_BountyConfig && obfv_g_BountyConfig.Core && obfv_g_BountyConfig.Core.AutomatedBountyTargetMode == obfv_BOUNTY_TARGET_MODE_TOP_KILLER)
+		{
+			PlayerBase topKiller = obfm_SelectTopKiller(eligiblePlayers);
+			if (topKiller)
+				return topKiller;
+			if (!obfv_g_BountyConfig.Core.TopKillerFallbackToRandom)
+			{
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyManager] No eligible player has " + obfv_g_BountyConfig.Core.TopKillerMinWeeklyKills.ToString() + "+ kills this week - automated bounty skipped (TopKillerFallbackToRandom = false)");
+				return null;
+			}
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyManager] No eligible top killer this week - falling back to a random player");
+		}
 		if (eligiblePlayers.Count() > 0)
 		{
 			int randomIndex = Math.RandomInt(0, eligiblePlayers.Count());
 			return eligiblePlayers.Get(randomIndex);
 		}
 		return null;
+	}
+	//! Eligible player with the most PvP kills this week (ties: whoever is found first), or null below the minimum.
+	private PlayerBase obfm_SelectTopKiller(array<PlayerBase> eligiblePlayers)
+	{
+		PlayerBase bestPlayer;
+		int bestKills;
+		int kills;
+		bestPlayer = null;
+		bestKills = obfv_g_BountyConfig.Core.TopKillerMinWeeklyKills - 1;
+		foreach (PlayerBase candidate : eligiblePlayers)
+		{
+			if (!candidate || !candidate.GetIdentity())
+				continue;
+			kills = obfc_BountyWeeklyKills.obfm_GetKills(candidate.GetIdentity().GetId());
+			if (kills > bestKills)
+			{
+				bestKills = kills;
+				bestPlayer = candidate;
+			}
+		}
+		if (bestPlayer)
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyManager] Top killer of the week: " + bestPlayer.GetIdentity().GetName() + " with " + bestKills.ToString() + " kill(s)");
+		return bestPlayer;
 	}
 	//! Deferred entry point used by the BountyWarningTimeSeconds countdown - re-runs every eligibility
 	//! check (the target may have died, logged out or entered a safezone during the warning).
@@ -807,6 +842,16 @@ class obfc_BountyManager
 		else
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("[Reload] BountyBoardPlacements.json file not found!");
+			allSuccess = false;
+		}
+		obfc_BountyLootPresetConfig newLootPresetConfig = obfc_BountyLootPresetConfig.obfm_LoadConfig();
+		if (newLootPresetConfig)
+		{
+			obfv_g_BountyLootPresetConfig = newLootPresetConfig;
+		}
+		else
+		{
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("[Reload] Failed to reload BountyLootPresets.json from disk!");
 			allSuccess = false;
 		}
 		if (requestingPlayer)

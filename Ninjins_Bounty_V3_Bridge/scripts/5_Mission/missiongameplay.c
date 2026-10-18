@@ -12,7 +12,7 @@ modded class MissionGameplay
 	{
 		if (m_NinjinsBntyV3_ClientAdminRpcHooked)
 			return;
-		if (!g_Game || !g_Game.IsClient())
+		if (!g_Game)
 			return;
 		GetRPCManager().AddRPC(NinjinsBntyV3_Const.RPC_SPACE, "NinjinsBntyV3_RecvCfg", this, SingleplayerExecutionType.Client);
 		GetRPCManager().AddRPC(NinjinsBntyV3_Const.RPC_SPACE, "NinjinsBntyV3_RecvSave", this, SingleplayerExecutionType.Client);
