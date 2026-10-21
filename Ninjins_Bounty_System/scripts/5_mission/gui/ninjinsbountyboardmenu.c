@@ -253,6 +253,11 @@ class obfc_NinjinsBountyBoardMenu extends UIScriptedMenu
 		obfv_m_BountyReward = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BountyReward"));
 		obfv_m_BountyRewardInfo = TextWidget.Cast(layoutRoot.FindAnyWidget("BountyRewardInfo"));
 		obfv_m_PendingPayout = TextWidget.Cast(layoutRoot.FindAnyWidget("PendingPayout"));
+		//! Input fields sit on the light parchment - dark text, otherwise the default white is unreadable
+		if (obfv_m_BountyMinutes)
+			obfv_m_BountyMinutes.SetTextColor(ARGB(255, 0, 0, 0));
+		if (obfv_m_BountyReward)
+			obfv_m_BountyReward.SetTextColor(ARGB(255, 0, 0, 0));
 		if (!obfv_m_BountyOnlinePlayersList)
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[NinjinsBountyBoardMenu] OnlinePlayersList widget not found in layout!");
