@@ -348,6 +348,13 @@ class obfc_BountyModule : CF_ModuleWorld
 		}
 		fee = obfc_BountyPotManager.obfm_GetFee(amount);
 		moneyNeeded = amount + fee;
+		// Defensive: never book a share that was not paid (wrapped or negative totals)
+		if (fee < 0 || moneyNeeded < amount)
+		{
+			fee = 0;
+			obfm_SendPotRejected(sender, "Invalid reward amount.");
+			return false;
+		}
 		moneyFound = obfc_BountyMoney.obfm_GetPlayerMoney(player);
 		moneyTaken = false;
 		if (moneyFound >= moneyNeeded)
@@ -1439,6 +1446,7 @@ class obfc_BountyModule : CF_ModuleWorld
 		string placementReason = "";
 		int rewardAmount = 0;
 		int potFee = 0;
+		int tokensForReward = 0;
 		string selfBountyPayload = "";
 		int potMoneyClaimed = 0;
 		if (action == "SkipBounty")
@@ -1610,6 +1618,13 @@ class obfc_BountyModule : CF_ModuleWorld
 				if (targetPlayer && targetPlayer.GetIdentity())
 				{
 					actualPlayerName = targetPlayer.GetIdentity().GetName();
+					// Self-placement only via "Bounty on Myself" - otherwise its limits
+					// (EnableSelfBounty, min/max minutes, survival reward) are bypassed
+					if (targetPlayer == player && (rewardAmount > 0 || obfv_g_BountyConfig.Core.DisableSelfBounty))
+					{
+						obfm_SendPotRejected(sender, "Use 'Bounty on Myself' to put a bounty on yourself.");
+						return;
+					}
 					if (obfc_BountyRevengeTracker.obfm_IsEnabled())
 					{
 						isRevengeTarget = obfc_BountyRevengeTracker.obfm_IsRevengeTarget(sender.GetId(), targetPlayer.GetIdentity().GetId());
@@ -1643,6 +1658,22 @@ class obfc_BountyModule : CF_ModuleWorld
 						{
 							obfm_SendPotRejected(sender, actualPlayerName + " already has a bounty - use Add Money to raise it.");
 							return;
+						}
+						// Token mode: reward + fee and the placement price come from the same tokens.
+						// Check both up front - the placement tokens are only taken after the bounty
+						// is applied, and a failed take then cannot cancel a pending warning timer.
+						if (tokensRequired > 0 && !obfc_BountyMoney.obfm_UsesExpansionMarket() && rewardAmount <= obfc_BountyPotManager.obfv_POT_HARD_MAX_CONTRIBUTION)
+						{
+							tokensForReward = rewardAmount + obfc_BountyPotManager.obfm_GetFee(rewardAmount);
+							if (totalTokenQuantity < tokensRequired + tokensForReward)
+							{
+								obfc_BountyNotifArgs notifArgsPot;
+								notifArgsPot = new obfc_BountyNotifArgs();
+								notifArgsPot.tokensRequired = tokensRequired + tokensForReward;
+								notifArgsPot.tokensFound = totalTokenQuantity;
+								obfc_BountyNotifications.obfm_SendNotificationInternal(obfv_BOUNTY_NOTIFICATION_INSUFFICIENT_TOKENS, sender, notifArgsPot);
+								return;
+							}
 						}
 						if (!obfm_TakePotContribution(player, sender, targetPlayer.GetIdentity().GetId(), rewardAmount, potFee))
 							return;

@@ -83,6 +83,10 @@ class obfc_BountyPotManager
 	protected static ref obfc_BountyPayoutStore obfv_s_PayoutStore;
 	protected static ref array<string> obfv_s_SweepSuspects;
 	protected static float obfv_s_SweepTimer;
+	//! Hard limits, also when the config says "unlimited" (0) - amounts come from the client,
+	//! and amount + fee / potTotal + amount must never wrap around int.
+	static const int obfv_POT_HARD_MAX_CONTRIBUTION = 100000000;
+	static const int obfv_POT_HARD_MAX_TOTAL = 1000000000;
 	static bool obfm_IsEnabled()
 	{
 		if (!obfv_g_BountyConfig || !obfv_g_BountyConfig.Core || !obfv_g_BountyConfig.Pot)
@@ -109,7 +113,8 @@ class obfc_BountyPotManager
 		float exactFee;
 		if (!obfv_g_BountyConfig || !obfv_g_BountyConfig.Pot || obfv_g_BountyConfig.Pot.FeePercent <= 0 || amount <= 0)
 			return 0;
-		exactFee = amount * obfv_g_BountyConfig.Pot.FeePercent / 100.0;
+		// float first: int * int wraps for large amounts (negative fee = free pot money)
+		exactFee = amount * (obfv_g_BountyConfig.Pot.FeePercent / 100.0);
 		fee = Math.Ceil(exactFee);
 		return fee;
 	}
@@ -203,13 +208,19 @@ class obfc_BountyPotManager
 		int potTotal;
 		if (!obfm_IsEnabled())
 			return "Money bounties are disabled on this server.";
+		if (amount <= 0)
+			return "The reward must be greater than 0.";
+		if (amount > obfv_POT_HARD_MAX_CONTRIBUTION)
+			return "The maximum reward is " + obfv_POT_HARD_MAX_CONTRIBUTION.ToString() + " " + obfc_BountyMoney.obfm_GetCurrencyLabel() + ".";
 		if (amount < obfv_g_BountyConfig.Pot.MinContribution)
 			return "The minimum reward is " + obfv_g_BountyConfig.Pot.MinContribution.ToString() + " " + obfc_BountyMoney.obfm_GetCurrencyLabel() + ".";
 		if (obfv_g_BountyConfig.Pot.MaxContribution > 0 && amount > obfv_g_BountyConfig.Pot.MaxContribution)
 			return "The maximum reward is " + obfv_g_BountyConfig.Pot.MaxContribution.ToString() + " " + obfc_BountyMoney.obfm_GetCurrencyLabel() + ".";
 		potTotal = obfm_GetPotTotal(targetId);
-		if (obfv_g_BountyConfig.Pot.MaxPotTotal > 0 && potTotal + amount > obfv_g_BountyConfig.Pot.MaxPotTotal)
+		if (obfv_g_BountyConfig.Pot.MaxPotTotal > 0 && potTotal > obfv_g_BountyConfig.Pot.MaxPotTotal - amount)
 			return "This bounty can hold at most " + obfv_g_BountyConfig.Pot.MaxPotTotal.ToString() + " " + obfc_BountyMoney.obfm_GetCurrencyLabel() + " (currently " + potTotal.ToString() + ").";
+		if (potTotal > obfv_POT_HARD_MAX_TOTAL - amount)
+			return "This bounty can hold at most " + obfv_POT_HARD_MAX_TOTAL.ToString() + " " + obfc_BountyMoney.obfm_GetCurrencyLabel() + " (currently " + potTotal.ToString() + ").";
 		return "";
 	}
 	protected static obfc_BountyPot obfm_GetOrCreatePot(PlayerBase target)
