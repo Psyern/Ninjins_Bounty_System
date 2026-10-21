@@ -312,8 +312,11 @@ class obfc_BountyCoreSystemSettings
 		PauseBountyInTerritory = true; 
 		ResumeBountyDistanceFromTerritory = 50.0; 
 		PausedBountyResumeCheckInterval = 5.0; 
-		obfm_TeleportOutOfSafeZone = true; 
-		TeleportOutOfSafeZoneDistance = 150.0; 
+		// Default: the bounty timer stops inside a safezone (PauseBountyInSafeZone) instead of
+		// teleporting the target out - otherwise a target can sit out the bounty in a safezone
+		// whenever the teleport is skipped (exit timer, no free spot).
+		obfm_TeleportOutOfSafeZone = false;
+		TeleportOutOfSafeZoneDistance = 150.0;
 		MinimumPlayerLifetimeSeconds = 900;
 		EnableAutomatedBountyPlacement = false;
 		AutomatedBountyPlacementIntervalSeconds = 3600.0;
@@ -323,7 +326,7 @@ class obfc_BountyCoreSystemSettings
 		PersistentBountyAfterLogOut = true;
 		DontCountSuicide = true;
 		DontCountFriendlyFire = true;
-		PauseBountyInSafeZone = false;
+		PauseBountyInSafeZone = true;
 		BountyWarningTimeSeconds = 0.0;
 		BountyRequestCostPerMinute = 0;
 		BountyRequestMinMinutes = 1;

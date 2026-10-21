@@ -260,8 +260,8 @@ requires hand-editing.
 | `PersistentBountyAfterLogOut` | `true` | Bounty survives logout and server restart |
 | `DontCountSuicide` | `true` | Non-player death keeps the bounty running |
 | `DontCountFriendlyFire` | `true` | Group/party kill pays nothing and doesn't end the bounty |
-| `PauseBountyInSafeZone` | `false` | Pause the timer in a safezone instead of teleporting out |
-| `TeleportOutOfSafeZone` | `true` | Teleport bountied players out of safezones |
+| `PauseBountyInSafeZone` | `true` | Pause the timer in a safezone instead of teleporting out (default since a target could otherwise sit out the bounty there) |
+| `TeleportOutOfSafeZone` | `false` | Teleport bountied players out of safezones |
 | `TeleportOutOfSafeZoneDistance` | `150.0` | Distance to move them |
 | `PauseBountyInTerritory` | `true` | Pause the timer inside the player's own territory |
 | `TeleportOutOfOwnTerritory` | `true` | Teleport bountied players out of their own territory |
