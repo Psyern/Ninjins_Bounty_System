@@ -1,0 +1,73 @@
+Ninjins Bounty System Update - Version 1.1 (Release on 27.10.2026)
+
+Changes since the Workshop update of 11.08.2026, 20:35
+
+NOTES
+
+    Consider using the Steam client option to verify the integrity of the mod files to avoid corrupted data after downloading this update.
+    Existing configs keep their saved values. Old configs get the new sections added automatically when they are loaded.
+    All new features are off by default and can be enabled in BountyConfig.json or in the admin menu.
+    Fresh installs now start with the bounty system turned off (Core.EnableBountySystem = false), so the server can be set up before bounties run.
+    The new Ninjins_Bounty_V3_Bridge must not be loaded together with Ninjins_Advanced_Bounty.
+    In case of problems, please include your server log and the Ninjins_Bounty_System log from your profile folder when reporting.
+
+GAMEPLAY
+
+ADDED
+
+    Revenge bounty: a player killed several times by the same player can place a bounty on that killer at the board (number of kills set by the admin)
+    Money pots: bounties can carry a money reward, other players can add money to a running bounty, the killer collects the pot at the board
+    Money pots are refunded when a bounty expires or is cleared, group members of the target can never collect the pot
+    Money pots are paid through the Expansion Market when it is loaded, otherwise with bounty tokens, an adjustable fee is taken on top
+    Bounty on yourself: players can place a bounty on themselves at the board
+    Loot bounties: admins can place bounties with item rewards from ready-made loot packages (BountyLootPresets.json)
+    Top killer of the week: automatic bounties can target the player with the most kills of the week
+    Board: new reward field, "Add Money to Bounty" and "Bounty on Myself" buttons, markers for bounties with a money pot or loot
+    Two optional bounty board models: Ninjins_Bounty_Board_Blackboard1 (wanted notice board on a wooden post) and Ninjins_Bounty_Board_Blackboard2 (wanted wall in a wooden frame)
+
+CHANGED
+
+    The bounty timer now pauses in safezones by default (PauseBountyInSafeZone = true) and the target is no longer teleported out of the safezone (TeleportOutOfSafeZone = false)
+
+FIXED
+
+    Killer often got no reward and the bounty kept running on servers without NinjinsPvPPvE, because the kill was counted as a suicide when the engine reported the weapon instead of the player as the killer
+    Bounties costing more than 1 token were rolled back after placing although the tokens had already been taken
+    Very large amounts could book a huge share of a money pot without paying (amounts and pots now have an upper limit)
+    In token mode a bounty with a reward could go through for free when the tokens for placing were missing
+    Placing a bounty on yourself through the normal placement bypassed the limits for self bounties
+    Input fields and labels on the board were unreadable (white text on the light parchment)
+
+SERVER
+
+    Added: BoardClassName in BountyBoardPlacements.json selects the board model per placement, unknown classes fall back to Ninjins_Bounty_Board_Static
+    Changed: Core.EnableBountySystem now defaults to false for fresh installs
+    Fixed: The mod now runs standalone without NinjinsPvPPvE
+    Fixed: The mod runs on DayZ 1.30
+
+NINJINS UPGRADED V3 BRIDGE
+
+    Added: New optional addon Ninjins_Bounty_V3_Bridge that connects the bounty system to Ninjins Upgraded V3 (Ninjins_Core and Ninjins_PvP_PvE_Upgraded_Zones)
+    Added: Bounties follow the safezones and PvE zones of Ninjins V3
+    Added: Rule Breaker rules also apply in zones that would otherwise block a hit
+    Added: Own bounty page in the Ninjins Core admin menu to edit all settings, notifications, players and the blacklist in game
+    Added: Admins from the Core permission system get access without an extra entry in Admins.json
+    Added: Admin rows for all new settings and notifications
+    Changed: Ported to the renamed Ninjins V3 admin and permission API
+    Load order: Ninjins_Core, Ninjins_PvP_PvE_Upgraded_Zones, Ninjins_Bounty_System, Ninjins_Bounty_V3_Bridge
+
+MODDING
+
+    Added: Overridable PlayerBase hooks obfm_MayRunBountyAdminTools, obfm_BountyPlayerInPvEZone, obfm_NinjinBountyIsPlayerInNinjinsSafeZone and obfm_NinjinBountyIsOnSafeZoneExitTimer, so a companion mod can supply its own permission and zone decisions
+    Added: obfc_BountyDamageHandler.obfm_TryOpenDeniedZoneHit holds the complete Rule Breaker decision for a hit a zone mod has already denied
+    Added: MissionGameplay hooks obfm_OnBountyAdminPlayersReceived and obfm_OnBountyAdminBlacklistReceived to show the admin player and blacklist data elsewhere
+    Added: The mod now exports the define Ninjins_Bounty_System, so other mods can check with #ifdef Ninjins_Bounty_System whether it is loaded
+    Added: Board classes derived from Ninjins_Bounty_Board_Static keep the open-board action and can be spawned through BoardClassName
+    Changed: NinjinsPvPPvE safezone fields are read reflectively, so the mod compiles and runs without that mod
+    Fixed: obfm_SendNotificationInternal exceeded the EnScript limit of 16 arguments and did not compile, it now takes a single obfc_BountyNotifArgs argument bag
+    Fixed: NinjinsBountyBoardMenu no longer calls SetHandler on a UIScriptedMenu
+
+KNOWN ISSUES
+
+    The revenge kill counter is kept in memory only and resets on server restart
+    Without NinjinsPvPPvE, kills with no player behind them (for example a bare explosion) still count as suicides
