@@ -90,6 +90,20 @@ class CfgVehicles
 		hiddenSelections[]={"camo"};
 		hiddenSelectionsTextures[]={"Ninjins_Bounty_System\data\ninjins_bounty_blackboards\data\Ninjins_Bounty_Blackboard2_co.paa"};
 	};
+	class Ninjins_Bounty_Board_Cactus: Ninjins_Bounty_Board_Static
+	{
+		scope=2;
+		model="Ninjins_Bounty_System\data\ninjins_bounty_blackboards\models\ninjins_bounty_cactus.p3d";
+		hiddenSelections[]={"camo"};
+		hiddenSelectionsTextures[]={"Ninjins_Bounty_System\data\ninjins_bounty_blackboards\data\Ninjins_Bounty_Cactus_co.paa"};
+	};
+	class Ninjins_Bounty_Board_Outlaw: Ninjins_Bounty_Board_Static
+	{
+		scope=2;
+		model="Ninjins_Bounty_System\data\ninjins_bounty_blackboards\models\ninjins_bounty_outlaw.p3d";
+		hiddenSelections[]={"camo"};
+		hiddenSelectionsTextures[]={"Ninjins_Bounty_System\data\ninjins_bounty_blackboards\data\Ninjins_Bounty_Outlaw_co.paa"};
+	};
 	class NinjinsBountyCrate_Base: SeaChest
 	{
 		scope=0;

@@ -33,6 +33,8 @@ Bezahlt wird über den Expansion Market, wenn er geladen ist, sonst mit Bounty-T
 
 **Board:** neues Feld für die Belohnung, Knöpfe „Add Money to Bounty“ und „Bounty on Myself“, Markierungen für Kopfgelder mit Geldtopf oder Loot.
 
+**Vier neue Board-Modelle:** Pro Platzierung in BountyBoardPlacements.json lässt sich über `BoardClassName` ein anderes Modell wählen: `Ninjins_Bounty_Board_Blackboard1` (Steckbrief-Brett an einem Pfosten), `Ninjins_Bounty_Board_Blackboard2` (Steckbrief-Wand im Holzrahmen), `Ninjins_Bounty_Board_Cactus` (Steckbriefe an einem Saguaro-Kaktus) und `Ninjins_Bounty_Board_Outlaw` (Steckbrief-Brett zwischen zwei Baumstamm-Pfosten).
+
 ## Geänderte Standardwerte
 
 Neue Installationen starten mit ausgeschaltetem Bounty System. So lässt sich der Server erst einrichten, bevor Kopfgelder laufen.

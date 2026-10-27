@@ -23,7 +23,7 @@ ADDED
     Loot bounties: admins can place bounties with item rewards from ready-made loot packages (BountyLootPresets.json)
     Top killer of the week: automatic bounties can target the player with the most kills of the week
     Board: new reward field, "Add Money to Bounty" and "Bounty on Myself" buttons, markers for bounties with a money pot or loot
-    Two optional bounty board models: Ninjins_Bounty_Board_Blackboard1 (wanted notice board on a wooden post) and Ninjins_Bounty_Board_Blackboard2 (wanted wall in a wooden frame)
+    Four optional bounty board models: Ninjins_Bounty_Board_Blackboard1 (wanted notice board on a wooden post), Ninjins_Bounty_Board_Blackboard2 (wanted wall in a wooden frame), Ninjins_Bounty_Board_Cactus (wanted posters on a saguaro cactus) and Ninjins_Bounty_Board_Outlaw (wanted board between two log posts)
 
 CHANGED
 

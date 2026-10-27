@@ -13,3 +13,9 @@ class Ninjins_Bounty_Board_Blackboard1: Ninjins_Bounty_Board_Static
 class Ninjins_Bounty_Board_Blackboard2: Ninjins_Bounty_Board_Static
 {
 }
+class Ninjins_Bounty_Board_Cactus: Ninjins_Bounty_Board_Static
+{
+}
+class Ninjins_Bounty_Board_Outlaw: Ninjins_Bounty_Board_Static
+{
+}

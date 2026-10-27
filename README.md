@@ -446,7 +446,7 @@ map has no static board object placed.
 
 | Field | Default | Description |
 |---|---|---|
-| `BoardClassName` | `Ninjins_Bounty_Board_Static` | Board model to spawn: `Ninjins_Bounty_Board_Static`, `Ninjins_Bounty_Board_Blackboard1` (wanted notice board on a post) or `Ninjins_Bounty_Board_Blackboard2` (wanted wall in a wooden frame). Unknown classes fall back to the default board |
+| `BoardClassName` | `Ninjins_Bounty_Board_Static` | Board model to spawn: `Ninjins_Bounty_Board_Static`, `Ninjins_Bounty_Board_Blackboard1` (wanted notice board on a post), `Ninjins_Bounty_Board_Blackboard2` (wanted wall in a wooden frame), `Ninjins_Bounty_Board_Cactus` (wanted posters on a saguaro cactus) or `Ninjins_Bounty_Board_Outlaw` (wanted board between two log posts). Unknown classes fall back to the default board |
 | `Position` | `[0, 0, 0]` | World position; `[0, 0, 0]` is a placeholder and is skipped |
 | `Rotation` | `[0, 0, 0]` | Orientation (yaw, pitch, roll) |
 
@@ -526,6 +526,8 @@ Board and crate classnames:
 | `Ninjins_Bounty_Board_Static` | The bounty board object (indestructible) |
 | `Ninjins_Bounty_Board_Blackboard1` | Optional board model: wanted notice board on a wooden post |
 | `Ninjins_Bounty_Board_Blackboard2` | Optional board model: wanted wall in a wooden frame |
+| `Ninjins_Bounty_Board_Cactus` | Optional board model: wanted posters on a saguaro cactus |
+| `Ninjins_Bounty_Board_Outlaw` | Optional board model: wanted board between two log posts |
 | `NinjinsBountyCrate_250` / `_500` / `_1000` | Reward crates, 10×25 / 10×50 / 10×100 cargo |
 | `Ninjins_Bounty_Token_Silver` / `_Gold` / `_Red` | Bounty tokens |
 
