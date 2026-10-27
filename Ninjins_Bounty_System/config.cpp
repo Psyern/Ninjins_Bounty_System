@@ -76,6 +76,20 @@ class CfgVehicles
 		scope=2;
 		model="Ninjins_Bounty_System\Data\Ninjins_Bounty_Board\Ninjins_Bounty_Board.p3d";
 	};
+	class Ninjins_Bounty_Board_Blackboard1: Ninjins_Bounty_Board_Static
+	{
+		scope=2;
+		model="Ninjins_Bounty_System\data\ninjins_bounty_blackboards\models\ninjins_bounty_blackboard1.p3d";
+		hiddenSelections[]={"camo"};
+		hiddenSelectionsTextures[]={"Ninjins_Bounty_System\data\ninjins_bounty_blackboards\data\Ninjins_Bounty_Blackboard1_co.paa"};
+	};
+	class Ninjins_Bounty_Board_Blackboard2: Ninjins_Bounty_Board_Static
+	{
+		scope=2;
+		model="Ninjins_Bounty_System\data\ninjins_bounty_blackboards\models\ninjins_bounty_blackboard2.p3d";
+		hiddenSelections[]={"camo"};
+		hiddenSelectionsTextures[]={"Ninjins_Bounty_System\data\ninjins_bounty_blackboards\data\Ninjins_Bounty_Blackboard2_co.paa"};
+	};
 	class NinjinsBountyCrate_Base: SeaChest
 	{
 		scope=0;

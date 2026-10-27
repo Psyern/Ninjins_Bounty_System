@@ -142,6 +142,7 @@ class obfc_BountyModule : CF_ModuleWorld
 		vector boardPosition;
 		vector boardRotation;
 		Object boardObject;
+		string boardClassName;
 		if (!IsMissionHost())
 			return;
 		if (!obfv_m_ConfigSpawnedBountyBoards)
@@ -166,7 +167,16 @@ class obfc_BountyModule : CF_ModuleWorld
 			}
 			boardPosition = obfm_BuildBoardVector(placement.Position);
 			boardRotation = obfm_BuildBoardVector(placement.Rotation);
-			boardObject = g_Game.CreateObjectEx("Ninjins_Bounty_Board_Static", boardPosition, ECE_PLACE_ON_SURFACE);
+			boardClassName = placement.BoardClassName;
+			if (boardClassName == "")
+				boardClassName = obfv_Ninjins_Bounty_System_DEFAULT_BOARD_CLASS;
+			boardObject = g_Game.CreateObjectEx(boardClassName, boardPosition, ECE_PLACE_ON_SURFACE);
+			if (!boardObject && boardClassName != obfv_Ninjins_Bounty_System_DEFAULT_BOARD_CLASS)
+			{
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyModule] Could not spawn " + boardClassName + " at index " + i.ToString() + " - falling back to " + obfv_Ninjins_Bounty_System_DEFAULT_BOARD_CLASS);
+				boardClassName = obfv_Ninjins_Bounty_System_DEFAULT_BOARD_CLASS;
+				boardObject = g_Game.CreateObjectEx(boardClassName, boardPosition, ECE_PLACE_ON_SURFACE);
+			}
 			if (!boardObject)
 			{
 				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogError("[BountyModule] Failed to spawn configured bounty board at index " + i.ToString());
@@ -174,7 +184,7 @@ class obfc_BountyModule : CF_ModuleWorld
 			}
 			boardObject.SetOrientation(boardRotation);
 			obfv_m_ConfigSpawnedBountyBoards.Insert(boardObject);
-			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Spawned configured bounty board #" + i.ToString() + " at " + boardPosition.ToString() + " with rotation " + boardRotation.ToString());
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Spawned configured bounty board #" + i.ToString() + " (" + boardClassName + ") at " + boardPosition.ToString() + " with rotation " + boardRotation.ToString());
 		}
 		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[BountyModule] Configured bounty board spawn complete. Spawned: " + obfv_m_ConfigSpawnedBountyBoards.Count().ToString());
 	}

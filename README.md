@@ -444,6 +444,21 @@ straight out of it.
 Auto-spawns bounty boards at the given `Position` / `Rotation` on server start — useful when your
 map has no static board object placed.
 
+| Field | Default | Description |
+|---|---|---|
+| `BoardClassName` | `Ninjins_Bounty_Board_Static` | Board model to spawn: `Ninjins_Bounty_Board_Static`, `Ninjins_Bounty_Board_Blackboard1` (wanted notice board on a post) or `Ninjins_Bounty_Board_Blackboard2` (wanted wall in a wooden frame). Unknown classes fall back to the default board |
+| `Position` | `[0, 0, 0]` | World position; `[0, 0, 0]` is a placeholder and is skipped |
+| `Rotation` | `[0, 0, 0]` | Orientation (yaw, pitch, roll) |
+
+```json
+{
+    "VersionID": 1,
+    "BoardPlacements": [
+        { "BoardClassName": "Ninjins_Bounty_Board_Blackboard2", "Position": [3706.0, 402.0, 5985.0], "Rotation": [90.0, 0.0, 0.0] }
+    ]
+}
+```
+
 ### `LoggingSettings.json`
 
 | Field | Default | Description |
@@ -509,6 +524,8 @@ Board and crate classnames:
 | Classname | What it is |
 |---|---|
 | `Ninjins_Bounty_Board_Static` | The bounty board object (indestructible) |
+| `Ninjins_Bounty_Board_Blackboard1` | Optional board model: wanted notice board on a wooden post |
+| `Ninjins_Bounty_Board_Blackboard2` | Optional board model: wanted wall in a wooden frame |
 | `NinjinsBountyCrate_250` / `_500` / `_1000` | Reward crates, 10×25 / 10×50 / 10×100 cargo |
 | `Ninjins_Bounty_Token_Silver` / `_Gold` / `_Red` | Bounty tokens |
 

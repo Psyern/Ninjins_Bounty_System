@@ -1541,12 +1541,15 @@ class obfc_BountyBlacklistConfig
 }
 const string obfv_Ninjins_Bounty_System_BOARD_CONFIG_FILE = obfv_Ninjins_Bounty_System_ROOT_FOLDER + "Config\\BountyBoardPlacements.json";
 ref obfc_BountyBoardPlacementConfig obfv_g_BountyBoardPlacementConfig;
+const string obfv_Ninjins_Bounty_System_DEFAULT_BOARD_CLASS = "Ninjins_Bounty_Board_Static";
 class obfc_BountyBoardPlacement
 {
+	string BoardClassName;
 	ref array<float> Position;
 	ref array<float> Rotation;
 	void obfc_BountyBoardPlacement()
 	{
+		BoardClassName = obfv_Ninjins_Bounty_System_DEFAULT_BOARD_CLASS;
 		Position = new array<float>;
 		Position.Insert(0.0);
 		Position.Insert(0.0);
@@ -1612,6 +1615,16 @@ class obfc_BountyBoardPlacementConfig
 			{
 				placement.Rotation.Insert(0.0);
 			}
+			// only classes derived from the default board keep the open-board action
+			if (placement.BoardClassName == "")
+			{
+				placement.BoardClassName = obfv_Ninjins_Bounty_System_DEFAULT_BOARD_CLASS;
+			}
+			else if (g_Game && placement.BoardClassName != obfv_Ninjins_Bounty_System_DEFAULT_BOARD_CLASS && !g_Game.IsKindOf(placement.BoardClassName, obfv_Ninjins_Bounty_System_DEFAULT_BOARD_CLASS))
+			{
+				obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyBoardPlacementConfig] Board[" + i.ToString() + "] BoardClassName '" + placement.BoardClassName + "' is not a bounty board - using " + obfv_Ninjins_Bounty_System_DEFAULT_BOARD_CLASS);
+				placement.BoardClassName = obfv_Ninjins_Bounty_System_DEFAULT_BOARD_CLASS;
+			}
 		}
 	}
 	static obfc_BountyBoardPlacementConfig obfm_LoadConfig()
@@ -1661,6 +1674,7 @@ class obfc_BountyBoardPlacementConfig
 				continue;
 			if (!placement.Rotation || placement.Rotation.Count() < 3)
 				continue;
+			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   Board[" + i.ToString() + "] Class: " + placement.BoardClassName);
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + "   Board[" + i.ToString() + "] Position: [" + placement.Position.Get(0).ToString() + ", " + placement.Position.Get(1).ToString() + ", " + placement.Position.Get(2).ToString() + "] Rotation: [" + placement.Rotation.Get(0).ToString() + ", " + placement.Rotation.Get(1).ToString() + ", " + placement.Rotation.Get(2).ToString() + "]");
 		}
 		obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo(prefix + " ========================================");
