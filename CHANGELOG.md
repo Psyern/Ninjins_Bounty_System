@@ -2,6 +2,12 @@
 
 Changelog für Ninjins Bounty System und die neue Ninjins Bounty V3 Bridge.
 
+## Hotfix 1.1.1 (28.10.2026)
+
+**Server-Absturz behoben:** Auf manchen Servern brach der Start mit `Can't compile "Mission" script module` ab (`Can't find variable 'UABountyAdminMenu'`). Das passierte, wenn die Tastenbelegungs-Datei des Mods nicht registriert wurde. Die Taste für das Admin-Menü wird jetzt zur Laufzeit über ihren Namen gesucht.
+
+Getestet auf DayZ 1.30 mit CF + COT, nur CF, mit Bundle + Bridge und mit Bundle ohne Bridge.
+
 ## Neu: Ninjins Bounty V3 Bridge
 
 Neues, optionales Addon, das das Bounty System mit Ninjins Upgraded V3 verbindet (Core und PvP/PvE Upgraded Zones).

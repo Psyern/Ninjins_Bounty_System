@@ -262,7 +262,8 @@ modded class MissionGameplay
 				return;
 			}
 		}
-		if (GetUApi().GetInputByName("UABountyAdminMenu").LocalPress())
+		UAInput adminMenuInput = GetUApi().GetInputByName("UABountyAdminMenu");
+		if (adminMenuInput && adminMenuInput.LocalPress())
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogInfo("[ControlBountyInputs] UABountyAdminMenu hotkey pressed");
 			if (!player.obfm_IsBountyAdmin())

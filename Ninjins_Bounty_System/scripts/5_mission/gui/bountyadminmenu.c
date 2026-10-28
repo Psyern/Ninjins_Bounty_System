@@ -388,7 +388,8 @@ class obfc_BountyAdminMenu extends UIScriptedMenu
 		g_Game.GetInput().ChangeGameFocus(1);
 		g_Game.GetUIManager().ShowUICursor(true);
 		g_Game.GetMission().GetHud().Show(false);
-		TIntArray skip = { UAUIBack, UABountyAdminMenu };
+		TIntArray skip = new TIntArray;
+		skip.Insert(UAUIBack);
 		obfm_ForceDisableInputs(true, skip);
 		SetFocus(layoutRoot);
 		obfm_ShowOnlyPanel(obfv_m_GeneralRootPanel);
@@ -705,7 +706,11 @@ class obfc_BountyAdminMenu extends UIScriptedMenu
 		if (!skipIDs)
 			skipIDs = new TIntArray;
 		skipIDs.Insert(UAUIBack);
-		skipIDs.Insert(UABountyAdminMenu);
+		// Resolve the keybind by name: the engine-generated global UABountyAdminMenu
+		// only exists when inputs.xml got registered, and some servers fail to compile without it
+		UAInput adminMenuInput = GetUApi().GetInputByName("UABountyAdminMenu");
+		if (adminMenuInput)
+			skipIDs.Insert(adminMenuInput.ID());
 		TIntArray inputIDs = new TIntArray;
 		GetUApi().GetActiveInputs(inputIDs);
 		foreach (int inputID : inputIDs)

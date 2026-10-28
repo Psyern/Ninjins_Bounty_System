@@ -1,3 +1,21 @@
+Ninjins Bounty System Update - Version 1.1.1 (Release on 28.10.2026)
+
+NOTES
+
+    Server owners need to update the mod on the server and restart it; clients update automatically through the Steam Workshop
+    If the mod does not load after updating, unsubscribe and resubscribe in the Steam Workshop or verify the files in the DayZ Launcher
+    In case of problems, please include your server log and the Ninjins_Bounty_System log from your profile folder when reporting
+
+SERVER
+
+    Server could crash on startup with "Can't compile "Mission" script module" (Can't find variable 'UABountyAdminMenu') when the keybind file of the mod was not registered
+
+MODDING
+
+    Changed: The admin menu keybind is looked up by name through 'GetUApi().GetInputByName("UABountyAdminMenu")' instead of the engine-generated global 'UABountyAdminMenu'
+    Fixed: 'inputs.xml' used the invalid XML header value 'standalone="true"' and an empty default key entry
+
+
 Ninjins Bounty System Update - Version 1.1 (Release on 27.10.2026)
 
 Changes since the Workshop update of 11.08.2026, 20:35
