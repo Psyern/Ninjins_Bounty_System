@@ -16,6 +16,9 @@ class obfc_BountyAdminMenu extends UIScriptedMenu
 	private ButtonWidget obfv_m_btnNormalSettings;
 	private ButtonWidget obfv_m_btnNotifications;
 	private ButtonWidget obfv_m_btnBlacklist;
+	private ButtonWidget obfv_m_BtnAdminClose;
+	private ref obfc_BountyUiWindow obfv_m_ConfigWindow;
+	private ref obfc_BountyUiWindow obfv_m_PlayersWindow;
 	private Widget obfv_m_GeneralRootPanel;
 	private Widget obfv_m_NotificationsRootPanel;
 	private Widget obfv_m_BlacklistRootPanel;
@@ -190,6 +193,7 @@ class obfc_BountyAdminMenu extends UIScriptedMenu
 		obfv_m_BtnClearAllCooldowns = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnClearAllCooldowns"));
 		obfv_m_BtnClearPlayerCooldown = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnClearPlayerCooldown"));
 		obfv_m_BtnSaveAndReload = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BTNSaveAndReload"));
+		obfv_m_BtnAdminClose = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnAdminClose"));
 		obfv_m_BtnAddRewardPoint = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnAddRewardPoint"));
 		obfv_m_BtnRemoveRewardPoint = ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnRemoveRewardPoint"));
 		obfv_m_PlayersList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("PlayersList"));
@@ -337,6 +341,9 @@ class obfc_BountyAdminMenu extends UIScriptedMenu
 		obfv_m_BroadcastsRuleBreakerTitle = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsRuleBreakerTitle0"));
 		obfv_m_BroadcastsRuleBreakerMessage = MultilineEditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsRuleBreakerMessage0"));
 		obfv_m_BroadcastsRuleBreakerIconPath = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("BroadcastsRuleBreakerIconPath0"));
+		obfc_BountyUiStyle.ApplyPreset(layoutRoot);
+		obfv_m_ConfigWindow = new obfc_BountyUiWindow(layoutRoot.FindAnyWidget("ConfigSettingPanel"), layoutRoot.FindAnyWidget("TitleBarAdmin"), ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnAdminMinimize")), 1);
+		obfv_m_PlayersWindow = new obfc_BountyUiWindow(layoutRoot.FindAnyWidget("MainPanel"), layoutRoot.FindAnyWidget("TitleBar"), ButtonWidget.Cast(layoutRoot.FindAnyWidget("BtnPlayersMinimize")), -1);
 		if (!obfv_m_PlayersList)
 		{
 			obfm_GetNinjins_Bounty_SystemLogger().obfm_LogWarning("[BountyAdminMenu] PlayersList widget not found in layout!");
@@ -356,23 +363,23 @@ class obfc_BountyAdminMenu extends UIScriptedMenu
 		if (obfv_m_btnNormalSettings)
 		{
 			if (panelToShow == obfv_m_GeneralRootPanel)
-				obfv_m_btnNormalSettings.SetColor(ARGB(255, 27, 89, 95)); 
+				obfc_BountyUiStyle.SetButtonColor(obfv_m_btnNormalSettings, obfc_BountyUiStyle.BtnActive());
 			else
-				obfv_m_btnNormalSettings.SetColor(ARGB(241, 30, 40, 56)); 
+				obfc_BountyUiStyle.SetButtonColor(obfv_m_btnNormalSettings, obfc_BountyUiStyle.BtnIdle());
 		}
 		if (obfv_m_btnNotifications)
 		{
 			if (panelToShow == obfv_m_NotificationsRootPanel)
-				obfv_m_btnNotifications.SetColor(ARGB(255, 27, 89, 95)); 
+				obfc_BountyUiStyle.SetButtonColor(obfv_m_btnNotifications, obfc_BountyUiStyle.BtnActive());
 			else
-				obfv_m_btnNotifications.SetColor(ARGB(241, 30, 40, 56)); 
+				obfc_BountyUiStyle.SetButtonColor(obfv_m_btnNotifications, obfc_BountyUiStyle.BtnIdle());
 		}
 		if (obfv_m_btnBlacklist)
 		{
 			if (panelToShow == obfv_m_BlacklistRootPanel)
-				obfv_m_btnBlacklist.SetColor(ARGB(255, 27, 89, 95)); 
+				obfc_BountyUiStyle.SetButtonColor(obfv_m_btnBlacklist, obfc_BountyUiStyle.BtnActive());
 			else
-				obfv_m_btnBlacklist.SetColor(ARGB(241, 30, 40, 56)); 
+				obfc_BountyUiStyle.SetButtonColor(obfv_m_btnBlacklist, obfc_BountyUiStyle.BtnIdle());
 		}
 		if (panelToShow == obfv_m_BlacklistRootPanel)
 		{
@@ -721,9 +728,44 @@ class obfc_BountyAdminMenu extends UIScriptedMenu
 			}
 		}
 	}
+	override void Update(float timeslice)
+	{
+		super.Update(timeslice);
+		if (obfv_m_ConfigWindow)
+			obfv_m_ConfigWindow.Update();
+		if (obfv_m_PlayersWindow)
+			obfv_m_PlayersWindow.Update();
+	}
+	override bool OnMouseButtonDown(Widget w, int x, int y, int button)
+	{
+		if (obfv_m_ConfigWindow && obfv_m_ConfigWindow.OnMouseButtonDown(w, button))
+			return true;
+		if (obfv_m_PlayersWindow && obfv_m_PlayersWindow.OnMouseButtonDown(w, button))
+			return true;
+		return super.OnMouseButtonDown(w, x, y, button);
+	}
+	override bool OnMouseEnter(Widget w, int x, int y)
+	{
+		obfc_BountyUiStyle.OnMouseEnter(w);
+		return super.OnMouseEnter(w, x, y);
+	}
+	override bool OnMouseLeave(Widget w, Widget enterW, int x, int y)
+	{
+		obfc_BountyUiStyle.OnMouseLeave(w);
+		return super.OnMouseLeave(w, enterW, x, y);
+	}
 	override bool OnClick(Widget w, int x, int y, int button)
 	{
 		super.OnClick(w, x, y, button);
+		if (obfv_m_ConfigWindow && obfv_m_ConfigWindow.OnClick(w))
+			return true;
+		if (obfv_m_PlayersWindow && obfv_m_PlayersWindow.OnClick(w))
+			return true;
+		if (w == obfv_m_BtnAdminClose)
+		{
+			OnHide();
+			return true;
+		}
 		if (w == obfv_m_btnNormalSettings)
 		{
 			obfm_ShowOnlyPanel(obfv_m_GeneralRootPanel);

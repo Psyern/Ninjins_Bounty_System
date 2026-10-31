@@ -1,3 +1,25 @@
+Ninjins Bounty System Update - Version 1.2.0 (Release on 31.10.2026)
+
+NOTES
+
+    Server owners need to update the mod on the server and restart it; clients update automatically through the Steam Workshop
+    If the mod does not load after updating, unsubscribe and resubscribe in the Steam Workshop or verify the files in the DayZ Launcher
+    In case of problems, please include your server log and the Ninjins_Bounty_System log from your profile folder when reporting
+
+ADMIN TOOLS
+
+    Admin menu now uses the look of the Ninjins Core admin tools
+    Admin menu follows the colour preset selected in Ninjins Core when Core is loaded, the mod still runs without Core
+    Both admin menu windows can now be moved by dragging their title bar
+    Both admin menu windows can now be minimized to their title bar
+    Added a close button to the title bar of the settings window
+    "Save & Reload" button moved from below the settings window into the window
+    Admin menu buttons now highlight on mouse hover
+
+MODDING
+
+    Changed: Moved 'BTNSaveAndReload' into 'ConfigSettingPanel' in 'bountyadminmenu.layout'
+
 Ninjins Bounty System Update - Version 1.1.1 (Release on 28.10.2026)
 
 NOTES

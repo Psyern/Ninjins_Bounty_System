@@ -2,6 +2,14 @@
 
 Changelog für Ninjins Bounty System und die neue Ninjins Bounty V3 Bridge.
 
+## Update 1.2.0 (31.10.2026)
+
+Das Admin-Menü übernimmt den Stil der Admin-Tools von Ninjins Core. Ist Core geladen, folgt es der dort gewählten Farbvorlage. Der Mod läuft weiterhin ohne Core.
+
+Beide Fenster lassen sich an der Titelleiste verschieben und auf die Titelleiste minimieren. Das Einstellungsfenster hat einen Schließen-Knopf, und „Save & Reload“ sitzt jetzt im Fenster. Knöpfe reagieren auf die Maus.
+
+Das Bounty-Board für Spieler und der Countdown bleiben im Wild-West-Stil unverändert.
+
 ## Hotfix 1.1.1 (28.10.2026)
 
 **Server-Absturz behoben:** Auf manchen Servern brach der Start mit `Can't compile "Mission" script module` ab (`Can't find variable 'UABountyAdminMenu'`). Das passierte, wenn die Tastenbelegungs-Datei des Mods nicht registriert wurde. Die Taste für das Admin-Menü wird jetzt zur Laufzeit über ihren Namen gesucht.
