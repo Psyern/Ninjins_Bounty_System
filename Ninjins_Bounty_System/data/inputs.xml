@@ -4,7 +4,7 @@
         <actions>
             <input name="UABountyAdminMenu" loc="Bounty Admin Menu" />
         </actions>
-        <sorting name="Bounty Mod" loc="Bounty Mod">
+        <sorting name="psyern" loc="Psyern's">
             <input name="UABountyAdminMenu" />
         </sorting>
     </inputs>
